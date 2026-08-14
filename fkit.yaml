@@ -1,0 +1,53 @@
+fkit:
+  version: 0.1.3
+
+project_name: bloc-clean-template
+
+tooling:
+  use_fvm: false
+
+platforms:
+  android: true
+  ios: true
+  web: true
+
+build:
+  debug_info: ./debug-info
+  obfuscate: true
+
+entry:
+  main: lib/main.dart
+
+flavoring:
+  enabled: false
+  default: main
+
+flavors:
+  - main
+
+environment:
+  enabled: true
+
+  configurations:
+    main:
+      file: env/env.json
+
+localization:
+  enabled: true
+
+  arb_dir: lib/l10n
+  template: app_en.arb
+  output_dir: lib/gen/l10n
+  output_file: app_localizations.dart
+  default_locale: en
+
+  locales:
+    - en
+
+firebase:
+  enabled: false
+  tester_group: internal-testers
+
+generator:
+  feature_dir: lib/features
+  default_template: bloc_clean
