@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tejasd.blocclean"
+    namespace = "com.pwh.customer.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.tejasd.blocclean"
+        applicationId = "com.pwh.customer.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
