@@ -4,9 +4,9 @@ class AppColor {
   const AppColor._();
 
   /// Brand colors
-  static const Color primary = Color(0xFF00003C);
+  static const Color primary = Color(0xFF0058BE);
   static const Color secondary = Color(0xFFFCCC38);
-  static const Color primaryHighlight = Color(0xA83A3AF3);
+  static const Color primaryHighlight = Color(0xA80058BE);
 
   /// Semantic colors
   static const Color success = Color(0xFF16A34A);

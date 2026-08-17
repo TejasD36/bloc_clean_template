@@ -3,6 +3,8 @@
 class Assets {
   Assets._();
 
-  static const String imagesAppIcon = 'assets/images/app_icon.png';
-  static const String imagesSplashLogo = 'assets/images/splash_logo.png';
+  static const String imagesOnboardingImage1 = 'assets/images/onboarding_image_1.png';
+  static const String imagesOnboardingImage2 = 'assets/images/onboarding_image_2.png';
+  static const String imagesOnboardingImage3 = 'assets/images/onboarding_image_3.png';
+  static const String logoAppIcon = 'assets/logo/app_icon.png';
 }

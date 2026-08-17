@@ -26,6 +26,7 @@ dependencies:
   hive_ce_flutter: ^2.3.4
   intl: any
   json_annotation: ^4.12.0
+  pinput: ^6.0.2
   talker_dio_logger: ^5.1.13
   talker_flutter: ^5.1.13
 
@@ -47,6 +48,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/logo/
 
 flutter_assets_generator:
   output_dir: gen/assets/
@@ -62,8 +64,8 @@ flutter_assets_generator:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/splash_logo.png
+  image: assets/logo/app_icon.png
 
   android_12:
     color: "#FFFFFF"
-    image: assets/images/splash_logo.png
+    image: assets/logo/app_icon.png

@@ -97,7 +97,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Bloc Clean Template'**
+  /// **'Pune Water Helpline'**
   String get appName;
 }
 

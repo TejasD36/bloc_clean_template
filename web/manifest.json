@@ -1,11 +1,11 @@
 {
-    "name": "Bloc Clean Template",
-    "short_name": "Bloc Clean",
+    "name": "Pune Water Helpline",
+    "short_name": "PWH",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#FFFFFF",
     "theme_color": "#000000",
-    "description": "A Flutter BLoC clean architecture starter template.",
+    "description": "Pune Water Helpline customer app.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

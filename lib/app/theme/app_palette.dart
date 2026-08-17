@@ -51,8 +51,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
   final Color shadow;
 
   static const light = AppPalette(
-    primary: Color(0xFF00003C),
-    primarySoft: Color(0xFFEFF2FF),
+    primary: Color(0xFF0058BE),
+    primarySoft: Color(0xFFEAF3FF),
     secondary: Color(0xFFFCCC38),
     success: Color(0xFF16A34A),
     warning: Color(0xFFF97316),
@@ -76,8 +76,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
   );
 
   static const dark = AppPalette(
-    primary: Color(0xFF9EA8FF),
-    primarySoft: Color(0xFF171B3C),
+    primary: Color(0xFF7EB6FF),
+    primarySoft: Color(0xFF0D2A4D),
     secondary: Color(0xFFE8C84A),
     success: Color(0xFF4ADE80),
     warning: Color(0xFFF59E0B),

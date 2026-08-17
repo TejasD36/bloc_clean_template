@@ -1,6 +1,8 @@
 enum AppRoute {
   splash('/'),
+  onboarding('/onboarding'),
   login('/login'),
+  otp('/otp'),
   register('/register'),
   resetPassword('/reset-password'),
   changePassword('/change-password'),

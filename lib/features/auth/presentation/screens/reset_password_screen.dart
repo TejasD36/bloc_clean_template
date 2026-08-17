@@ -26,14 +26,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       listener: (context, state) {
         switch (state) {
           case AuthPasswordResetRequested():
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Password reset requested.')),
-            );
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Password reset requested.')));
             context.pop();
           case AuthFailure(:final message):
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(message)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
           default:
             break;
         }
@@ -51,17 +47,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Image.asset(Assets.imagesAppIcon, height: 80),
+                    Image.asset(Assets.logoAppIcon, height: 80),
                     const SizedBox(height: 32),
-                    Text(
-                      'Reset password',
-                      style: context.textTheme.headlineMedium,
-                    ),
+                    Text('Reset password', style: context.textTheme.headlineMedium),
                     const SizedBox(height: 8),
-                    Text(
-                      'Enter your email to start the reset flow.',
-                      style: context.textTheme.bodyMedium,
-                    ),
+                    Text('Enter your email to start the reset flow.', style: context.textTheme.bodyMedium),
                     const SizedBox(height: 24),
                     TextFormField(
                       controller: _emailController,
@@ -72,10 +62,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       onFieldSubmitted: (_) => _submit(),
                     ),
                     const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: loading ? null : _submit,
-                      child: const Text('Request reset'),
-                    ),
+                    FilledButton(onPressed: loading ? null : _submit, child: const Text('Request reset')),
                   ],
                 ),
               ),
@@ -93,8 +80,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    context.read<AuthBloc>().add(
-      AuthEvent.forgotPassword(_emailController.text.trim()),
-    );
+    context.read<AuthBloc>().add(AuthEvent.forgotPassword(_emailController.text.trim()));
   }
 }

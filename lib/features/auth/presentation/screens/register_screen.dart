@@ -33,9 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           case AuthAuthenticated():
             context.go(AppRoute.home.path);
           case AuthFailure(:final message):
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(message)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
           default:
             break;
         }
@@ -53,12 +51,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Image.asset(Assets.imagesAppIcon, height: 80),
+                    Image.asset(Assets.logoAppIcon, height: 80),
                     const SizedBox(height: 32),
-                    Text(
-                      'Create account',
-                      style: context.textTheme.headlineMedium,
-                    ),
+                    Text('Create account', style: context.textTheme.headlineMedium),
                     const SizedBox(height: 24),
                     TextFormField(
                       controller: _nameController,
@@ -84,10 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onFieldSubmitted: (_) => _submit(),
                     ),
                     const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: loading ? null : _submit,
-                      child: const Text('Create account'),
-                    ),
+                    FilledButton(onPressed: loading ? null : _submit, child: const Text('Create account')),
                   ],
                 ),
               ),
@@ -107,11 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
     context.read<AuthBloc>().add(
       AuthEvent.register(
-        RegisterCredentials(
-          name: _nameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        ),
+        RegisterCredentials(name: _nameController.text.trim(), email: _emailController.text.trim(), password: _passwordController.text),
       ),
     );
   }

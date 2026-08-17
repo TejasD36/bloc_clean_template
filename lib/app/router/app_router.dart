@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/change_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/onboarding_screen.dart';
+import '../../features/auth/presentation/screens/otp_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/reset_password_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
@@ -23,9 +25,25 @@ class AppRouter {
         builder: (_, _) => const SplashScreen(),
       ),
       GoRoute(
+        path: AppRoute.onboarding.path,
+        name: AppRoute.onboarding.routeName,
+        builder: (_, _) => const OnboardingScreen(),
+      ),
+      GoRoute(
         path: AppRoute.login.path,
         name: AppRoute.login.routeName,
         builder: (_, _) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.otp.path,
+        name: AppRoute.otp.routeName,
+        builder: (context, state) {
+          final args = state.extra;
+          if (args is OtpVerificationArgs) {
+            return OtpScreen(args: args);
+          }
+          return const LoginScreen();
+        },
       ),
       GoRoute(
         path: AppRoute.register.path,
