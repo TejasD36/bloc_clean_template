@@ -7,32 +7,17 @@ import 'navigation_destination.dart';
 /// This widget is intentionally presentation-only.
 /// Navigation is handled by the shell screen.
 class AppBottomNavigationBar extends StatelessWidget {
-  const AppBottomNavigationBar({
-    super.key,
-    required this.currentIndex,
-    required this.onDestinationSelected,
-  });
+  const AppBottomNavigationBar({super.key, required this.currentIndex, required this.onDestinationSelected});
 
   final int currentIndex;
 
   final ValueChanged<int> onDestinationSelected;
 
   static const destinations = <NavigationDestinationItem>[
-    NavigationDestinationItem(
-      label: 'Home',
-      icon: Icons.home_outlined,
-      selectedIcon: Icons.home,
-    ),
-    NavigationDestinationItem(
-      label: 'Settings',
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
-    ),
-    NavigationDestinationItem(
-      label: 'Profile',
-      icon: Icons.person_outline,
-      selectedIcon: Icons.person,
-    ),
+    NavigationDestinationItem(label: 'Home', icon: Icons.home_outlined, selectedIcon: Icons.home),
+    NavigationDestinationItem(label: 'Bookings', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long),
+    NavigationDestinationItem(label: 'Track', icon: Icons.local_shipping_outlined, selectedIcon: Icons.local_shipping),
+    NavigationDestinationItem(label: 'Profile', icon: Icons.person_outline, selectedIcon: Icons.person),
   ];
 
   @override
@@ -49,10 +34,7 @@ class AppBottomNavigationBar extends StatelessWidget {
           .map(
             (destination) => NavigationDestination(
               icon: Icon(destination.icon),
-              selectedIcon: Icon(
-                destination.selectedIcon ?? destination.icon,
-                color: Colors.white,
-              ),
+              selectedIcon: Icon(destination.selectedIcon ?? destination.icon, color: Colors.white),
               label: destination.label,
             ),
           )

@@ -11,10 +11,14 @@ import 'interceptors/api_response_log_interceptor.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/network_interceptor.dart';
 import 'network_api_service.dart';
+import 'services/app_info_service.dart';
 import 'services/network_monitor_service.dart';
 import 'services/session_expiry_notifier.dart';
 
 Future<void> initNetworkDependencies(GetIt sl) async {
+  final appInfo = await AppInfoService.fromPlatform();
+  sl.registerSingleton<AppInfoService>(appInfo);
+
   sl.registerLazySingleton<Connectivity>(Connectivity.new);
 
   sl.registerLazySingleton<NetworkMonitorService>(

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "790427970865",
+    "project_id": "pune-water-helpline",
+    "storage_bucket": "pune-water-helpline.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790427970865:android:e0c36d696975a1e40b9410",
+        "android_client_info": {
+          "package_name": "com.pwh.customer.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJnF4boE7b1CDVRx4LKYCBTA7dm_NRa_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790427970865:android:13bcd958514bb7c80b9410",
+        "android_client_info": {
+          "package_name": "com.pwh.vendor.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJnF4boE7b1CDVRx4LKYCBTA7dm_NRa_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

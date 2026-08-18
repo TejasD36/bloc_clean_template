@@ -1,32 +1,28 @@
-import '../../../../../core.dart';
-import '../../xcore.dart';
+import '../../../../core.dart';
+import '../../domain/usecases/check_authentication_usecase.dart';
+import '../../domain/usecases/resend_otp_usecase.dart';
+import '../../domain/usecases/send_otp_usecase.dart';
+import '../../domain/usecases/verify_otp_usecase.dart';
+import 'auth_event.dart';
+import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
-    required this._getCurrentUserUseCase,
-    required this._loginUseCase,
-    required this._registerUseCase,
-    required this._forgotPasswordUseCase,
-    required this._resetPasswordUseCase,
-    required this._changePasswordUseCase,
-    required this._signOutUseCase,
+    required this._sendOtpUseCase,
+    required this._resendOtpUseCase,
+    required this._checkAuthenticationUseCase,
+    required this._verifyOtpUseCase,
   }) : super(const AuthState.initial()) {
+    on<SendOtpRequested>(_onSendOtp);
+    on<ResendOtpRequested>(_onResendOtp);
     on<CheckAuthentication>(_onCheckAuthentication);
-    on<LoginRequested>(_onLogin);
-    on<RegisterRequested>(_onRegister);
-    on<ForgotPasswordRequested>(_onForgotPassword);
-    on<ResetPasswordRequested>(_onResetPassword);
-    on<ChangePasswordRequested>(_onChangePassword);
-    on<SignOut>(_onSignOut);
+    on<VerifyOtpRequested>(_onVerifyOtp);
   }
 
-  final GetCurrentUserUseCase _getCurrentUserUseCase;
-  final LoginUseCase _loginUseCase;
-  final RegisterUseCase _registerUseCase;
-  final ForgotPasswordUseCase _forgotPasswordUseCase;
-  final ResetPasswordUseCase _resetPasswordUseCase;
-  final ChangePasswordUseCase _changePasswordUseCase;
-  final SignOutUseCase _signOutUseCase;
+  final SendOtpUseCase _sendOtpUseCase;
+  final ResendOtpUseCase _resendOtpUseCase;
+  final CheckAuthenticationUseCase _checkAuthenticationUseCase;
+  final VerifyOtpUseCase _verifyOtpUseCase;
 
   Future<void> _onCheckAuthentication(
     CheckAuthentication event,
@@ -34,94 +30,69 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthState.loading());
 
-    await _getCurrentUserUseCase().when(
+    await _checkAuthenticationUseCase().when(
       onFailure: (failure) {
         emit(AuthState.failure(message: failure.message));
       },
-      onSuccess: (user) {
-        if (user == null) {
-          emit(const AuthState.unauthenticated());
-          return;
-        }
-        emit(AuthState.authenticated(user));
+      onSuccess: (isAuthenticated) {
+        emit(
+          isAuthenticated
+              ? const AuthState.authenticated()
+              : const AuthState.unauthenticated(),
+        );
       },
     );
   }
 
-  Future<void> _onResetPassword(
-    ResetPasswordRequested event,
+  Future<void> _onSendOtp(
+    SendOtpRequested event,
     Emitter<AuthState> emit,
   ) async {
-    final authenticatedUser = state is AuthAuthenticated
-        ? (state as AuthAuthenticated).user
-        : null;
     emit(const AuthState.loading());
-    await _resetPasswordUseCase(
-      email: event.email,
-      password: event.password,
+
+    await _sendOtpUseCase(
+      phoneNumber: event.phoneNumber,
+      name: event.name,
     ).when(
-      onFailure: (failure) => emit(AuthState.failure(message: failure.message)),
-      onSuccess: (_) => emit(AuthState.passwordReset(authenticatedUser)),
-    );
-  }
-
-  Future<void> _onChangePassword(
-    ChangePasswordRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    final authenticatedUser = state is AuthAuthenticated
-        ? (state as AuthAuthenticated).user
-        : null;
-    emit(const AuthState.loading());
-    await _changePasswordUseCase(
-      currentPassword: event.currentPassword,
-      newPassword: event.newPassword,
-    ).when(
-      onFailure: (failure) => emit(AuthState.failure(message: failure.message)),
-      onSuccess: (_) => emit(AuthState.passwordChanged(authenticatedUser)),
-    );
-  }
-
-  Future<void> _onLogin(LoginRequested event, Emitter<AuthState> emit) async {
-    emit(const AuthState.loading());
-    await _loginUseCase(event.credentials).when(
-      onFailure: (failure) => emit(AuthState.failure(message: failure.message)),
-      onSuccess: (user) => emit(AuthState.authenticated(user)),
-    );
-  }
-
-  Future<void> _onRegister(
-    RegisterRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthState.loading());
-    await _registerUseCase(event.credentials).when(
-      onFailure: (failure) => emit(AuthState.failure(message: failure.message)),
-      onSuccess: (user) => emit(AuthState.authenticated(user)),
-    );
-  }
-
-  Future<void> _onForgotPassword(
-    ForgotPasswordRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthState.loading());
-    await _forgotPasswordUseCase(event.email).when(
-      onFailure: (failure) => emit(AuthState.failure(message: failure.message)),
-      onSuccess: (_) => emit(const AuthState.passwordResetRequested()),
-    );
-  }
-
-  Future<void> _onSignOut(SignOut event, Emitter<AuthState> emit) async {
-    emit(const AuthState.loading());
-
-    await _signOutUseCase().when(
       onFailure: (failure) {
-        // Local credentials are cleared even when remote logout fails.
-        emit(const AuthState.unauthenticated());
+        emit(AuthState.failure(message: failure.message));
+      },
+      onSuccess: (data) {
+        emit(AuthState.otpSent(data));
+      },
+    );
+  }
+
+  Future<void> _onResendOtp(
+    ResendOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    await _resendOtpUseCase(phoneNumber: event.phoneNumber).when(
+      onFailure: (failure) {
+        emit(AuthState.failure(message: failure.message));
       },
       onSuccess: (_) {
-        emit(const AuthState.unauthenticated());
+        emit(const AuthState.otpResent());
+      },
+    );
+  }
+
+  Future<void> _onVerifyOtp(
+    VerifyOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthState.loading());
+
+    await _verifyOtpUseCase(
+      phoneNumber: event.phoneNumber,
+      otp: event.otp,
+      firebaseToken: event.firebaseToken,
+    ).when(
+      onFailure: (failure) {
+        emit(AuthState.failure(message: failure.message));
+      },
+      onSuccess: (_) {
+        emit(const AuthState.authenticated());
       },
     );
   }

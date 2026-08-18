@@ -17,5 +17,6 @@ export 'response/pagination.dart';
 export 'response/response_mapper.dart';
 export 'response/result.dart';
 export 'response/result_message.dart';
+export 'services/app_info_service.dart';
 export 'services/network_monitor_service.dart';
 export 'services/session_expiry_notifier.dart';

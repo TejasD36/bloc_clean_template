@@ -55,17 +55,14 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CheckAuthentication value)?  checkAuthentication,TResult Function( LoginRequested value)?  login,TResult Function( RegisterRequested value)?  register,TResult Function( ForgotPasswordRequested value)?  forgotPassword,TResult Function( ResetPasswordRequested value)?  resetPassword,TResult Function( ChangePasswordRequested value)?  changePassword,TResult Function( SignOut value)?  signOut,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CheckAuthentication value)?  checkAuthentication,TResult Function( SendOtpRequested value)?  sendOtp,TResult Function( ResendOtpRequested value)?  resendOtp,TResult Function( VerifyOtpRequested value)?  verifyOtp,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CheckAuthentication() when checkAuthentication != null:
-return checkAuthentication(_that);case LoginRequested() when login != null:
-return login(_that);case RegisterRequested() when register != null:
-return register(_that);case ForgotPasswordRequested() when forgotPassword != null:
-return forgotPassword(_that);case ResetPasswordRequested() when resetPassword != null:
-return resetPassword(_that);case ChangePasswordRequested() when changePassword != null:
-return changePassword(_that);case SignOut() when signOut != null:
-return signOut(_that);case _:
+return checkAuthentication(_that);case SendOtpRequested() when sendOtp != null:
+return sendOtp(_that);case ResendOtpRequested() when resendOtp != null:
+return resendOtp(_that);case VerifyOtpRequested() when verifyOtp != null:
+return verifyOtp(_that);case _:
   return orElse();
 
 }
@@ -83,17 +80,14 @@ return signOut(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CheckAuthentication value)  checkAuthentication,required TResult Function( LoginRequested value)  login,required TResult Function( RegisterRequested value)  register,required TResult Function( ForgotPasswordRequested value)  forgotPassword,required TResult Function( ResetPasswordRequested value)  resetPassword,required TResult Function( ChangePasswordRequested value)  changePassword,required TResult Function( SignOut value)  signOut,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CheckAuthentication value)  checkAuthentication,required TResult Function( SendOtpRequested value)  sendOtp,required TResult Function( ResendOtpRequested value)  resendOtp,required TResult Function( VerifyOtpRequested value)  verifyOtp,}){
 final _that = this;
 switch (_that) {
 case CheckAuthentication():
-return checkAuthentication(_that);case LoginRequested():
-return login(_that);case RegisterRequested():
-return register(_that);case ForgotPasswordRequested():
-return forgotPassword(_that);case ResetPasswordRequested():
-return resetPassword(_that);case ChangePasswordRequested():
-return changePassword(_that);case SignOut():
-return signOut(_that);}
+return checkAuthentication(_that);case SendOtpRequested():
+return sendOtp(_that);case ResendOtpRequested():
+return resendOtp(_that);case VerifyOtpRequested():
+return verifyOtp(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -107,17 +101,14 @@ return signOut(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CheckAuthentication value)?  checkAuthentication,TResult? Function( LoginRequested value)?  login,TResult? Function( RegisterRequested value)?  register,TResult? Function( ForgotPasswordRequested value)?  forgotPassword,TResult? Function( ResetPasswordRequested value)?  resetPassword,TResult? Function( ChangePasswordRequested value)?  changePassword,TResult? Function( SignOut value)?  signOut,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CheckAuthentication value)?  checkAuthentication,TResult? Function( SendOtpRequested value)?  sendOtp,TResult? Function( ResendOtpRequested value)?  resendOtp,TResult? Function( VerifyOtpRequested value)?  verifyOtp,}){
 final _that = this;
 switch (_that) {
 case CheckAuthentication() when checkAuthentication != null:
-return checkAuthentication(_that);case LoginRequested() when login != null:
-return login(_that);case RegisterRequested() when register != null:
-return register(_that);case ForgotPasswordRequested() when forgotPassword != null:
-return forgotPassword(_that);case ResetPasswordRequested() when resetPassword != null:
-return resetPassword(_that);case ChangePasswordRequested() when changePassword != null:
-return changePassword(_that);case SignOut() when signOut != null:
-return signOut(_that);case _:
+return checkAuthentication(_that);case SendOtpRequested() when sendOtp != null:
+return sendOtp(_that);case ResendOtpRequested() when resendOtp != null:
+return resendOtp(_that);case VerifyOtpRequested() when verifyOtp != null:
+return verifyOtp(_that);case _:
   return null;
 
 }
@@ -134,16 +125,13 @@ return signOut(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  checkAuthentication,TResult Function( LoginCredentials credentials)?  login,TResult Function( RegisterCredentials credentials)?  register,TResult Function( String email)?  forgotPassword,TResult Function( String email,  String password)?  resetPassword,TResult Function( String? currentPassword,  String newPassword)?  changePassword,TResult Function()?  signOut,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  checkAuthentication,TResult Function( String phoneNumber,  String? name)?  sendOtp,TResult Function( String phoneNumber)?  resendOtp,TResult Function( String phoneNumber,  String otp,  String? firebaseToken)?  verifyOtp,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CheckAuthentication() when checkAuthentication != null:
-return checkAuthentication();case LoginRequested() when login != null:
-return login(_that.credentials);case RegisterRequested() when register != null:
-return register(_that.credentials);case ForgotPasswordRequested() when forgotPassword != null:
-return forgotPassword(_that.email);case ResetPasswordRequested() when resetPassword != null:
-return resetPassword(_that.email,_that.password);case ChangePasswordRequested() when changePassword != null:
-return changePassword(_that.currentPassword,_that.newPassword);case SignOut() when signOut != null:
-return signOut();case _:
+return checkAuthentication();case SendOtpRequested() when sendOtp != null:
+return sendOtp(_that.phoneNumber,_that.name);case ResendOtpRequested() when resendOtp != null:
+return resendOtp(_that.phoneNumber);case VerifyOtpRequested() when verifyOtp != null:
+return verifyOtp(_that.phoneNumber,_that.otp,_that.firebaseToken);case _:
   return orElse();
 
 }
@@ -161,16 +149,13 @@ return signOut();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  checkAuthentication,required TResult Function( LoginCredentials credentials)  login,required TResult Function( RegisterCredentials credentials)  register,required TResult Function( String email)  forgotPassword,required TResult Function( String email,  String password)  resetPassword,required TResult Function( String? currentPassword,  String newPassword)  changePassword,required TResult Function()  signOut,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  checkAuthentication,required TResult Function( String phoneNumber,  String? name)  sendOtp,required TResult Function( String phoneNumber)  resendOtp,required TResult Function( String phoneNumber,  String otp,  String? firebaseToken)  verifyOtp,}) {final _that = this;
 switch (_that) {
 case CheckAuthentication():
-return checkAuthentication();case LoginRequested():
-return login(_that.credentials);case RegisterRequested():
-return register(_that.credentials);case ForgotPasswordRequested():
-return forgotPassword(_that.email);case ResetPasswordRequested():
-return resetPassword(_that.email,_that.password);case ChangePasswordRequested():
-return changePassword(_that.currentPassword,_that.newPassword);case SignOut():
-return signOut();}
+return checkAuthentication();case SendOtpRequested():
+return sendOtp(_that.phoneNumber,_that.name);case ResendOtpRequested():
+return resendOtp(_that.phoneNumber);case VerifyOtpRequested():
+return verifyOtp(_that.phoneNumber,_that.otp,_that.firebaseToken);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -184,16 +169,13 @@ return signOut();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  checkAuthentication,TResult? Function( LoginCredentials credentials)?  login,TResult? Function( RegisterCredentials credentials)?  register,TResult? Function( String email)?  forgotPassword,TResult? Function( String email,  String password)?  resetPassword,TResult? Function( String? currentPassword,  String newPassword)?  changePassword,TResult? Function()?  signOut,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  checkAuthentication,TResult? Function( String phoneNumber,  String? name)?  sendOtp,TResult? Function( String phoneNumber)?  resendOtp,TResult? Function( String phoneNumber,  String otp,  String? firebaseToken)?  verifyOtp,}) {final _that = this;
 switch (_that) {
 case CheckAuthentication() when checkAuthentication != null:
-return checkAuthentication();case LoginRequested() when login != null:
-return login(_that.credentials);case RegisterRequested() when register != null:
-return register(_that.credentials);case ForgotPasswordRequested() when forgotPassword != null:
-return forgotPassword(_that.email);case ResetPasswordRequested() when resetPassword != null:
-return resetPassword(_that.email,_that.password);case ChangePasswordRequested() when changePassword != null:
-return changePassword(_that.currentPassword,_that.newPassword);case SignOut() when signOut != null:
-return signOut();case _:
+return checkAuthentication();case SendOtpRequested() when sendOtp != null:
+return sendOtp(_that.phoneNumber,_that.name);case ResendOtpRequested() when resendOtp != null:
+return resendOtp(_that.phoneNumber);case VerifyOtpRequested() when verifyOtp != null:
+return verifyOtp(_that.phoneNumber,_that.otp,_that.firebaseToken);case _:
   return null;
 
 }
@@ -236,43 +218,44 @@ String toString() {
 /// @nodoc
 
 
-class LoginRequested implements AuthEvent {
-  const LoginRequested(this.credentials);
+class SendOtpRequested implements AuthEvent {
+  const SendOtpRequested({required this.phoneNumber, this.name});
   
 
- final  LoginCredentials credentials;
+ final  String phoneNumber;
+ final  String? name;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$LoginRequestedCopyWith<LoginRequested> get copyWith => _$LoginRequestedCopyWithImpl<LoginRequested>(this, _$identity);
+$SendOtpRequestedCopyWith<SendOtpRequested> get copyWith => _$SendOtpRequestedCopyWithImpl<SendOtpRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginRequested&&(identical(other.credentials, credentials) || other.credentials == credentials));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SendOtpRequested&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,credentials);
+int get hashCode => Object.hash(runtimeType,phoneNumber,name);
 
 @override
 String toString() {
-  return 'AuthEvent.login(credentials: $credentials)';
+  return 'AuthEvent.sendOtp(phoneNumber: $phoneNumber, name: $name)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $LoginRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
-  factory $LoginRequestedCopyWith(LoginRequested value, $Res Function(LoginRequested) _then) = _$LoginRequestedCopyWithImpl;
+abstract mixin class $SendOtpRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $SendOtpRequestedCopyWith(SendOtpRequested value, $Res Function(SendOtpRequested) _then) = _$SendOtpRequestedCopyWithImpl;
 @useResult
 $Res call({
- LoginCredentials credentials
+ String phoneNumber, String? name
 });
 
 
@@ -280,19 +263,20 @@ $Res call({
 
 }
 /// @nodoc
-class _$LoginRequestedCopyWithImpl<$Res>
-    implements $LoginRequestedCopyWith<$Res> {
-  _$LoginRequestedCopyWithImpl(this._self, this._then);
+class _$SendOtpRequestedCopyWithImpl<$Res>
+    implements $SendOtpRequestedCopyWith<$Res> {
+  _$SendOtpRequestedCopyWithImpl(this._self, this._then);
 
-  final LoginRequested _self;
-  final $Res Function(LoginRequested) _then;
+  final SendOtpRequested _self;
+  final $Res Function(SendOtpRequested) _then;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? credentials = null,}) {
-  return _then(LoginRequested(
-null == credentials ? _self.credentials : credentials // ignore: cast_nullable_to_non_nullable
-as LoginCredentials,
+@pragma('vm:prefer-inline') $Res call({Object? phoneNumber = null,Object? name = freezed,}) {
+  return _then(SendOtpRequested(
+phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -302,43 +286,43 @@ as LoginCredentials,
 /// @nodoc
 
 
-class RegisterRequested implements AuthEvent {
-  const RegisterRequested(this.credentials);
+class ResendOtpRequested implements AuthEvent {
+  const ResendOtpRequested({required this.phoneNumber});
   
 
- final  RegisterCredentials credentials;
+ final  String phoneNumber;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$RegisterRequestedCopyWith<RegisterRequested> get copyWith => _$RegisterRequestedCopyWithImpl<RegisterRequested>(this, _$identity);
+$ResendOtpRequestedCopyWith<ResendOtpRequested> get copyWith => _$ResendOtpRequestedCopyWithImpl<ResendOtpRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterRequested&&(identical(other.credentials, credentials) || other.credentials == credentials));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResendOtpRequested&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,credentials);
+int get hashCode => Object.hash(runtimeType,phoneNumber);
 
 @override
 String toString() {
-  return 'AuthEvent.register(credentials: $credentials)';
+  return 'AuthEvent.resendOtp(phoneNumber: $phoneNumber)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $RegisterRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
-  factory $RegisterRequestedCopyWith(RegisterRequested value, $Res Function(RegisterRequested) _then) = _$RegisterRequestedCopyWithImpl;
+abstract mixin class $ResendOtpRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $ResendOtpRequestedCopyWith(ResendOtpRequested value, $Res Function(ResendOtpRequested) _then) = _$ResendOtpRequestedCopyWithImpl;
 @useResult
 $Res call({
- RegisterCredentials credentials
+ String phoneNumber
 });
 
 
@@ -346,84 +330,18 @@ $Res call({
 
 }
 /// @nodoc
-class _$RegisterRequestedCopyWithImpl<$Res>
-    implements $RegisterRequestedCopyWith<$Res> {
-  _$RegisterRequestedCopyWithImpl(this._self, this._then);
+class _$ResendOtpRequestedCopyWithImpl<$Res>
+    implements $ResendOtpRequestedCopyWith<$Res> {
+  _$ResendOtpRequestedCopyWithImpl(this._self, this._then);
 
-  final RegisterRequested _self;
-  final $Res Function(RegisterRequested) _then;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? credentials = null,}) {
-  return _then(RegisterRequested(
-null == credentials ? _self.credentials : credentials // ignore: cast_nullable_to_non_nullable
-as RegisterCredentials,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class ForgotPasswordRequested implements AuthEvent {
-  const ForgotPasswordRequested(this.email);
-  
-
- final  String email;
+  final ResendOtpRequested _self;
+  final $Res Function(ResendOtpRequested) _then;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ForgotPasswordRequestedCopyWith<ForgotPasswordRequested> get copyWith => _$ForgotPasswordRequestedCopyWithImpl<ForgotPasswordRequested>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ForgotPasswordRequested&&(identical(other.email, email) || other.email == email));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,email);
-
-@override
-String toString() {
-  return 'AuthEvent.forgotPassword(email: $email)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ForgotPasswordRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
-  factory $ForgotPasswordRequestedCopyWith(ForgotPasswordRequested value, $Res Function(ForgotPasswordRequested) _then) = _$ForgotPasswordRequestedCopyWithImpl;
-@useResult
-$Res call({
- String email
-});
-
-
-
-
-}
-/// @nodoc
-class _$ForgotPasswordRequestedCopyWithImpl<$Res>
-    implements $ForgotPasswordRequestedCopyWith<$Res> {
-  _$ForgotPasswordRequestedCopyWithImpl(this._self, this._then);
-
-  final ForgotPasswordRequested _self;
-  final $Res Function(ForgotPasswordRequested) _then;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
-  return _then(ForgotPasswordRequested(
-null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? phoneNumber = null,}) {
+  return _then(ResendOtpRequested(
+phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -434,44 +352,45 @@ as String,
 /// @nodoc
 
 
-class ResetPasswordRequested implements AuthEvent {
-  const ResetPasswordRequested({required this.email, required this.password});
+class VerifyOtpRequested implements AuthEvent {
+  const VerifyOtpRequested({required this.phoneNumber, required this.otp, this.firebaseToken});
   
 
- final  String email;
- final  String password;
+ final  String phoneNumber;
+ final  String otp;
+ final  String? firebaseToken;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ResetPasswordRequestedCopyWith<ResetPasswordRequested> get copyWith => _$ResetPasswordRequestedCopyWithImpl<ResetPasswordRequested>(this, _$identity);
+$VerifyOtpRequestedCopyWith<VerifyOtpRequested> get copyWith => _$VerifyOtpRequestedCopyWithImpl<VerifyOtpRequested>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResetPasswordRequested&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyOtpRequested&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.otp, otp) || other.otp == otp)&&(identical(other.firebaseToken, firebaseToken) || other.firebaseToken == firebaseToken));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email,password);
+int get hashCode => Object.hash(runtimeType,phoneNumber,otp,firebaseToken);
 
 @override
 String toString() {
-  return 'AuthEvent.resetPassword(email: $email, password: $password)';
+  return 'AuthEvent.verifyOtp(phoneNumber: $phoneNumber, otp: $otp, firebaseToken: $firebaseToken)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ResetPasswordRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
-  factory $ResetPasswordRequestedCopyWith(ResetPasswordRequested value, $Res Function(ResetPasswordRequested) _then) = _$ResetPasswordRequestedCopyWithImpl;
+abstract mixin class $VerifyOtpRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory $VerifyOtpRequestedCopyWith(VerifyOtpRequested value, $Res Function(VerifyOtpRequested) _then) = _$VerifyOtpRequestedCopyWithImpl;
 @useResult
 $Res call({
- String email, String password
+ String phoneNumber, String otp, String? firebaseToken
 });
 
 
@@ -479,124 +398,25 @@ $Res call({
 
 }
 /// @nodoc
-class _$ResetPasswordRequestedCopyWithImpl<$Res>
-    implements $ResetPasswordRequestedCopyWith<$Res> {
-  _$ResetPasswordRequestedCopyWithImpl(this._self, this._then);
+class _$VerifyOtpRequestedCopyWithImpl<$Res>
+    implements $VerifyOtpRequestedCopyWith<$Res> {
+  _$VerifyOtpRequestedCopyWithImpl(this._self, this._then);
 
-  final ResetPasswordRequested _self;
-  final $Res Function(ResetPasswordRequested) _then;
+  final VerifyOtpRequested _self;
+  final $Res Function(VerifyOtpRequested) _then;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,}) {
-  return _then(ResetPasswordRequested(
-email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
+@pragma('vm:prefer-inline') $Res call({Object? phoneNumber = null,Object? otp = null,Object? firebaseToken = freezed,}) {
+  return _then(VerifyOtpRequested(
+phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,otp: null == otp ? _self.otp : otp // ignore: cast_nullable_to_non_nullable
+as String,firebaseToken: freezed == firebaseToken ? _self.firebaseToken : firebaseToken // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
 
 }
-
-/// @nodoc
-
-
-class ChangePasswordRequested implements AuthEvent {
-  const ChangePasswordRequested({this.currentPassword, required this.newPassword});
-  
-
- final  String? currentPassword;
- final  String newPassword;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ChangePasswordRequestedCopyWith<ChangePasswordRequested> get copyWith => _$ChangePasswordRequestedCopyWithImpl<ChangePasswordRequested>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangePasswordRequested&&(identical(other.currentPassword, currentPassword) || other.currentPassword == currentPassword)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,currentPassword,newPassword);
-
-@override
-String toString() {
-  return 'AuthEvent.changePassword(currentPassword: $currentPassword, newPassword: $newPassword)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ChangePasswordRequestedCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
-  factory $ChangePasswordRequestedCopyWith(ChangePasswordRequested value, $Res Function(ChangePasswordRequested) _then) = _$ChangePasswordRequestedCopyWithImpl;
-@useResult
-$Res call({
- String? currentPassword, String newPassword
-});
-
-
-
-
-}
-/// @nodoc
-class _$ChangePasswordRequestedCopyWithImpl<$Res>
-    implements $ChangePasswordRequestedCopyWith<$Res> {
-  _$ChangePasswordRequestedCopyWithImpl(this._self, this._then);
-
-  final ChangePasswordRequested _self;
-  final $Res Function(ChangePasswordRequested) _then;
-
-/// Create a copy of AuthEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? currentPassword = freezed,Object? newPassword = null,}) {
-  return _then(ChangePasswordRequested(
-currentPassword: freezed == currentPassword ? _self.currentPassword : currentPassword // ignore: cast_nullable_to_non_nullable
-as String?,newPassword: null == newPassword ? _self.newPassword : newPassword // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class SignOut implements AuthEvent {
-  const SignOut();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignOut);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'AuthEvent.signOut()';
-}
-
-
-}
-
-
-
 
 // dart format on

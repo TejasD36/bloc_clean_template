@@ -2,8 +2,8 @@
 // Do not modify
 // Check in to version control
 
-import 'package:bloc_clean_template/features/auth/data/models/dtos/user_dto.dart';
 import 'package:hive_ce/hive_ce.dart';
+import 'package:bloc_clean_template/features/auth/data/models/dtos/user_dto.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {

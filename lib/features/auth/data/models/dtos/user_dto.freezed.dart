@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDto {
 
-@HiveField(0)@JsonKey(fromJson: _stringFromJson) String get id;@HiveField(1) String? get name;@HiveField(2) String? get email;@HiveField(3) String? get photoUrl;@HiveField(4)@JsonKey(fromJson: _boolFromJson) bool get isEmailVerified;@HiveField(8)@JsonKey(fromJson: _boolFromJson) bool get isAnonymous;@HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) bool get status;@HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) int? get role;
+@HiveField(0)@JsonKey(fromJson: _stringFromJson) String get id;@HiveField(1) String? get name;@HiveField(2) String? get email;@HiveField(3) String? get photoUrl;@HiveField(4)@JsonKey(fromJson: _boolFromJson) bool get isEmailVerified;@HiveField(5) String get phoneNumber;@HiveField(8)@JsonKey(fromJson: _boolFromJson) bool get isAnonymous;@HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) bool get status;@HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) int? get role;
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserDtoCopyWith<UserDto> get copyWith => _$UserDtoCopyWithImpl<UserDto>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&(identical(other.isAnonymous, isAnonymous) || other.isAnonymous == isAnonymous)&&(identical(other.status, status) || other.status == status)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.isAnonymous, isAnonymous) || other.isAnonymous == isAnonymous)&&(identical(other.status, status) || other.status == status)&&(identical(other.role, role) || other.role == role));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,photoUrl,isEmailVerified,isAnonymous,status,role);
+int get hashCode => Object.hash(runtimeType,id,name,email,photoUrl,isEmailVerified,phoneNumber,isAnonymous,status,role);
 
 @override
 String toString() {
-  return 'UserDto(id: $id, name: $name, email: $email, photoUrl: $photoUrl, isEmailVerified: $isEmailVerified, isAnonymous: $isAnonymous, status: $status, role: $role)';
+  return 'UserDto(id: $id, name: $name, email: $email, photoUrl: $photoUrl, isEmailVerified: $isEmailVerified, phoneNumber: $phoneNumber, isAnonymous: $isAnonymous, status: $status, role: $role)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserDtoCopyWith<$Res>  {
   factory $UserDtoCopyWith(UserDto value, $Res Function(UserDto) _then) = _$UserDtoCopyWithImpl;
 @useResult
 $Res call({
-@HiveField(0)@JsonKey(fromJson: _stringFromJson) String id,@HiveField(1) String? name,@HiveField(2) String? email,@HiveField(3) String? photoUrl,@HiveField(4)@JsonKey(fromJson: _boolFromJson) bool isEmailVerified,@HiveField(8)@JsonKey(fromJson: _boolFromJson) bool isAnonymous,@HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) bool status,@HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) int? role
+@HiveField(0)@JsonKey(fromJson: _stringFromJson) String id,@HiveField(1) String? name,@HiveField(2) String? email,@HiveField(3) String? photoUrl,@HiveField(4)@JsonKey(fromJson: _boolFromJson) bool isEmailVerified,@HiveField(5) String phoneNumber,@HiveField(8)@JsonKey(fromJson: _boolFromJson) bool isAnonymous,@HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) bool status,@HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) int? role
 });
 
 
@@ -65,14 +65,15 @@ class _$UserDtoCopyWithImpl<$Res>
 
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = freezed,Object? email = freezed,Object? photoUrl = freezed,Object? isEmailVerified = null,Object? isAnonymous = null,Object? status = null,Object? role = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = freezed,Object? email = freezed,Object? photoUrl = freezed,Object? isEmailVerified = null,Object? phoneNumber = null,Object? isAnonymous = null,Object? status = null,Object? role = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
 as String?,isEmailVerified: null == isEmailVerified ? _self.isEmailVerified : isEmailVerified // ignore: cast_nullable_to_non_nullable
-as bool,isAnonymous: null == isAnonymous ? _self.isAnonymous : isAnonymous // ignore: cast_nullable_to_non_nullable
+as bool,phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,isAnonymous: null == isAnonymous ? _self.isAnonymous : isAnonymous // ignore: cast_nullable_to_non_nullable
 as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as bool,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as int?,
@@ -157,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(fromJson: _stringFromJson)  String id, @HiveField(1)  String? name, @HiveField(2)  String? email, @HiveField(3)  String? photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson)  bool isEmailVerified, @HiveField(8)@JsonKey(fromJson: _boolFromJson)  bool isAnonymous, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true)  bool status, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson)  int? role)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(fromJson: _stringFromJson)  String id, @HiveField(1)  String? name, @HiveField(2)  String? email, @HiveField(3)  String? photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson)  bool isEmailVerified, @HiveField(5)  String phoneNumber, @HiveField(8)@JsonKey(fromJson: _boolFromJson)  bool isAnonymous, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true)  bool status, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson)  int? role)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDto() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVerified,_that.isAnonymous,_that.status,_that.role);case _:
+return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVerified,_that.phoneNumber,_that.isAnonymous,_that.status,_that.role);case _:
   return orElse();
 
 }
@@ -178,10 +179,10 @@ return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVeri
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(fromJson: _stringFromJson)  String id, @HiveField(1)  String? name, @HiveField(2)  String? email, @HiveField(3)  String? photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson)  bool isEmailVerified, @HiveField(8)@JsonKey(fromJson: _boolFromJson)  bool isAnonymous, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true)  bool status, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson)  int? role)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@HiveField(0)@JsonKey(fromJson: _stringFromJson)  String id, @HiveField(1)  String? name, @HiveField(2)  String? email, @HiveField(3)  String? photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson)  bool isEmailVerified, @HiveField(5)  String phoneNumber, @HiveField(8)@JsonKey(fromJson: _boolFromJson)  bool isAnonymous, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true)  bool status, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson)  int? role)  $default,) {final _that = this;
 switch (_that) {
 case _UserDto():
-return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVerified,_that.isAnonymous,_that.status,_that.role);}
+return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVerified,_that.phoneNumber,_that.isAnonymous,_that.status,_that.role);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -195,10 +196,10 @@ return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVeri
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)@JsonKey(fromJson: _stringFromJson)  String id, @HiveField(1)  String? name, @HiveField(2)  String? email, @HiveField(3)  String? photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson)  bool isEmailVerified, @HiveField(8)@JsonKey(fromJson: _boolFromJson)  bool isAnonymous, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true)  bool status, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson)  int? role)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@HiveField(0)@JsonKey(fromJson: _stringFromJson)  String id, @HiveField(1)  String? name, @HiveField(2)  String? email, @HiveField(3)  String? photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson)  bool isEmailVerified, @HiveField(5)  String phoneNumber, @HiveField(8)@JsonKey(fromJson: _boolFromJson)  bool isAnonymous, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true)  bool status, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson)  int? role)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDto() when $default != null:
-return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVerified,_that.isAnonymous,_that.status,_that.role);case _:
+return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVerified,_that.phoneNumber,_that.isAnonymous,_that.status,_that.role);case _:
   return null;
 
 }
@@ -210,7 +211,7 @@ return $default(_that.id,_that.name,_that.email,_that.photoUrl,_that.isEmailVeri
 @JsonSerializable()
 
 class _UserDto implements UserDto {
-  const _UserDto({@HiveField(0)@JsonKey(fromJson: _stringFromJson) required this.id, @HiveField(1) this.name, @HiveField(2) this.email, @HiveField(3) this.photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson) this.isEmailVerified = false, @HiveField(8)@JsonKey(fromJson: _boolFromJson) this.isAnonymous = false, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) this.status = true, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) this.role});
+  const _UserDto({@HiveField(0)@JsonKey(fromJson: _stringFromJson) required this.id, @HiveField(1) this.name, @HiveField(2) this.email, @HiveField(3) this.photoUrl, @HiveField(4)@JsonKey(fromJson: _boolFromJson) this.isEmailVerified = false, @HiveField(5) this.phoneNumber = '', @HiveField(8)@JsonKey(fromJson: _boolFromJson) this.isAnonymous = false, @HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) this.status = true, @HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) this.role});
   factory _UserDto.fromJson(Map<String, dynamic> json) => _$UserDtoFromJson(json);
 
 @override@HiveField(0)@JsonKey(fromJson: _stringFromJson) final  String id;
@@ -218,6 +219,7 @@ class _UserDto implements UserDto {
 @override@HiveField(2) final  String? email;
 @override@HiveField(3) final  String? photoUrl;
 @override@HiveField(4)@JsonKey(fromJson: _boolFromJson) final  bool isEmailVerified;
+@override@JsonKey()@HiveField(5) final  String phoneNumber;
 @override@HiveField(8)@JsonKey(fromJson: _boolFromJson) final  bool isAnonymous;
 @override@HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) final  bool status;
 @override@HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) final  int? role;
@@ -235,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&(identical(other.isAnonymous, isAnonymous) || other.isAnonymous == isAnonymous)&&(identical(other.status, status) || other.status == status)&&(identical(other.role, role) || other.role == role));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.isEmailVerified, isEmailVerified) || other.isEmailVerified == isEmailVerified)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.isAnonymous, isAnonymous) || other.isAnonymous == isAnonymous)&&(identical(other.status, status) || other.status == status)&&(identical(other.role, role) || other.role == role));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,email,photoUrl,isEmailVerified,isAnonymous,status,role);
+int get hashCode => Object.hash(runtimeType,id,name,email,photoUrl,isEmailVerified,phoneNumber,isAnonymous,status,role);
 
 @override
 String toString() {
-  return 'UserDto(id: $id, name: $name, email: $email, photoUrl: $photoUrl, isEmailVerified: $isEmailVerified, isAnonymous: $isAnonymous, status: $status, role: $role)';
+  return 'UserDto(id: $id, name: $name, email: $email, photoUrl: $photoUrl, isEmailVerified: $isEmailVerified, phoneNumber: $phoneNumber, isAnonymous: $isAnonymous, status: $status, role: $role)';
 }
 
 
@@ -255,7 +257,7 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
   factory _$UserDtoCopyWith(_UserDto value, $Res Function(_UserDto) _then) = __$UserDtoCopyWithImpl;
 @override @useResult
 $Res call({
-@HiveField(0)@JsonKey(fromJson: _stringFromJson) String id,@HiveField(1) String? name,@HiveField(2) String? email,@HiveField(3) String? photoUrl,@HiveField(4)@JsonKey(fromJson: _boolFromJson) bool isEmailVerified,@HiveField(8)@JsonKey(fromJson: _boolFromJson) bool isAnonymous,@HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) bool status,@HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) int? role
+@HiveField(0)@JsonKey(fromJson: _stringFromJson) String id,@HiveField(1) String? name,@HiveField(2) String? email,@HiveField(3) String? photoUrl,@HiveField(4)@JsonKey(fromJson: _boolFromJson) bool isEmailVerified,@HiveField(5) String phoneNumber,@HiveField(8)@JsonKey(fromJson: _boolFromJson) bool isAnonymous,@HiveField(12)@JsonKey(fromJson: _boolFromJson, defaultValue: true) bool status,@HiveField(13)@JsonKey(fromJson: _nullableIntFromJson) int? role
 });
 
 
@@ -272,14 +274,15 @@ class __$UserDtoCopyWithImpl<$Res>
 
 /// Create a copy of UserDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = freezed,Object? email = freezed,Object? photoUrl = freezed,Object? isEmailVerified = null,Object? isAnonymous = null,Object? status = null,Object? role = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = freezed,Object? email = freezed,Object? photoUrl = freezed,Object? isEmailVerified = null,Object? phoneNumber = null,Object? isAnonymous = null,Object? status = null,Object? role = freezed,}) {
   return _then(_UserDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
 as String?,isEmailVerified: null == isEmailVerified ? _self.isEmailVerified : isEmailVerified // ignore: cast_nullable_to_non_nullable
-as bool,isAnonymous: null == isAnonymous ? _self.isAnonymous : isAnonymous // ignore: cast_nullable_to_non_nullable
+as bool,phoneNumber: null == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,isAnonymous: null == isAnonymous ? _self.isAnonymous : isAnonymous // ignore: cast_nullable_to_non_nullable
 as bool,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as bool,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as int?,

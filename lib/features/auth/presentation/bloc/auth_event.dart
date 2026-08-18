@@ -7,18 +7,16 @@ part 'auth_event.freezed.dart';
 @freezed
 sealed class AuthEvent with _$AuthEvent {
   const factory AuthEvent.checkAuthentication() = CheckAuthentication;
-  const factory AuthEvent.login(LoginCredentials credentials) = LoginRequested;
-  const factory AuthEvent.register(RegisterCredentials credentials) =
-      RegisterRequested;
-  const factory AuthEvent.forgotPassword(String email) =
-      ForgotPasswordRequested;
-  const factory AuthEvent.resetPassword({
-    required String email,
-    required String password,
-  }) = ResetPasswordRequested;
-  const factory AuthEvent.changePassword({
-    String? currentPassword,
-    required String newPassword,
-  }) = ChangePasswordRequested;
-  const factory AuthEvent.signOut() = SignOut;
+
+  const factory AuthEvent.sendOtp({required String phoneNumber, String? name}) =
+      SendOtpRequested;
+
+  const factory AuthEvent.resendOtp({required String phoneNumber}) =
+      ResendOtpRequested;
+
+  const factory AuthEvent.verifyOtp({
+    required String phoneNumber,
+    required String otp,
+    String? firebaseToken,
+  }) = VerifyOtpRequested;
 }

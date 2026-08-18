@@ -1,84 +1,73 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 
 import '../../../../../core.dart';
 import '../../../xcore.dart';
 import '../../constants/auth_endpoints.dart';
+import '../../models/dtos/resend_otp_request_dto.dart';
+import '../../models/dtos/send_otp_request_dto.dart';
+import '../../models/dtos/send_otp_response_dto.dart';
+import '../../models/dtos/verify_otp_request_dto.dart';
 
 class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   const AuthRemoteDatasourceImpl({required this.apiService});
 
   final BaseApiService apiService;
 
+  // TODO: Replace with a persisted/generated device id.
+  static const String _deviceId = 'device-001';
+
+  String get _deviceInfo => jsonEncode({
+    'model': Platform.isAndroid ? 'Android' : 'iOS',
+    'os': Platform.operatingSystemVersion,
+  });
+
   @override
-  Future<Either<AppException, AuthSessionDto>> login(LoginRequestDto request) {
+  Future<Either<AppException, SendOtpResponseDto>> sendOtp(
+    SendOtpRequestDto request,
+  ) {
     return apiService
-        .postApi<AuthSessionDto>(
-          AuthEndpoints.login,
-          const ObjectMapper(AuthSessionDto.fromJson),
+        .postApi<SendOtpResponseDto>(
+          AuthEndpoints.sendOtp,
+          const ObjectMapper(SendOtpResponseDto.fromJson),
           body: request.toJson(),
+          allowBusinessFailureData: true,
         )
-        .mapEntity((session) => session);
+        .mapEntity((data) => data);
   }
 
   @override
-  Future<Either<AppException, AuthSessionDto>> register(
-    RegisterRequestDto request,
+  Future<Either<AppException, ResultMessage>> resendOtp(
+    ResendOtpRequestDto request,
+  ) {
+    return apiService
+        .postApi<ResultMessage>(
+          AuthEndpoints.resendOtp,
+          const ObjectMapper(ResultMessage.fromJson),
+          body: request.toJson(),
+        )
+        .mapMessage();
+  }
+
+  @override
+  Future<Either<AppException, AuthSessionDto>> verifyOtp(
+    VerifyOtpRequestDto request,
   ) {
     return apiService
         .postApi<AuthSessionDto>(
-          AuthEndpoints.register,
+          AuthEndpoints.verifyOtp,
           const ObjectMapper(AuthSessionDto.fromJson),
           body: request.toJson(),
+          options: Options(
+            headers: {
+              HeaderKey.deviceId: _deviceId,
+              HeaderKey.deviceInfo: _deviceInfo,
+            },
+          ),
         )
-        .mapEntity((session) => session);
-  }
-
-  @override
-  Future<Either<AppException, Unit>> forgotPassword(
-    ForgotPasswordRequestDto request,
-  ) {
-    return apiService
-        .postApi<Unit>(
-          AuthEndpoints.forgotPassword,
-          ObjectMapper((_) => unit),
-          body: request.toJson(),
-        )
-        .mapEntity((_) => unit);
-  }
-
-  @override
-  Future<Either<AppException, Unit>> resetPassword(
-    ResetPasswordRequestDto request,
-  ) async {
-    final result = await apiService.postApi<Unit>(
-      AuthEndpoints.resetPassword,
-      ObjectMapper((_) => unit),
-      body: request.toJson(),
-    );
-
-    return result.fold(Left.new, (_) => const Right(unit));
-  }
-
-  @override
-  Future<Either<AppException, Unit>> changePassword(
-    ChangePasswordRequestDto request,
-  ) async {
-    final result = await apiService.postApi<Unit>(
-      AuthEndpoints.changePassword,
-      ObjectMapper((_) => unit),
-      body: request.toJson(),
-    );
-
-    return result.fold(Left.new, (_) => const Right(unit));
-  }
-
-  @override
-  Future<Either<AppException, Unit>> logoutApi() async {
-    final result = await apiService.postApi<Unit>(
-      AuthEndpoints.logout,
-      ObjectMapper((_) => unit),
-    );
-
-    return result.fold(Left.new, (_) => const Right(unit));
+        .mapEntity((data) => data);
   }
 }

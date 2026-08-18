@@ -3,10 +3,7 @@ import '../constants/header_key.dart';
 class ApiConfig {
   const ApiConfig._();
 
-  static const String baseUrl = String.fromEnvironment(
-    'baseUrl',
-    defaultValue: 'https://api.example.com/',
-  );
+  static const String baseUrl = String.fromEnvironment('baseUrl', defaultValue: 'https://api.example.com/');
 
   static const Duration connectTimeout = Duration(seconds: 30);
 
@@ -14,5 +11,5 @@ class ApiConfig {
 
   static const Duration sendTimeout = Duration(seconds: 30);
 
-  static const Map<String, dynamic> defaultHeaders = HeaderKey.defaultHeaders;
+  static Map<String, dynamic> get defaultHeaders => HeaderKey.defaultHeaders;
 }

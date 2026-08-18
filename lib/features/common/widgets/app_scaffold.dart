@@ -23,7 +23,7 @@ class AppScaffold extends StatelessWidget {
     this.safeArea = true,
     this.safeAreaTop = true,
     this.safeAreaBottom = true,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24),
+    this.padding = const EdgeInsets.symmetric(horizontal: 20),
 
     // Background
     this.backgroundColor,
@@ -145,11 +145,7 @@ class AppScaffold extends StatelessWidget {
 
     // SafeArea
     if (safeArea) {
-      content = SafeArea(
-        top: safeAreaTop,
-        bottom: safeAreaBottom,
-        child: content,
-      );
+      content = SafeArea(top: safeAreaTop, bottom: safeAreaBottom, child: content);
     }
 
     // Pull to refresh
@@ -159,19 +155,13 @@ class AppScaffold extends StatelessWidget {
 
     // Keyboard dismiss
     if (dismissKeyboardOnTap) {
-      content = GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: content,
-      );
+      content = GestureDetector(behavior: HitTestBehavior.translucent, onTap: () => FocusScope.of(context).unfocus(), child: content);
     }
 
     // Background
     content = DecoratedBox(
       decoration: BoxDecoration(
-        color: backgroundGradient == null
-            ? backgroundColor ?? appColors.scaffold
-            : backgroundColor,
+        color: backgroundGradient == null ? backgroundColor ?? appColors.scaffold : backgroundColor,
         gradient: backgroundGradient,
       ),
       child: SizedBox.expand(child: content),
@@ -202,9 +192,7 @@ class AppScaffold extends StatelessWidget {
           Positioned.fill(
             child: ColoredBox(
               color: appColors.overlay,
-              child: Center(
-                child: loadingWidget ?? const CircularProgressIndicator(),
-              ),
+              child: Center(child: loadingWidget ?? const CircularProgressIndicator()),
             ),
           ),
         if (overlay != null) Positioned.fill(child: overlay!),

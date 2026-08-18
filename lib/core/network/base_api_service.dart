@@ -12,6 +12,7 @@ abstract class BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   });
 
   Future<Either<AppException, BaseResponse<T>>> postApi<T>(
@@ -21,6 +22,7 @@ abstract class BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   });
 
   Future<Either<AppException, BaseResponse<T>>> putApi<T>(
@@ -30,6 +32,7 @@ abstract class BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   });
 
   Future<Either<AppException, BaseResponse<T>>> patchApi<T>(
@@ -39,6 +42,7 @@ abstract class BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   });
 
   Future<Either<AppException, BaseResponse<T>>> deleteApi<T>(
@@ -48,5 +52,6 @@ abstract class BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   });
 }

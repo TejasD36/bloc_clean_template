@@ -36,8 +36,9 @@ class Parser {
 
   static Future<Either<AppException, BaseResponse<T>>> parseBaseResponse<T>(
     Response<dynamic> response,
-    ResponseMapper<T> mapper,
-  ) async {
+    ResponseMapper<T> mapper, {
+    bool allowBusinessFailureData = false,
+  }) async {
     try {
       final responseData = response.data;
 
@@ -59,7 +60,7 @@ class Parser {
         base = _parseInBackground(json);
       }
 
-      if (!base.status) {
+      if (!base.status && !allowBusinessFailureData) {
         return Left(ValidationError(message: base.message));
       }
 

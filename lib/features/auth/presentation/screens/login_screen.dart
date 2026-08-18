@@ -1,6 +1,8 @@
-import 'package:bloc_clean_template/features/common/widgets/app_logo_mark.dart';
-
 import '../../../../../core.dart';
+import '../../../common/widgets/app_logo_mark.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
 import 'otp_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,8 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _mobileController = TextEditingController();
   final _nameController = TextEditingController();
 
-  bool _showNameField = false;
-  bool _loading = false;
+  final ValueNotifier<bool> _showNameField = ValueNotifier(false);
+  final ValueNotifier<bool> _loading = ValueNotifier(false);
 
   @override
   void dispose() {
@@ -25,95 +27,124 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    if (_showNameField) {
-      _goToOtp(isNewUser: true);
-      return;
-    }
-
-    setState(() => _loading = true);
-    final existingCustomer = await _checkCustomerExists(_mobileController.text.trim());
-    if (!mounted) return;
-    setState(() => _loading = false);
-
-    if (existingCustomer) {
-      _goToOtp(isNewUser: false);
-      return;
-    }
-
-    setState(() => _showNameField = true);
+    context.read<AuthBloc>().add(
+      AuthEvent.sendOtp(
+        phoneNumber: _mobileController.text.trim(),
+        name: _showNameField.value ? _nameController.text.trim() : null,
+      ),
+    );
   }
 
-  Future<bool> _checkCustomerExists(String mobileNumber) async {
-    await Future<void>.delayed(const Duration(milliseconds: 450));
+  void _handleAuthState(BuildContext context, AuthState state) {
+    switch (state) {
+      case AuthLoading():
+        _loading.value = true;
 
-    // TODO(backend): Replace with the customer existence / send OTP endpoint.
-    return mobileNumber == '9876543210';
+      case AuthOtpSent(:final data):
+        _loading.value = false;
+
+        if (!data.isRegistered) {
+          _showNameField.value = true;
+          return;
+        }
+
+        _goToOtp();
+
+      case AuthFailure(:final message):
+        _loading.value = false;
+        _showError(message);
+
+      default:
+        break;
+    }
   }
 
-  void _goToOtp({required bool isNewUser}) {
+  void _showError(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _goToOtp() {
     context.pushNamed(
       AppRoute.otp.routeName,
-      extra: OtpVerificationArgs(mobileNumber: _mobileController.text.trim(), fullName: isNewUser ? _nameController.text.trim() : null),
+      extra: OtpVerificationArgs(
+        mobileNumber: _mobileController.text.trim(),
+        fullName: _showNameField.value ? _nameController.text.trim() : null,
+      ),
     );
   }
 
   void _editMobileNumber() {
     setState(() {
-      _showNameField = false;
+      _showNameField.value = false;
       _nameController.clear();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      loading: _loading,
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      backgroundColor: const Color(0xFFF4FAFF),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const AppLogoMark(),
-                const SizedBox(height: 16),
-                Text(
-                  'Welcome Back',
-                  textAlign: TextAlign.center,
-                  style: context.textTheme.headlineLarge?.copyWith(
-                    color: const Color(0xFF171B21),
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: _handleAuthState,
+      child: ValueListenableBuilder(
+        valueListenable: _loading,
+        builder: (context, isLoading, child) {
+          return AppScaffold(
+            loading: isLoading,
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            backgroundColor: const Color(0xFFF4FAFF),
+            body: Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const AppLogoMark(),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Welcome Back',
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.headlineLarge?.copyWith(
+                          color: const Color(0xFF171B21),
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Refresh your day with pure\nwater, delivered to your door.',
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.bodyLarge?.copyWith(
+                          color: const Color(0xFF4B5563),
+                          height: 1.45,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 112),
+                      ValueListenableBuilder(
+                        valueListenable: _showNameField,
+                        builder: (context, show, child) {
+                          return _LoginFormCard(
+                            mobileController: _mobileController,
+                            nameController: _nameController,
+                            showNameField: show,
+                            onEditMobile: _editMobileNumber,
+                            onSubmit: _submit,
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  'Refresh your day with pure\nwater, delivered to your door.',
-                  textAlign: TextAlign.center,
-                  style: context.textTheme.bodyLarge?.copyWith(
-                    color: const Color(0xFF4B5563),
-                    height: 1.45,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 112),
-                _LoginFormCard(
-                  mobileController: _mobileController,
-                  nameController: _nameController,
-                  showNameField: _showNameField,
-                  onEditMobile: _editMobileNumber,
-                  onSubmit: _submit,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -140,7 +171,13 @@ class _LoginFormCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 18, offset: const Offset(0, 10))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -167,7 +204,11 @@ class _LoginFormCard extends StatelessWidget {
               suffixIcon: showNameField
                   ? IconButton(
                       onPressed: onEditMobile,
-                      icon: const Icon(Icons.edit, color: Color(0xFF0967B9), size: 20),
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Color(0xFF0967B9),
+                        size: 20,
+                      ),
                     )
                   : null,
             ),
@@ -178,8 +219,11 @@ class _LoginFormCard extends StatelessWidget {
                 controller: nameController,
                 textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.words,
-                validator: (value) =>
-                    InputValidators.fullName(value, emptyMessage: 'Enter your full name', invalidMessage: 'Enter a valid full name'),
+                validator: (value) => InputValidators.fullName(
+                  value,
+                  emptyMessage: 'Enter your full name',
+                  invalidMessage: 'Enter a valid full name',
+                ),
                 onFieldSubmitted: (_) => onSubmit(),
                 hintText: 'Enter Your Name',
                 counterText: '',
@@ -191,7 +235,11 @@ class _LoginFormCard extends StatelessWidget {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
-                children: [Text('Get OTP'), SizedBox(width: 12), Icon(Icons.arrow_forward, size: 20)],
+                children: [
+                  Text('Get OTP'),
+                  SizedBox(width: 12),
+                  Icon(Icons.arrow_forward, size: 20),
+                ],
               ),
             ),
           ],
@@ -213,12 +261,18 @@ class _CountryCodePrefix extends StatelessWidget {
         children: [
           Text(
             '+91',
-            style: context.textTheme.titleLarge?.copyWith(color: const Color(0xFF171B21), fontWeight: FontWeight.w800),
+            style: context.textTheme.titleLarge?.copyWith(
+              color: const Color(0xFF171B21),
+              fontWeight: FontWeight.w800,
+            ),
           ),
           const SizedBox(width: 4),
           const Icon(Icons.keyboard_arrow_down, size: 22),
           const SizedBox(width: 4),
-          const SizedBox(height: 54, child: VerticalDivider(color: Color(0xFFC7CDDA), thickness: 1.6)),
+          const SizedBox(
+            height: 54,
+            child: VerticalDivider(color: Color(0xFFC7CDDA), thickness: 1.6),
+          ),
         ],
       ),
     );

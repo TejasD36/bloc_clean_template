@@ -6,16 +6,13 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBlocProviders(
-      child: BlocBuilder<AppThemeCubit, AppThemeState>(
-        builder: (context, themeState) => MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          // darkTheme: AppTheme.dark,
-          themeMode: ThemeMode.light,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: AppRouter.router,
-        ),
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        themeMode: ThemeMode.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: AppRouter.router,
       ),
     );
   }

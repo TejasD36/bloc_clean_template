@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SessionEntity {
 
- String get userId; String? get accessToken; DateTime? get lastLoginAt;
+ String get token; UserEntity get user;
 /// Create a copy of SessionEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SessionEntityCopyWith<SessionEntity> get copyWith => _$SessionEntityCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionEntity&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.lastLoginAt, lastLoginAt) || other.lastLoginAt == lastLoginAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionEntity&&(identical(other.token, token) || other.token == token)&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,accessToken,lastLoginAt);
+int get hashCode => Object.hash(runtimeType,token,user);
 
 @override
 String toString() {
-  return 'SessionEntity(userId: $userId, accessToken: $accessToken, lastLoginAt: $lastLoginAt)';
+  return 'SessionEntity(token: $token, user: $user)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $SessionEntityCopyWith<$Res>  {
   factory $SessionEntityCopyWith(SessionEntity value, $Res Function(SessionEntity) _then) = _$SessionEntityCopyWithImpl;
 @useResult
 $Res call({
- String userId, String? accessToken, DateTime? lastLoginAt
+ String token, UserEntity user
 });
 
 
-
+$UserEntityCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -62,15 +62,23 @@ class _$SessionEntityCopyWithImpl<$Res>
 
 /// Create a copy of SessionEntity
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? accessToken = freezed,Object? lastLoginAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? user = null,}) {
   return _then(_self.copyWith(
-userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,accessToken: freezed == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
-as String?,lastLoginAt: freezed == lastLoginAt ? _self.lastLoginAt : lastLoginAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserEntity,
   ));
 }
-
+/// Create a copy of SessionEntity
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserEntityCopyWith<$Res> get user {
+  
+  return $UserEntityCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
 }
 
 
@@ -152,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String? accessToken,  DateTime? lastLoginAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String token,  UserEntity user)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SessionEntity() when $default != null:
-return $default(_that.userId,_that.accessToken,_that.lastLoginAt);case _:
+return $default(_that.token,_that.user);case _:
   return orElse();
 
 }
@@ -173,10 +181,10 @@ return $default(_that.userId,_that.accessToken,_that.lastLoginAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String? accessToken,  DateTime? lastLoginAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String token,  UserEntity user)  $default,) {final _that = this;
 switch (_that) {
 case _SessionEntity():
-return $default(_that.userId,_that.accessToken,_that.lastLoginAt);case _:
+return $default(_that.token,_that.user);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +201,10 @@ return $default(_that.userId,_that.accessToken,_that.lastLoginAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String? accessToken,  DateTime? lastLoginAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String token,  UserEntity user)?  $default,) {final _that = this;
 switch (_that) {
 case _SessionEntity() when $default != null:
-return $default(_that.userId,_that.accessToken,_that.lastLoginAt);case _:
+return $default(_that.token,_that.user);case _:
   return null;
 
 }
@@ -208,12 +216,11 @@ return $default(_that.userId,_that.accessToken,_that.lastLoginAt);case _:
 
 
 class _SessionEntity implements SessionEntity {
-  const _SessionEntity({required this.userId, this.accessToken, this.lastLoginAt});
+  const _SessionEntity({required this.token, required this.user});
   
 
-@override final  String userId;
-@override final  String? accessToken;
-@override final  DateTime? lastLoginAt;
+@override final  String token;
+@override final  UserEntity user;
 
 /// Create a copy of SessionEntity
 /// with the given fields replaced by the non-null parameter values.
@@ -225,16 +232,16 @@ _$SessionEntityCopyWith<_SessionEntity> get copyWith => __$SessionEntityCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionEntity&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.lastLoginAt, lastLoginAt) || other.lastLoginAt == lastLoginAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionEntity&&(identical(other.token, token) || other.token == token)&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,userId,accessToken,lastLoginAt);
+int get hashCode => Object.hash(runtimeType,token,user);
 
 @override
 String toString() {
-  return 'SessionEntity(userId: $userId, accessToken: $accessToken, lastLoginAt: $lastLoginAt)';
+  return 'SessionEntity(token: $token, user: $user)';
 }
 
 
@@ -245,11 +252,11 @@ abstract mixin class _$SessionEntityCopyWith<$Res> implements $SessionEntityCopy
   factory _$SessionEntityCopyWith(_SessionEntity value, $Res Function(_SessionEntity) _then) = __$SessionEntityCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String? accessToken, DateTime? lastLoginAt
+ String token, UserEntity user
 });
 
 
-
+@override $UserEntityCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -262,16 +269,24 @@ class __$SessionEntityCopyWithImpl<$Res>
 
 /// Create a copy of SessionEntity
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? accessToken = freezed,Object? lastLoginAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? user = null,}) {
   return _then(_SessionEntity(
-userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,accessToken: freezed == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
-as String?,lastLoginAt: freezed == lastLoginAt ? _self.lastLoginAt : lastLoginAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,
+token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
+as String,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserEntity,
   ));
 }
 
-
+/// Create a copy of SessionEntity
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserEntityCopyWith<$Res> get user {
+  
+  return $UserEntityCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
 }
 
 // dart format on

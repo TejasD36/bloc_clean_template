@@ -2,6 +2,9 @@ import 'dart:async';
 
 import '../../../../../core.dart';
 import '../../../common/widgets/app_logo_mark.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
 
 class OtpVerificationArgs {
   const OtpVerificationArgs({required this.mobileNumber, this.fullName});
@@ -23,8 +26,14 @@ class _OtpScreenState extends State<OtpScreen> {
   static const int _otpLength = 6;
   static const int _resendSeconds = 30;
 
-  final List<TextEditingController> _controllers = List.generate(_otpLength, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(_otpLength, (_) => FocusNode());
+  final List<TextEditingController> _controllers = List.generate(
+    _otpLength,
+    (_) => TextEditingController(),
+  );
+  final List<FocusNode> _focusNodes = List.generate(
+    _otpLength,
+    (_) => FocusNode(),
+  );
 
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _otpFocusNode = FocusNode();
@@ -67,105 +76,149 @@ class _OtpScreenState extends State<OtpScreen> {
   Future<void> _verifyOtp() async {
     final otp = _otpController.text;
     if (!RegExp(r'^\d{6}$').hasMatch(otp)) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Enter the 6-digit verification code')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter the 6-digit verification code')),
+      );
       return;
     }
 
-    setState(() => _verifying = true);
-    await Future<void>.delayed(const Duration(milliseconds: 450));
-    if (!mounted) return;
-    setState(() => _verifying = false);
+    context.read<AuthBloc>().add(
+      AuthEvent.verifyOtp(phoneNumber: widget.args.mobileNumber, otp: otp),
+    );
+  }
 
-    // TODO(backend): Replace with verify OTP endpoint and persisted session.
-    context.go(AppRoute.home.path);
+  void _handleAuthState(BuildContext context, AuthState state) {
+    switch (state) {
+      case AuthLoading():
+        setState(() => _verifying = true);
+
+      case AuthAuthenticated():
+        setState(() => _verifying = false);
+        context.go(AppRoute.home.path);
+
+      case AuthOtpResent():
+        _startCountdown();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('OTP sent again')));
+
+      case AuthFailure(:final message):
+        setState(() => _verifying = false);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+
+      default:
+        break;
+    }
   }
 
   void _resendOtp() {
     if (_secondsRemaining > 0) return;
-    _startCountdown();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('OTP sent again')));
+
+    context.read<AuthBloc>().add(
+      AuthEvent.resendOtp(phoneNumber: widget.args.mobileNumber),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      loading: _verifying,
-      padding: const EdgeInsets.symmetric(horizontal: 28),
-      appBar: AppBar(),
-      backgroundColor: const Color(0xFFF4FAFF),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 32),
-              const AppLogoMark(),
-              const SizedBox(height: 16),
-              Text(
-                "We've sent a 6-digit verification\ncode to",
-                textAlign: TextAlign.center,
-                style: context.textTheme.titleLarge?.copyWith(color: const Color(0xFF4B5563), fontWeight: FontWeight.w400),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      '+91 ${_formatMobileNumber(widget.args.mobileNumber)}',
-                      textAlign: TextAlign.center,
-                      style: context.textTheme.displayLarge?.copyWith(
-                        color: const Color(0xFF171B21),
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: _handleAuthState,
+      child: AppScaffold(
+        loading: _verifying,
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+        appBar: AppBar(),
+        backgroundColor: const Color(0xFFF4FAFF),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 32),
+                const AppLogoMark(),
+                const SizedBox(height: 16),
+                Text(
+                  "We've sent a 6-digit verification\ncode to",
+                  textAlign: TextAlign.center,
+                  style: context.textTheme.titleLarge?.copyWith(
+                    color: const Color(0xFF4B5563),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '+91 ${_formatMobileNumber(widget.args.mobileNumber)}',
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.displayLarge?.copyWith(
+                          color: const Color(0xFF171B21),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () => context.pop(),
-                    icon: const Icon(Icons.edit_outlined, color: Color(0xFF0967B9), size: 20),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              AppOtpField(
-                controller: _otpController,
-                focusNode: _otpFocusNode,
-                length: 6,
-                onChanged: (value) {
-                  // Optional: handle OTP changes here
-                },
-                onCompleted: (otp) {
-                  FocusScope.of(context).unfocus();
+                    IconButton(
+                      onPressed: () => context.pop(),
+                      icon: const Icon(
+                        Icons.edit_outlined,
+                        color: Color(0xFF0967B9),
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                AppOtpField(
+                  controller: _otpController,
+                  focusNode: _otpFocusNode,
+                  length: 6,
+                  onChanged: (value) {
+                    // Optional: handle OTP changes here
+                  },
+                  onCompleted: (otp) {
+                    FocusScope.of(context).unfocus();
 
-                  // Verify OTP here
-                  _verifyOtp();
-                },
-              ),
-              const SizedBox(height: 72),
-              TextButton(
-                onPressed: _secondsRemaining == 0 ? _resendOtp : null,
-                child: Text(
-                  _secondsRemaining == 0 ? "Didn't receive a code?  Resend" : "Didn't receive a code?  Resend in ${_secondsRemaining}s",
-                  textAlign: TextAlign.center,
-                  style: context.textTheme.headlineSmall?.copyWith(
-                    color: _secondsRemaining == 0 ? const Color(0xFF0967B9) : const Color(0xFFAEB4BE),
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1,
+                    // Verify OTP here
+                    _verifyOtp();
+                  },
+                ),
+                const SizedBox(height: 32),
+                TextButton(
+                  onPressed: _secondsRemaining == 0 ? _resendOtp : null,
+                  child: Text(
+                    _secondsRemaining == 0
+                        ? "Didn't receive a code?  Resend"
+                        : "Didn't receive a code?  Resend in ${_secondsRemaining}s",
+                    textAlign: TextAlign.center,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: _secondsRemaining == 0
+                          ? const Color(0xFF0967B9)
+                          : const Color(0xFFAEB4BE),
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 188),
-              ElevatedButton(
-                onPressed: _verifyOtp,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [Text('Verify & Continue'), SizedBox(width: 12), Icon(Icons.arrow_forward, size: 32)],
+                const SizedBox(height: 188),
+                ElevatedButton(
+                  onPressed: _verifyOtp,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Verify & Continue'),
+                      SizedBox(width: 12),
+                      Icon(Icons.arrow_forward, size: 32),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 28),
-            ],
+                const SizedBox(height: 28),
+              ],
+            ),
           ),
         ),
       ),

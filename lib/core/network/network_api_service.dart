@@ -18,12 +18,17 @@ class NetworkApiService implements BaseApiService {
   Future<Either<AppException, BaseResponse<T>>> _request<T>(
     String endpoint,
     Future<Response<dynamic>> Function() requestCall,
-    ResponseMapper<T> mapper,
-  ) async {
+    ResponseMapper<T> mapper, {
+    bool allowBusinessFailureData = false,
+  }) async {
     try {
       final response = await requestCall();
 
-      return Parser.parseBaseResponse<T>(response, mapper);
+      return Parser.parseBaseResponse<T>(
+        response,
+        mapper,
+        allowBusinessFailureData: allowBusinessFailureData,
+      );
     } on DioException catch (exception) {
       final failure = Failure.handleDioError(exception);
       _notifyIfSessionExpired(endpoint, failure);
@@ -59,6 +64,7 @@ class NetworkApiService implements BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   }) {
     return _request<T>(
       endpoint,
@@ -69,6 +75,7 @@ class NetworkApiService implements BaseApiService {
         cancelToken: cancelToken,
       ),
       mapper,
+      allowBusinessFailureData: allowBusinessFailureData,
     );
   }
 
@@ -80,6 +87,7 @@ class NetworkApiService implements BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   }) {
     return _request<T>(
       endpoint,
@@ -91,6 +99,7 @@ class NetworkApiService implements BaseApiService {
         cancelToken: cancelToken,
       ),
       mapper,
+      allowBusinessFailureData: allowBusinessFailureData,
     );
   }
 
@@ -102,6 +111,7 @@ class NetworkApiService implements BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   }) {
     return _request<T>(
       endpoint,
@@ -113,6 +123,7 @@ class NetworkApiService implements BaseApiService {
         cancelToken: cancelToken,
       ),
       mapper,
+      allowBusinessFailureData: allowBusinessFailureData,
     );
   }
 
@@ -124,6 +135,7 @@ class NetworkApiService implements BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   }) {
     return _request<T>(
       endpoint,
@@ -135,6 +147,7 @@ class NetworkApiService implements BaseApiService {
         cancelToken: cancelToken,
       ),
       mapper,
+      allowBusinessFailureData: allowBusinessFailureData,
     );
   }
 
@@ -146,6 +159,7 @@ class NetworkApiService implements BaseApiService {
     Options? options,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
+    bool allowBusinessFailureData = false,
   }) {
     return _request<T>(
       endpoint,
@@ -157,6 +171,7 @@ class NetworkApiService implements BaseApiService {
         cancelToken: cancelToken,
       ),
       mapper,
+      allowBusinessFailureData: allowBusinessFailureData,
     );
   }
 }

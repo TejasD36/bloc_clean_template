@@ -18,6 +18,7 @@ sealed class UserDto with _$UserDto {
     @JsonKey(fromJson: _boolFromJson)
     @Default(false)
     bool isEmailVerified,
+    @HiveField(5) @Default('') String phoneNumber,
     @HiveField(8)
     @JsonKey(fromJson: _boolFromJson)
     @Default(false)
@@ -49,6 +50,7 @@ Map<String, dynamic> _normalizeUserJson(Map<String, dynamic> json) {
 
   normalized['isEmailVerified'] ??= json['is_email_verified'];
   normalized['photoUrl'] ??= json['avatar'];
+  normalized['phoneNumber'] ??= json['phone_number'];
 
   return normalized;
 }

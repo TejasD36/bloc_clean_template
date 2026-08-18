@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 
-import '../../app/theme/theme_cubit.dart';
+import '../../features/auth/di/auth_dependencies.dart';
+import '../../features/common/dependencies/common_dependencies.dart';
+import '../../features/splash/di/splash_dependencies.dart';
 import '../network/network_di.dart';
 import 'storage_dependencies.dart';
 
@@ -8,5 +10,7 @@ Future<void> initCoreDependencies(GetIt sl) async {
   await initStorageDependencies(sl);
   await initNetworkDependencies(sl);
 
-  sl.registerLazySingleton(AppThemeCubit.new);
+  await initCommonDependencies(sl);
+  await initAuthDependencies(sl);
+  await initSplashDependencies(sl);
 }

@@ -22,6 +22,7 @@ class UserDtoAdapter extends TypeAdapter<UserDto> {
       email: fields[2] as String?,
       photoUrl: fields[3] as String?,
       isEmailVerified: fields[4] == null ? false : fields[4] as bool,
+      phoneNumber: fields[5] == null ? '' : fields[5] as String,
       isAnonymous: fields[8] == null ? false : fields[8] as bool,
       status: fields[12] == null ? true : fields[12] as bool,
       role: (fields[13] as num?)?.toInt(),
@@ -31,7 +32,7 @@ class UserDtoAdapter extends TypeAdapter<UserDto> {
   @override
   void write(BinaryWriter writer, UserDto obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -42,6 +43,8 @@ class UserDtoAdapter extends TypeAdapter<UserDto> {
       ..write(obj.photoUrl)
       ..writeByte(4)
       ..write(obj.isEmailVerified)
+      ..writeByte(5)
+      ..write(obj.phoneNumber)
       ..writeByte(8)
       ..write(obj.isAnonymous)
       ..writeByte(12)
@@ -73,6 +76,7 @@ _UserDto _$UserDtoFromJson(Map<String, dynamic> json) => _UserDto(
   isEmailVerified: json['isEmailVerified'] == null
       ? false
       : _boolFromJson(json['isEmailVerified']),
+  phoneNumber: json['phoneNumber'] as String? ?? '',
   isAnonymous: json['isAnonymous'] == null
       ? false
       : _boolFromJson(json['isAnonymous']),
@@ -86,6 +90,7 @@ Map<String, dynamic> _$UserDtoToJson(_UserDto instance) => <String, dynamic>{
   'email': instance.email,
   'photoUrl': instance.photoUrl,
   'isEmailVerified': instance.isEmailVerified,
+  'phoneNumber': instance.phoneNumber,
   'isAnonymous': instance.isAnonymous,
   'status': instance.status,
   'role': instance.role,
