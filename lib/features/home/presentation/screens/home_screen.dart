@@ -310,15 +310,6 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const _ShellPlaceholderScreen(icon: Icons.person_outline, title: 'Profile', subtitle: 'Show authenticated user details here.');
-  }
-}
-
 class _ShellPlaceholderScreen extends StatelessWidget {
   const _ShellPlaceholderScreen({required this.icon, required this.title, required this.subtitle});
 
