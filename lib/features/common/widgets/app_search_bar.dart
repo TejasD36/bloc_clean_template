@@ -1,13 +1,7 @@
 import '../../../core.dart';
 
 class AppSearchBar extends StatefulWidget {
-  const AppSearchBar({
-    super.key,
-    this.controller,
-    this.hintText,
-    this.onChanged,
-    this.onTap,
-  });
+  const AppSearchBar({super.key, this.controller, this.hintText, this.onChanged, this.onTap});
 
   final TextEditingController? controller;
   final String? hintText;
@@ -27,11 +21,9 @@ class _AppSearchBarState extends State<AppSearchBar> {
       readOnly: widget.onTap != null,
       onChanged: widget.onChanged,
       decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search, size: 20),
+        prefixIcon: const Icon(Icons.search, color: Color(0xFF7A8291), size: 30),
         hintText: widget.hintText,
-        hintStyle: context.textTheme.bodySmall?.copyWith(
-          color: appColors.textMuted,
-        ),
+        hintStyle: context.textTheme.titleLarge?.copyWith(color: const Color(0xFF7A8291), fontSize: 16, fontWeight: FontWeight.w400),
         hintMaxLines: 2,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -63,11 +55,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
 }
 
 class AppSearchBarDelegate extends SliverPersistentHeaderDelegate {
-  const AppSearchBarDelegate({
-    required this.controller,
-    required this.hintText,
-    this.onTap,
-  });
+  const AppSearchBarDelegate({required this.controller, required this.hintText, this.onTap});
   final TextEditingController controller;
   final String hintText;
   final VoidCallback? onTap;
@@ -79,29 +67,19 @@ class AppSearchBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 72;
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       elevation: overlapsContent ? 2 : 0,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        child: AppSearchBar(
-          controller: controller,
-          hintText: hintText,
-          onTap: onTap,
-        ),
+        child: AppSearchBar(controller: controller, hintText: hintText, onTap: onTap),
       ),
     );
   }
 
   @override
   bool shouldRebuild(covariant AppSearchBarDelegate oldDelegate) {
-    return controller != oldDelegate.controller ||
-        hintText != oldDelegate.hintText ||
-        onTap != oldDelegate.onTap;
+    return controller != oldDelegate.controller || hintText != oldDelegate.hintText || onTap != oldDelegate.onTap;
   }
 }

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-const googleMapsApiKey = 'AIzaSyBWxJ3u_LqPZfyOGGytIt3ys_3cyR5vxzU';
+const googleMapsApiKey = 'AIzaSyDBajW5jgrn3oh-Usa_Tck7evCpqFtln6c';
 
 class GooglePlacesService {
   GooglePlacesService({Dio? dio}) : _dio = dio ?? Dio();

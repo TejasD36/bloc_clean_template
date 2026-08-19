@@ -7,11 +7,11 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       padding: EdgeInsets.zero,
-      safeArea: false,
+      safeArea: true,
       backgroundColor: context.appColors.surfaceSoft,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

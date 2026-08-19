@@ -22,11 +22,23 @@ class AppRouter {
     initialLocation: AppRoute.splash.path,
     routes: [
       ///Initial Screens
-      GoRoute(path: AppRoute.splash.path, name: AppRoute.splash.routeName, builder: (_, _) => const SplashScreen()),
-      GoRoute(path: AppRoute.onboarding.path, name: AppRoute.onboarding.routeName, builder: (_, _) => const OnboardingScreen()),
+      GoRoute(
+        path: AppRoute.splash.path,
+        name: AppRoute.splash.routeName,
+        builder: (_, _) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.onboarding.path,
+        name: AppRoute.onboarding.routeName,
+        builder: (_, _) => const OnboardingScreen(),
+      ),
 
       ///Auth Screens
-      GoRoute(path: AppRoute.login.path, name: AppRoute.login.routeName, builder: (_, _) => const LoginScreen()),
+      GoRoute(
+        path: AppRoute.login.path,
+        name: AppRoute.login.routeName,
+        builder: (_, _) => const LoginScreen(),
+      ),
       GoRoute(
         path: AppRoute.otp.path,
         name: AppRoute.otp.routeName,
@@ -50,27 +62,66 @@ class AppRouter {
             _ => AppRoute.home.path,
           };
 
-          return ShellScreen(navigationShell: navigationShell, isAtBranchRoot: state.uri.path == branchRoot);
+          return ShellScreen(
+            navigationShell: navigationShell,
+            isAtBranchRoot: state.uri.path == branchRoot,
+          );
         },
         branches: [
           StatefulShellBranch(
-            routes: [GoRoute(path: AppRoute.home.path, name: AppRoute.home.routeName, builder: (_, _) => const HomeScreen())],
+            routes: [
+              GoRoute(
+                path: AppRoute.home.path,
+                name: AppRoute.home.routeName,
+                builder: (_, _) => const HomeScreen(),
+              ),
+            ],
           ),
           StatefulShellBranch(
-            routes: [GoRoute(path: AppRoute.bookings.path, name: AppRoute.bookings.routeName, builder: (_, _) => const BookingScreen())],
+            routes: [
+              GoRoute(
+                path: AppRoute.bookings.path,
+                name: AppRoute.bookings.routeName,
+                builder: (_, _) => const BookingScreen(),
+              ),
+            ],
           ),
           StatefulShellBranch(
-            routes: [GoRoute(path: AppRoute.track.path, name: AppRoute.track.routeName, builder: (_, _) => const TrackScreen())],
+            routes: [
+              GoRoute(
+                path: AppRoute.track.path,
+                name: AppRoute.track.routeName,
+                builder: (_, _) => const TrackScreen(),
+              ),
+            ],
           ),
           StatefulShellBranch(
-            routes: [GoRoute(path: AppRoute.profile.path, name: AppRoute.profile.routeName, builder: (_, _) => const ProfileScreen())],
+            routes: [
+              GoRoute(
+                path: AppRoute.profile.path,
+                name: AppRoute.profile.routeName,
+                builder: (_, _) => const ProfileScreen(),
+              ),
+            ],
           ),
         ],
       ),
 
       ///Address Screen
-      GoRoute(path: AppRoute.address.path, name: AppRoute.address.routeName, builder: (_, _) => const AddressScreen()),
-      GoRoute(path: AppRoute.addAddress.path, name: AppRoute.addAddress.routeName, builder: (_, _) => const AddAddressScreen()),
+      GoRoute(
+        path: AppRoute.address.path,
+        name: AppRoute.address.routeName,
+        builder: (_, _) => const AddressScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.addAddress.path,
+        name: AppRoute.addAddress.routeName,
+        builder: (_, state) => AddAddressScreen(
+          args: state.extra is AddAddressArgs
+              ? state.extra as AddAddressArgs
+              : null,
+        ),
+      ),
     ],
   );
 }

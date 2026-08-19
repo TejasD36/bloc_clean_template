@@ -69,7 +69,7 @@ class AppTheme {
         iconTheme: IconThemeData(color: palette.textStrong),
         actionsIconTheme: IconThemeData(color: palette.textStrong),
         titleTextStyle: textTheme.titleLarge?.copyWith(color: palette.textStrong),
-        titleSpacing: 24,
+        titleSpacing: 10,
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: isLight ? Brightness.dark : Brightness.light,

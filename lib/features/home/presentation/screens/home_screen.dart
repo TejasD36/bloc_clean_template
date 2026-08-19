@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             ValueListenableBuilder(
               valueListenable: _userName,
               builder: (context, value, child) {
@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Good Morning, $value',
                   style: context.textTheme.displayLarge?.copyWith(
                     color: const Color(0xFF171B21),
-                    fontSize: 25,
+                    fontSize: 20,
                     fontWeight: FontWeight.w800,
                     height: 1.15,
                   ),
@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 28),
             Text(
               'Our Services',
-              style: context.textTheme.displayMedium?.copyWith(color: const Color(0xFF171B21), fontSize: 24, fontWeight: FontWeight.w800),
+              style: context.textTheme.displayMedium?.copyWith(color: const Color(0xFF171B21), fontSize: 20, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 18),
             const _ServiceGrid(services: _services),
@@ -174,7 +174,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               'Pune Water Helpline',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: context.textTheme.displaySmall?.copyWith(color: context.colors.primary, fontSize: 24, fontWeight: FontWeight.w800),
+              style: context.textTheme.displaySmall?.copyWith(color: context.colors.primary, fontSize: 22, fontWeight: FontWeight.w800),
             ),
           ),
         ],
@@ -253,59 +253,6 @@ class _LocationCard extends StatelessWidget {
   }
 }
 
-/*class _SearchField extends StatelessWidget {
-  const _SearchField();
-
-  @override
-  Widget build(BuildContext context) {
-   */ /* return Semantics(
-      button: true,
-      label: 'Search services',
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () {},
-          child: Container(
-            height: 55,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF7F9FD),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFC5CFDD), width: 1.2),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.search, color: Color(0xFF7A8291), size: 30),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    'What service are you looking for?',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.textTheme.titleLarge?.copyWith(
-                      color: const Color(0xFF7A8291),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );*/ /*
-    return TextField(
-      controller: ,
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search, color: Color(0xFF7A8291), size: 30),
-        hintText: 'What service are you looking for?',
-      ),
-    );
-  }
-}*/
-
 class _ServiceGrid extends StatelessWidget {
   const _ServiceGrid({required this.services});
 
@@ -317,7 +264,7 @@ class _ServiceGrid extends StatelessWidget {
       builder: (context, constraints) {
         final spacing = constraints.maxWidth < 360 ? 14.0 : 18.0;
         final itemWidth = (constraints.maxWidth - spacing * 2) / 3;
-        final imageSize = itemWidth.clamp(92.0, 116.0);
+        final imageSize = itemWidth.clamp(82.0, 98.0);
 
         return Wrap(
           spacing: spacing,
@@ -362,7 +309,7 @@ class _ServiceTile extends StatelessWidget {
               ),
               child: Icon(service.icon, color: context.colors.primary, size: imageSize * 0.38),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Text(
               service.label,
               textAlign: TextAlign.center,
@@ -370,7 +317,7 @@ class _ServiceTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.titleLarge?.copyWith(
                 color: const Color(0xFF171B21),
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: FontWeight.w500,
                 height: 1.15,
               ),
