@@ -3,8 +3,8 @@ import '../repositories/track_repository.dart';
 /// Use case for Track.
 class TrackUsecase {
   const TrackUsecase({
-    required TrackRepository repository,
-  }) : _repository = repository;
+    required this._repository,
+  });
 
   final TrackRepository _repository;
 

@@ -2,9 +2,7 @@ import '../repositories/address_repository.dart';
 
 /// Use case for Address.
 class AddressUsecase {
-  const AddressUsecase({
-    required AddressRepository repository,
-  }) : _repository = repository;
+  const AddressUsecase({required this._repository});
 
   final AddressRepository _repository;
 

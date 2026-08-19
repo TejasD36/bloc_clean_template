@@ -10,8 +10,6 @@ import '../data/repositories/track_repository_impl.dart';
 import '../domain/repositories/track_repository.dart';
 import '../domain/usecases/track_usecase.dart';
 import '../presentation/bloc/track_bloc.dart';
-import '../presentation/bloc/track_event.dart';
-import '../presentation/bloc/track_state.dart';
 
 final GetIt sl = GetIt.instance;
 

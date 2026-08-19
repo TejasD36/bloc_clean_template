@@ -1,5 +1,6 @@
-import 'package:bloc_clean_template/core.dart';
 import 'package:pinput/pinput.dart';
+
+import '../../../core.dart';
 
 class AppOtpField extends StatelessWidget {
   const AppOtpField({
