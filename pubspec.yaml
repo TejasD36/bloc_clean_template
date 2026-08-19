@@ -31,6 +31,8 @@ dependencies:
   pinput: ^6.0.2
   talker_dio_logger: ^5.1.13
   talker_flutter: ^5.1.13
+  google_maps_flutter: ^2.18.0
+  geolocator: ^14.0.3
 
 dev_dependencies:
   bloc_concurrency: ^0.3.0

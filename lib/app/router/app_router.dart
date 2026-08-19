@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/address/presentation/screens/add_address_screen.dart';
+import '../../features/address/presentation/screens/address_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_screen.dart';
 import '../../features/booking/presentation/screens/booking_screen.dart';
@@ -19,8 +21,11 @@ class AppRouter {
     debugLogDiagnostics: kDebugMode,
     initialLocation: AppRoute.splash.path,
     routes: [
+      ///Initial Screens
       GoRoute(path: AppRoute.splash.path, name: AppRoute.splash.routeName, builder: (_, _) => const SplashScreen()),
       GoRoute(path: AppRoute.onboarding.path, name: AppRoute.onboarding.routeName, builder: (_, _) => const OnboardingScreen()),
+
+      ///Auth Screens
       GoRoute(path: AppRoute.login.path, name: AppRoute.login.routeName, builder: (_, _) => const LoginScreen()),
       GoRoute(
         path: AppRoute.otp.path,
@@ -33,6 +38,8 @@ class AppRouter {
           return const LoginScreen();
         },
       ),
+
+      ///Shell
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           final branchRoot = switch (navigationShell.currentIndex) {
@@ -60,6 +67,10 @@ class AppRouter {
           ),
         ],
       ),
+
+      ///Address Screen
+      GoRoute(path: AppRoute.address.path, name: AppRoute.address.routeName, builder: (_, _) => const AddressScreen()),
+      GoRoute(path: AppRoute.addAddress.path, name: AppRoute.addAddress.routeName, builder: (_, _) => const AddAddressScreen()),
     ],
   );
 }

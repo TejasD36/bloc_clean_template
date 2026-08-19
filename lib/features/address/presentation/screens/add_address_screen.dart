@@ -1,0 +1,706 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../../core.dart';
+import '../services/google_places_service.dart';
+import 'address_screen.dart';
+
+class AddAddressScreen extends StatefulWidget {
+  const AddAddressScreen({super.key});
+
+  @override
+  State<AddAddressScreen> createState() => _AddAddressScreenState();
+}
+
+class _AddAddressScreenState extends State<AddAddressScreen> {
+  static const _initialPosition = LatLng(18.5204, 73.8567);
+
+  final _searchController = TextEditingController();
+  final _flatController = TextEditingController();
+  final _streetController = TextEditingController();
+  final _pinController = TextEditingController();
+  final _landmarkController = TextEditingController();
+  final _placesService = GooglePlacesService();
+  bool _isLocating = false;
+
+  GoogleMapController? _mapController;
+  Timer? _searchDebounce;
+  List<PlaceSuggestion> _suggestions = const [];
+  LatLng _markerPosition = _initialPosition;
+  String _selectedAddress = 'Drag the marker or search to pin the exact address';
+  String _nickname = 'Home';
+  bool _isSearching = false;
+  bool _isResolvingMarker = false;
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    _searchController.dispose();
+    _flatController.dispose();
+    _streetController.dispose();
+    _pinController.dispose();
+    _landmarkController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScaffold(
+      padding: EdgeInsets.zero,
+      safeArea: false,
+      backgroundColor: context.appColors.surfaceSoft,
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(24, 14, 24, 18),
+        child: SizedBox(
+          height: 56,
+          child: FilledButton(
+            onPressed: _saveAddress,
+            style: FilledButton.styleFrom(
+              backgroundColor: context.colors.primary,
+              foregroundColor: context.colors.onPrimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              textStyle: const TextStyle(fontSize: 19, fontWeight: FontWeight.w700),
+            ),
+            child: const Text('Save Address'),
+          ),
+        ),
+      ),
+      body: SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _Header(onBack: () => context.pop()),
+              const SizedBox(height: 20),
+              _MapSearchField(
+                controller: _searchController,
+                isLoading: _isSearching,
+                onChanged: _onSearchChanged,
+                onSubmitted: (_) => _selectFirstSuggestion(),
+              ),
+
+              const SizedBox(height: 16),
+              _CurrentLocationButton(isLoading: _isLocating, onTap: _useCurrentLocation),
+              if (_suggestions.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                _PlaceSuggestionList(suggestions: _suggestions, onSelected: _selectSuggestion),
+              ],
+              const SizedBox(height: 16),
+              _MapPicker(
+                markerPosition: _markerPosition,
+                selectedAddress: _selectedAddress,
+                isResolvingMarker: _isResolvingMarker,
+                onMapCreated: (controller) => _mapController = controller,
+                onMarkerDragEnd: _moveMarkerFromDrag,
+                onMapTap: _moveMarkerFromDrag,
+                onUseDefaultLocation: () => _moveMarker(_initialPosition, resolveAddress: true),
+              ),
+              const SizedBox(height: 30),
+              const _FieldLabel('Address Nickname'),
+              const SizedBox(height: 12),
+              _NicknamePicker(selected: _nickname, onSelected: (value) => setState(() => _nickname = value)),
+              const SizedBox(height: 28),
+              _AddressField(
+                label: 'Flat / House / Building Number',
+                hint: 'e.g. Penthouse 4B',
+                icon: Icons.business_outlined,
+                controller: _flatController,
+              ),
+              const SizedBox(height: 22),
+              _AddressField(
+                label: 'Area / Street Name',
+                hint: 'e.g. Blue Lagoon Street',
+                icon: Icons.map_outlined,
+                controller: _streetController,
+              ),
+              const SizedBox(height: 22),
+              _AddressField(
+                label: 'Pin Code',
+                hint: 'e.g. 416229',
+                icon: Icons.pin_drop_outlined,
+                controller: _pinController,
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+              ),
+              const SizedBox(height: 22),
+              _AddressField(
+                label: 'Landmark (Optional)',
+                hint: 'e.g. Near City Park Entrance',
+                icon: Icons.flag_outlined,
+                controller: _landmarkController,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () => _searchPlaces(value));
+  }
+
+  Future<void> _searchPlaces(String value) async {
+    if (value.trim().length < 3) {
+      if (mounted) {
+        setState(() {
+          _suggestions = const [];
+          _isSearching = false;
+        });
+      }
+      return;
+    }
+
+    setState(() => _isSearching = true);
+    try {
+      final suggestions = await _placesService.autocomplete(value);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _suggestions = suggestions;
+        _isSearching = false;
+      });
+    } on DioException {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _isSearching = false);
+      _showMessage('Could not search locations. Check the Maps API key setup.');
+    }
+  }
+
+  Future<void> _selectFirstSuggestion() async {
+    if (_suggestions.isNotEmpty) {
+      await _selectSuggestion(_suggestions.first);
+    }
+  }
+
+  Future<void> _useCurrentLocation() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _isLocating = true);
+
+    try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        if (mounted) {
+          _showMessage('Turn on location services to continue');
+        }
+        return;
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          _showMessage(
+            permission == LocationPermission.deniedForever
+                ? 'Location permission is blocked in Settings'
+                : 'Location permission is required',
+          );
+        }
+        return;
+      }
+
+      final position = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+      if (!mounted) {
+        return;
+      }
+      final currentLocation = SavedMapLocation(
+        title: 'Current Location',
+        subtitle: '${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}',
+        position: LatLng(position.latitude, position.longitude),
+        icon: Icons.my_location,
+      );
+      setState(() {
+        _markerPosition = LatLng(position.latitude, position.longitude);
+      });
+      _showMessage('Showing your current coordinates');
+    } on LocationServiceDisabledException {
+      if (mounted) {
+        _showMessage('Turn on location services to continue');
+      }
+    } on PermissionDeniedException {
+      if (mounted) {
+        _showMessage('Location permission is required');
+      }
+    } catch (_) {
+      if (mounted) {
+        _showMessage('Could not get your current location');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLocating = false);
+      }
+    }
+  }
+
+  Future<void> _selectSuggestion(PlaceSuggestion suggestion) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _isSearching = true);
+    try {
+      final place = await _placesService.resolvePlace(suggestion.placeId);
+      if (!mounted || place == null) {
+        return;
+      }
+      _applyResolvedPlace(place, searchText: suggestion.description);
+    } on DioException {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _isSearching = false);
+      _showMessage('Could not load this location');
+    }
+  }
+
+  Future<void> _moveMarkerFromDrag(LatLng position) async {
+    await _moveMarker(position, resolveAddress: true);
+  }
+
+  Future<void> _moveMarker(LatLng position, {required bool resolveAddress}) async {
+    setState(() {
+      _markerPosition = position;
+      _suggestions = const [];
+      _isResolvingMarker = resolveAddress;
+    });
+    await _mapController?.animateCamera(CameraUpdate.newLatLngZoom(position, 16));
+
+    if (!resolveAddress) {
+      return;
+    }
+
+    try {
+      final place = await _placesService.reverseGeocode(position);
+      if (!mounted) {
+        return;
+      }
+      if (place == null) {
+        setState(() => _isResolvingMarker = false);
+        return;
+      }
+      _applyResolvedPlace(place);
+    } on DioException {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _isResolvingMarker = false);
+      _showMessage('Could not update address from marker');
+    }
+  }
+
+  void _applyResolvedPlace(ResolvedPlace place, {String? searchText}) {
+    setState(() {
+      _markerPosition = place.position;
+      _selectedAddress = place.formattedAddress.isNotEmpty ? place.formattedAddress : place.name;
+      _searchController.text = searchText ?? _selectedAddress;
+      _suggestions = const [];
+      _isSearching = false;
+      _isResolvingMarker = false;
+      if (place.street.isNotEmpty && _streetController.text.trim().isEmpty) {
+        _streetController.text = place.street;
+      }
+      if (place.pinCode.isNotEmpty) {
+        _pinController.text = place.pinCode;
+      }
+    });
+    _mapController?.animateCamera(CameraUpdate.newLatLngZoom(place.position, 16));
+  }
+
+  void _saveAddress() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_flatController.text.trim().isEmpty || _streetController.text.trim().isEmpty || _pinController.text.trim().length != 6) {
+      _showMessage('Please complete the required address fields');
+      return;
+    }
+    _showMessage(
+      '$_nickname address saved at ${_markerPosition.latitude.toStringAsFixed(5)}, ${_markerPosition.longitude.toStringAsFixed(5)}',
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+class _CurrentLocationButton extends StatelessWidget {
+  const _CurrentLocationButton({required this.isLoading, required this.onTap});
+
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 72,
+      child: FilledButton.icon(
+        onPressed: onTap,
+        icon: isLoading
+            ? const SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2))
+            : const Icon(Icons.my_location, size: 27),
+        label: Text(isLoading ? 'Finding your location...' : 'Use Current Location'),
+        style: FilledButton.styleFrom(
+          backgroundColor: context.appColors.primarySoft,
+          foregroundColor: context.colors.primary,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          textStyle: const TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+        ),
+      ),
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header({required this.onBack});
+
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          tooltip: 'Go back',
+          onPressed: onBack,
+          padding: EdgeInsets.zero,
+          icon: const Icon(Icons.arrow_back, size: 30),
+          color: context.appColors.textStrong,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            'Add New Address',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.textTheme.titleLarge?.copyWith(color: context.appColors.textStrong, fontSize: 28, fontWeight: FontWeight.w800),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MapSearchField extends StatelessWidget {
+  const _MapSearchField({required this.controller, required this.isLoading, required this.onChanged, required this.onSubmitted});
+
+  final TextEditingController controller;
+  final bool isLoading;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      textInputAction: TextInputAction.search,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      style: context.textTheme.bodyLarge?.copyWith(color: context.appColors.textStrong, fontSize: 17),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: context.appColors.input,
+        prefixIcon: Icon(Icons.search, size: 27, color: context.appColors.textMuted),
+        suffixIcon: isLoading
+            ? const Padding(
+                padding: EdgeInsets.all(14),
+                child: SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
+              )
+            : null,
+        hintText: 'Search building, street, or area',
+        hintStyle: context.textTheme.bodyLarge?.copyWith(color: context.appColors.textMuted, fontSize: 17),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 17),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: context.colors.primary, width: 1.5),
+        ),
+      ),
+    );
+  }
+}
+
+class _PlaceSuggestionList extends StatelessWidget {
+  const _PlaceSuggestionList({required this.suggestions, required this.onSelected});
+
+  final List<PlaceSuggestion> suggestions;
+  final ValueChanged<PlaceSuggestion> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: context.appColors.surface,
+      borderRadius: BorderRadius.circular(14),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: suggestions.take(5).map((suggestion) {
+          return ListTile(
+            minLeadingWidth: 24,
+            leading: Icon(Icons.place_outlined, color: context.colors.primary),
+            title: Text(
+              suggestion.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textTheme.titleSmall?.copyWith(color: context.appColors.textStrong),
+            ),
+            subtitle: suggestion.subtitle.isEmpty ? null : Text(suggestion.subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+            onTap: () => onSelected(suggestion),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _MapPicker extends StatelessWidget {
+  const _MapPicker({
+    required this.markerPosition,
+    required this.selectedAddress,
+    required this.isResolvingMarker,
+    required this.onMapCreated,
+    required this.onMarkerDragEnd,
+    required this.onMapTap,
+    required this.onUseDefaultLocation,
+  });
+
+  final LatLng markerPosition;
+  final String selectedAddress;
+  final bool isResolvingMarker;
+  final ValueChanged<GoogleMapController> onMapCreated;
+  final ValueChanged<LatLng> onMarkerDragEnd;
+  final ValueChanged<LatLng> onMapTap;
+  final VoidCallback onUseDefaultLocation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300,
+      width: double.infinity,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(color: const Color(0xFFC9E8E8), borderRadius: BorderRadius.circular(22)),
+      child: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: CameraPosition(target: markerPosition, zoom: 15),
+            markers: {
+              Marker(
+                markerId: const MarkerId('new-address-location'),
+                position: markerPosition,
+                draggable: true,
+                onDragEnd: onMarkerDragEnd,
+                infoWindow: const InfoWindow(title: 'Selected address'),
+              ),
+            },
+            zoomControlsEnabled: false,
+            myLocationButtonEnabled: false,
+            mapToolbarEnabled: false,
+            gestureRecognizers: const {Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new)},
+            onMapCreated: onMapCreated,
+            onTap: onMapTap,
+            onLongPress: onMarkerDragEnd,
+          ),
+          Positioned(
+            right: 14,
+            top: 14,
+            child: _MapActionButton(icon: Icons.my_location, label: 'Reset', onPressed: onUseDefaultLocation),
+          ),
+          Positioned(
+            left: 14,
+            right: 14,
+            bottom: 14,
+            child: _SelectedAddressCard(address: selectedAddress, isLoading: isResolvingMarker),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MapActionButton extends StatelessWidget {
+  const _MapActionButton({required this.icon, required this.label, required this.onPressed});
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 20),
+      label: Text(label),
+      style: FilledButton.styleFrom(
+        backgroundColor: context.appColors.surface,
+        foregroundColor: context.appColors.textStrong,
+        elevation: 2,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        minimumSize: const Size(0, 46),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+}
+
+class _SelectedAddressCard extends StatelessWidget {
+  const _SelectedAddressCard({required this.address, required this.isLoading});
+
+  final String address;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: context.appColors.surface,
+      borderRadius: BorderRadius.circular(16),
+      elevation: 4,
+      shadowColor: context.appColors.shadow,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(color: context.appColors.primarySoft, borderRadius: BorderRadius.circular(12)),
+              child: isLoading
+                  ? const Padding(padding: EdgeInsets.all(12), child: CircularProgressIndicator(strokeWidth: 2))
+                  : Icon(Icons.location_on_outlined, color: context.colors.primary, size: 26),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                address,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: context.textTheme.bodyMedium?.copyWith(color: context.appColors.textStrong, fontSize: 15),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: context.textTheme.titleMedium?.copyWith(color: context.appColors.text, fontSize: 20, fontWeight: FontWeight.w700),
+    );
+  }
+}
+
+class _NicknamePicker extends StatelessWidget {
+  const _NicknamePicker({required this.selected, required this.onSelected});
+
+  final String selected;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 12,
+      runSpacing: 10,
+      children: ['Home', 'Office', 'Other'].map((name) {
+        final isSelected = selected == name;
+        return Semantics(
+          button: true,
+          selected: isSelected,
+          label: '$name address nickname',
+          child: ChoiceChip(
+            label: Text(name),
+            selected: isSelected,
+            onSelected: (_) => onSelected(name),
+            showCheckmark: false,
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
+            labelStyle: TextStyle(
+              color: isSelected ? context.colors.onPrimary : context.appColors.text,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+            selectedColor: context.colors.primary,
+            backgroundColor: context.appColors.input,
+            side: BorderSide.none,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _AddressField extends StatelessWidget {
+  const _AddressField({
+    required this.label,
+    required this.hint,
+    required this.icon,
+    required this.controller,
+    this.keyboardType,
+    this.maxLength,
+  });
+
+  final String label;
+  final String hint;
+  final IconData icon;
+  final TextEditingController controller;
+  final TextInputType? keyboardType;
+  final int? maxLength;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _FieldLabel(label),
+        const SizedBox(height: 10),
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          maxLength: maxLength,
+          textInputAction: TextInputAction.next,
+          style: context.textTheme.bodyLarge?.copyWith(color: context.appColors.textStrong, fontSize: 17),
+          decoration: InputDecoration(
+            counterText: '',
+            filled: true,
+            fillColor: context.appColors.input,
+            prefixIcon: Icon(icon, color: context.appColors.text, size: 27),
+            hintText: hint,
+            hintStyle: context.textTheme.bodyLarge?.copyWith(color: context.appColors.textMuted, fontSize: 17),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 17),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: context.colors.primary, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+const _savedLocations = [
+  SavedMapLocation(title: 'Home', subtitle: 'Shaniwar Peth, Pune', position: LatLng(18.5196, 73.8554), icon: Icons.home),
+  SavedMapLocation(title: 'Work', subtitle: 'EON IT Park, Kharadi', position: LatLng(18.5515, 73.9511), icon: Icons.work),
+];
