@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, isLoading, child) {
           return AppScaffold(
             loading: isLoading,
-            padding: const EdgeInsets.symmetric(horizontal: 28),
+            padding: EdgeInsets.symmetric(horizontal: 28.w),
             backgroundColor: const Color(0xFFF4FAFF),
             body: Center(
               child: SingleChildScrollView(
@@ -104,17 +104,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const AppLogoMark(),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Text(
                         'Welcome Back',
                         textAlign: TextAlign.center,
                         style: context.textTheme.headlineLarge?.copyWith(
                           color: const Color(0xFF171B21),
-                          fontSize: 28,
+                          fontSize: 28.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6.h),
                       Text(
                         'Refresh your day with pure\nwater, delivered to your door.',
                         textAlign: TextAlign.center,
@@ -122,10 +122,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: const Color(0xFF4B5563),
                           height: 1.45,
                           fontWeight: FontWeight.w400,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       ),
-                      const SizedBox(height: 112),
+                      SizedBox(height: 112.h),
                       ValueListenableBuilder(
                         valueListenable: _showNameField,
                         builder: (context, show, child) {
@@ -180,11 +180,11 @@ class _LoginFormCard extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.all(32.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             AppTextFormFieldWidget(
               label: 'Mobile Number',
               controller: mobileController,
@@ -213,7 +213,7 @@ class _LoginFormCard extends StatelessWidget {
                   : null,
             ),
             if (showNameField) ...[
-              const SizedBox(height: 28),
+              SizedBox(height: 28.h),
               AppTextFormFieldWidget(
                 label: 'Full Name',
                 controller: nameController,
@@ -229,16 +229,16 @@ class _LoginFormCard extends StatelessWidget {
                 counterText: '',
               ),
             ],
-            const SizedBox(height: 42),
+            SizedBox(height: 42.h),
             ElevatedButton(
               onPressed: onSubmit,
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Get OTP'),
-                  SizedBox(width: 12),
-                  Icon(Icons.arrow_forward, size: 20),
+                  const Text('Get OTP'),
+                  SizedBox(width: 12.w),
+                  const Icon(Icons.arrow_forward, size: 20),
                 ],
               ),
             ),
@@ -255,7 +255,7 @@ class _CountryCodePrefix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: EdgeInsets.symmetric(horizontal: 4.w),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -266,9 +266,9 @@ class _CountryCodePrefix extends StatelessWidget {
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: 4.w),
           const Icon(Icons.keyboard_arrow_down, size: 22),
-          const SizedBox(width: 4),
+          SizedBox(width: 4.w),
           const SizedBox(
             height: 54,
             child: VerticalDivider(color: Color(0xFFC7CDDA), thickness: 1.6),

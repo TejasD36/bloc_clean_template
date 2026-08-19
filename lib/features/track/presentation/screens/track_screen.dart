@@ -13,7 +13,7 @@ class TrackScreen extends StatelessWidget {
         bottom: false,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+          padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 32.h),
           child: Column(
             crossAxisAlignment: .start,
             children: [
@@ -21,22 +21,25 @@ class TrackScreen extends StatelessWidget {
                 'Track',
                 style: context.textTheme.displayMedium?.copyWith(
                   color: context.appColors.textStrong,
-                  fontSize: 24,
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.w800,
                   height: 1.15,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Text(
                 'Check status of ongoing orders',
                 style: context.textTheme.labelLarge?.copyWith(
                   color: context.appColors.textMuted,
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              const SizedBox(height: 28),
-              _TrackingPanel(onCall: () => _message(context, 'Calling Ramesh Kumar'), onRoute: () => _routeSheet(context)),
+              SizedBox(height: 28.h),
+              _TrackingPanel(
+                onCall: () => _message(context, 'Calling Ramesh Kumar'),
+                onRoute: () => _routeSheet(context),
+              ),
             ],
           ),
         ),
@@ -61,9 +64,16 @@ class TrackScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Detailed Route', style: Theme.of(sheetContext).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+              Text(
+                'Detailed Route',
+                style: Theme.of(
+                  sheetContext,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
               const SizedBox(height: 8),
-              const Text('The tanker is heading to Baner, Pune via Highway 48.'),
+              const Text(
+                'The tanker is heading to Baner, Pune via Highway 48.',
+              ),
             ],
           ),
         ),
@@ -107,8 +117,13 @@ class _TrackingPanel extends StatelessWidget {
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFF0058BE),
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                   child: const Text('View Detailed Route'),
                 ),
@@ -139,11 +154,22 @@ class _OrderHeader extends StatelessWidget {
                   'Track Your Water',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Color(0xFF191C1E), fontSize: 24, fontWeight: FontWeight.w600, height: 1.33),
+                  style: TextStyle(
+                    color: Color(0xFF191C1E),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    height: 1.33,
+                  ),
                 ),
                 Text(
                   'Order #RD-24832',
-                  style: TextStyle(color: Color(0xFF424754), fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0.7, height: 1.43),
+                  style: TextStyle(
+                    color: Color(0xFF424754),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.7,
+                    height: 1.43,
+                  ),
                 ),
               ],
             ),
@@ -152,7 +178,10 @@ class _OrderHeader extends StatelessWidget {
           Container(
             height: 24,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(color: const Color(0x4D64A8FE), borderRadius: BorderRadius.circular(9999)),
+            decoration: BoxDecoration(
+              color: const Color(0x4D64A8FE),
+              borderRadius: BorderRadius.circular(9999),
+            ),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -160,7 +189,12 @@ class _OrderHeader extends StatelessWidget {
                 SizedBox(width: 4),
                 Text(
                   '12,000 L',
-                  style: TextStyle(color: Color(0xFF003C70), fontSize: 12, fontWeight: FontWeight.w500, height: 1.33),
+                  style: TextStyle(
+                    color: Color(0xFF003C70),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    height: 1.33,
+                  ),
                 ),
               ],
             ),
@@ -181,7 +215,10 @@ class _DriverProfile extends StatelessWidget {
     return Container(
       height: 88,
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(color: Color(0xFFF2F4F6), borderRadius: BorderRadius.all(Radius.circular(8))),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF2F4F6),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
       child: Row(
         children: [
           Stack(
@@ -190,8 +227,15 @@ class _DriverProfile extends StatelessWidget {
               Container(
                 width: 56,
                 height: 56,
-                decoration: const BoxDecoration(color: Color(0xFFEAF3FF), shape: BoxShape.circle),
-                child: const Icon(Icons.person, color: Color(0xFF0058BE), size: 34),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFEAF3FF),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.person,
+                  color: Color(0xFF0058BE),
+                  size: 34,
+                ),
               ),
               Positioned(
                 right: -4,
@@ -202,9 +246,16 @@ class _DriverProfile extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0xFF0058BE),
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFFF2F4F6), width: 2),
+                    border: Border.all(
+                      color: const Color(0xFFF2F4F6),
+                      width: 2,
+                    ),
                   ),
-                  child: const Icon(Icons.verified, color: Colors.white, size: 11),
+                  child: const Icon(
+                    Icons.verified,
+                    color: Colors.white,
+                    size: 11,
+                  ),
                 ),
               ),
             ],
@@ -217,11 +268,21 @@ class _DriverProfile extends StatelessWidget {
               children: [
                 Text(
                   'Ramesh Kumar',
-                  style: TextStyle(color: Color(0xFF191C1E), fontSize: 16, fontWeight: FontWeight.w400, height: 1.5),
+                  style: TextStyle(
+                    color: Color(0xFF191C1E),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    height: 1.5,
+                  ),
                 ),
                 Text(
                   'MH 12 AB\n3456',
-                  style: TextStyle(color: Color(0xFF424754), fontSize: 12, fontWeight: FontWeight.w500, height: 1.33),
+                  style: TextStyle(
+                    color: Color(0xFF424754),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    height: 1.33,
+                  ),
                 ),
               ],
             ),
@@ -233,7 +294,15 @@ class _DriverProfile extends StatelessWidget {
             child: InkWell(
               onTap: onCall,
               customBorder: const CircleBorder(),
-              child: const SizedBox(width: 40, height: 40, child: Icon(Icons.phone_outlined, color: Colors.white, size: 20)),
+              child: const SizedBox(
+                width: 40,
+                height: 40,
+                child: Icon(
+                  Icons.phone_outlined,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
             ),
           ),
         ],
@@ -255,11 +324,19 @@ class _StatusTimeline extends StatelessWidget {
             left: 11,
             top: 24,
             bottom: 30,
-            child: SizedBox(width: 2, child: ColoredBox(color: Color(0x330058BE))),
+            child: SizedBox(
+              width: 2,
+              child: ColoredBox(color: Color(0x330058BE)),
+            ),
           ),
           Column(
             children: [
-              _StatusStep(icon: Icons.check, title: 'Order Confirmed', detail: '10:45 AM', state: _StatusState.complete),
+              _StatusStep(
+                icon: Icons.check,
+                title: 'Order Confirmed',
+                detail: '10:45 AM',
+                state: _StatusState.complete,
+              ),
               _StatusStep(
                 icon: Icons.local_shipping_outlined,
                 title: 'Tanker Dispatched',
@@ -284,7 +361,13 @@ class _StatusTimeline extends StatelessWidget {
 enum _StatusState { complete, active, pending }
 
 class _StatusStep extends StatelessWidget {
-  const _StatusStep({required this.icon, required this.title, required this.detail, required this.state, this.eta});
+  const _StatusStep({
+    required this.icon,
+    required this.title,
+    required this.detail,
+    required this.state,
+    this.eta,
+  });
 
   final IconData icon;
   final String title;
@@ -314,7 +397,11 @@ class _StatusStep extends StatelessWidget {
                   ? Border.all(color: const Color(0x332170E4), width: 4)
                   : null,
             ),
-            child: Icon(icon, color: pending ? const Color(0xFF727785) : Colors.white, size: pending ? 8 : 14),
+            child: Icon(
+              icon,
+              color: pending ? const Color(0xFF727785) : Colors.white,
+              size: pending ? 8 : 14,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -329,14 +416,22 @@ class _StatusStep extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0.7, height: 1.43),
+                        style: TextStyle(
+                          color: color,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.7,
+                          height: 1.43,
+                        ),
                       ),
                       Text(
                         detail,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: active ? const Color(0xCC0058BE) : const Color(0xFF424754),
+                          color: active
+                              ? const Color(0xCC0058BE)
+                              : const Color(0xFF424754),
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           height: 1.33,
@@ -349,7 +444,12 @@ class _StatusStep extends StatelessWidget {
                 if (eta != null)
                   const Text(
                     '12 mins',
-                    style: TextStyle(color: Color(0xFF0058BE), fontSize: 12, fontWeight: FontWeight.w600, height: 1.33),
+                    style: TextStyle(
+                      color: Color(0xFF0058BE),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      height: 1.33,
+                    ),
                   ),
               ],
             ),

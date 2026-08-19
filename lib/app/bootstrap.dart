@@ -1,8 +1,14 @@
+import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
+
 import '../core/di/core_dependencies.dart';
 import '../core/di/injector.dart';
+import '../core/messaging/firebase_messaging_service.dart';
 import '../core/network/services/session_expiry_notifier.dart';
 import '../core/storage/hive_initializer.dart';
 import '../features/auth/xcore.dart';
+import '../firebase_options.dart';
 import 'router/app_route.dart';
 import 'router/app_router.dart';
 
@@ -10,10 +16,14 @@ class Bootstrap {
   Bootstrap._();
 
   static Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await HiveInitializer.initialize();
     await initCoreDependencies(sl);
 
     _wireSessionExpiryHandling();
+    unawaited(sl<FirebaseMessagingService>().initialize());
   }
 
   /// When any API reports an expired session (401), clear the persisted

@@ -32,7 +32,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!mounted) return;
 
-    final onboardingSeen = await sl<SecureStorageService>().read(StorageKeys.onboardingSeen);
+    final onboardingSeen = await sl<SecureStorageService>().read(
+      StorageKeys.onboardingSeen,
+    );
 
     if (!mounted) return;
 
@@ -52,7 +54,10 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future<void>.delayed(_minimumSplashDuration - elapsed);
   }
 
-  Future<void> _handleSplashState(BuildContext context, SplashState state) async {
+  Future<void> _handleSplashState(
+    BuildContext context,
+    SplashState state,
+  ) async {
     switch (state) {
       case SplashLoaded(:final data):
         final version = data.version;
@@ -107,7 +112,12 @@ class _SplashScreenState extends State<SplashScreen> {
               'A new version ($latestVersion) is available. '
               'Please update the app to continue.',
             ),
-            actions: [FilledButton(onPressed: _openStore, child: const Text('Update Now'))],
+            actions: [
+              FilledButton(
+                onPressed: _openStore,
+                child: const Text('Update Now'),
+              ),
+            ],
           ),
         );
       },
@@ -148,7 +158,12 @@ class _SplashScreenState extends State<SplashScreen> {
         BlocListener<SplashBloc, SplashState>(listener: _handleSplashState),
         BlocListener<AuthBloc, AuthState>(listener: _handleAuthState),
       ],
-      child: const AppScaffold(padding: EdgeInsets.zero, safeArea: false, backgroundColor: Color(0xFF40A8EF), body: _SplashContent()),
+      child: const AppScaffold(
+        padding: EdgeInsets.zero,
+        safeArea: false,
+        backgroundColor: Color(0xFF40A8EF),
+        body: _SplashContent(),
+      ),
     );
   }
 }
@@ -175,15 +190,19 @@ class _SplashContent extends StatelessWidget {
               children: [
                 const Spacer(flex: 48),
                 _LogoMark(tileSize: logoTileSize, imageSize: logoImageSize),
-                const SizedBox(height: 44),
+                SizedBox(height: 44.h),
                 Text(
                   'Pune Water Helpline',
                   textAlign: TextAlign.center,
-                  style: context.textTheme.displaySmall?.copyWith(color: Colors.white, fontSize: titleSize, fontWeight: FontWeight.w400),
+                  style: context.textTheme.displaySmall?.copyWith(
+                    color: Colors.white,
+                    fontSize: titleSize,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-                const SizedBox(height: 22),
+                SizedBox(height: 22.h),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
@@ -201,13 +220,17 @@ class _SplashContent extends StatelessWidget {
                 ),
                 const Spacer(flex: 52),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 72),
+                  padding: EdgeInsets.symmetric(horizontal: 72.w),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(999),
-                    child: const LinearProgressIndicator(minHeight: 6, color: Color(0xFF75F8E2), backgroundColor: Colors.transparent),
+                    child: const LinearProgressIndicator(
+                      minHeight: 6,
+                      color: Color(0xFF75F8E2),
+                      backgroundColor: Colors.transparent,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 42),
+                SizedBox(height: 42.h),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
@@ -245,13 +268,23 @@ class _LogoMark extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(tileSize * 0.3),
         border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 32, offset: const Offset(0, 22))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 32,
+            offset: const Offset(0, 22),
+          ),
+        ],
       ),
       child: SizedBox(
         width: tileSize,
         height: tileSize,
         child: Center(
-          child: Image.asset(Assets.logoAppIcon, width: imageSize, height: imageSize),
+          child: Image.asset(
+            Assets.logoAppIcon,
+            width: imageSize,
+            height: imageSize,
+          ),
         ),
       ),
     );
@@ -273,16 +306,35 @@ class _SplashWavePainter extends CustomPainter {
     final waveTop = size.height * 0.62;
     final shadowPath = Path()
       ..moveTo(0, waveTop + 42)
-      ..cubicTo(size.width * 0.25, waveTop - 8, size.width * 0.44, waveTop - 86, size.width, waveTop - 42)
+      ..cubicTo(
+        size.width * 0.25,
+        waveTop - 8,
+        size.width * 0.44,
+        waveTop - 86,
+        size.width,
+        waveTop - 42,
+      )
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawShadow(shadowPath, const Color(0xFF117FD8).withValues(alpha: 0.7), 18, false);
+    canvas.drawShadow(
+      shadowPath,
+      const Color(0xFF117FD8).withValues(alpha: 0.7),
+      18,
+      false,
+    );
 
     final wavePath = Path()
       ..moveTo(0, waveTop + 54)
-      ..cubicTo(size.width * 0.28, waveTop + 10, size.width * 0.48, waveTop - 78, size.width, waveTop - 28)
+      ..cubicTo(
+        size.width * 0.28,
+        waveTop + 10,
+        size.width * 0.48,
+        waveTop - 78,
+        size.width,
+        waveTop - 28,
+      )
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();

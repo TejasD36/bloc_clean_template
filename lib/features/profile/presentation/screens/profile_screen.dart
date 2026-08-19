@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: context.appColors.surfaceSoft,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+        padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 32.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,27 +27,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'Profile',
               style: context.textTheme.displayMedium?.copyWith(
                 color: context.appColors.textStrong,
-                fontSize: 24,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.w800,
                 height: 1.15,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               'Manage your account and preferences',
               style: context.textTheme.labelLarge?.copyWith(
                 color: context.appColors.textMuted,
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const SizedBox(height: 28),
+            SizedBox(height: 28.h),
             _SupportBanner(
               onTap: () => _showMessage(context, 'Support contact coming soon'),
             ),
-            const SizedBox(height: 34),
+            SizedBox(height: 34.h),
             const _SectionTitle(title: 'My Information'),
-            const SizedBox(height: 14),
+            SizedBox(height: 14.h),
             _ProfileCard(
               children: [
                 _ProfileRow(
@@ -59,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32.h),
             const _SectionTitle(title: 'Settings & Policies'),
             const SizedBox(height: 14),
             _ProfileCard(

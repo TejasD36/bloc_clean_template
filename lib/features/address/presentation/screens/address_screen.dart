@@ -40,7 +40,7 @@ class _AddressScreenState extends State<AddressScreen> {
       safeArea: false,
       backgroundColor: context.appColors.surfaceSoft,
       bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(24, 14, 24, 18),
+        minimum: EdgeInsets.fromLTRB(24.w, 14.h, 24.w, 18.h),
         child: SizedBox(
           height: 56,
           child: FilledButton(
@@ -66,7 +66,7 @@ class _AddressScreenState extends State<AddressScreen> {
         bottom: false,
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(24, 10, 24, 24),
+          padding: EdgeInsets.fromLTRB(24.w, 10.h, 24.w, 24.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

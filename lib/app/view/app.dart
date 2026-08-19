@@ -5,7 +5,11 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBlocProviders(
+    return ScreenUtilInit(
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: false,
+      builder: (_, child) => AppBlocProviders(child: child!),
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,

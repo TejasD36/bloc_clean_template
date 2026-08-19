@@ -51,7 +51,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _completeOnboarding() async {
-    await sl<SecureStorageService>().save(key: StorageKeys.onboardingSeen, value: 'true');
+    await sl<SecureStorageService>().save(
+      key: StorageKeys.onboardingSeen,
+      value: 'true',
+    );
     if (!mounted) return;
     context.read<AuthBloc>().add(const AuthEvent.checkAuthentication());
   }
@@ -62,7 +65,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       return;
     }
 
-    _pageController.nextPage(duration: const Duration(milliseconds: 280), curve: Curves.easeOutCubic);
+    _pageController.nextPage(
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   @override
@@ -88,31 +94,45 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 controller: _pageController,
                 itemCount: _pages.length,
                 onPageChanged: (index) => _currentPage.value = index,
-                itemBuilder: (context, index) => _OnboardingPage(data: _pages[index], onSkip: _completeOnboarding),
+                itemBuilder: (context, index) => _OnboardingPage(
+                  data: _pages[index],
+                  onSkip: _completeOnboarding,
+                ),
               ),
             ),
             ValueListenableBuilder(
               valueListenable: _currentPage,
               builder: (context, index, child) {
-                return _PageIndicator(itemCount: _pages.length, currentIndex: index);
+                return _PageIndicator(
+                  itemCount: _pages.length,
+                  currentIndex: index,
+                );
               },
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
+              padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 28.h),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(52),
                   backgroundColor: context.colors.primary,
                   foregroundColor: context.colors.onPrimary,
                   elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  textStyle: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  textStyle: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 onPressed: _onNextPressed,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
-                  children: [Text('Next'), SizedBox(width: 8), Icon(Icons.arrow_forward, size: 20)],
+                  children: [
+                    const Text('Next'),
+                    SizedBox(width: 8.w),
+                    const Icon(Icons.arrow_forward, size: 20),
+                  ],
                 ),
               ),
             ),
@@ -142,7 +162,7 @@ class _OnboardingPage extends StatelessWidget {
     final eyebrowSize = (screenWidth * 0.032).clamp(12.0, 14.0);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+      padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -151,21 +171,33 @@ class _OnboardingPage extends StatelessWidget {
               Expanded(
                 child: Text(
                   data.step,
-                  style: textTheme.displaySmall?.copyWith(color: const Color(0xFF171B21), fontSize: stepSize, fontWeight: FontWeight.w800),
+                  style: textTheme.displaySmall?.copyWith(
+                    color: const Color(0xFF171B21),
+                    fontSize: stepSize,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               TextButton(
                 onPressed: onSkip,
                 child: Text(
                   'Skip',
-                  style: textTheme.headlineMedium?.copyWith(color: const Color(0xFF4B5563), fontSize: 15, fontWeight: FontWeight.w400),
+                  style: textTheme.headlineMedium?.copyWith(
+                    color: const Color(0xFF4B5563),
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 40),
-          _OnboardingImageCard(image: data.image, bottomBadge: data.bottomBadge, height: imageHeight),
-          const SizedBox(height: 28),
+          SizedBox(height: 40.h),
+          _OnboardingImageCard(
+            image: data.image,
+            bottomBadge: data.bottomBadge,
+            height: imageHeight,
+          ),
+          SizedBox(height: 28.h),
           Text(
             data.eyebrow,
             textAlign: TextAlign.center,
@@ -176,7 +208,7 @@ class _OnboardingPage extends StatelessWidget {
               letterSpacing: 4,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             data.title,
             textAlign: TextAlign.center,
@@ -187,7 +219,7 @@ class _OnboardingPage extends StatelessWidget {
               height: 1.14,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             data.description,
             textAlign: TextAlign.center,
@@ -205,7 +237,11 @@ class _OnboardingPage extends StatelessWidget {
 }
 
 class _OnboardingImageCard extends StatelessWidget {
-  const _OnboardingImageCard({required this.image, required this.bottomBadge, required this.height});
+  const _OnboardingImageCard({
+    required this.image,
+    required this.bottomBadge,
+    required this.height,
+  });
 
   final String image;
   final String bottomBadge;
@@ -224,15 +260,23 @@ class _OnboardingImageCard extends StatelessWidget {
             Positioned(
               top: 16,
               right: 14,
-              child: _Badge(icon: Icons.verified, text: 'RELIABLE DELIVERY', foregroundColor: context.colors.primary),
+              child: _Badge(
+                icon: Icons.verified,
+                text: 'RELIABLE DELIVERY',
+                foregroundColor: context.colors.primary,
+              ),
             ),
             Positioned(
               left: 14,
               bottom: 16,
               child: _Badge(
-                icon: bottomBadge.contains('TRACK') ? Icons.timer : Icons.verified,
+                icon: bottomBadge.contains('TRACK')
+                    ? Icons.timer
+                    : Icons.verified,
                 text: bottomBadge,
-                foregroundColor: bottomBadge.contains('TRACK') ? const Color(0xFF007C78) : const Color(0xFF171B21),
+                foregroundColor: bottomBadge.contains('TRACK')
+                    ? const Color(0xFF007C78)
+                    : const Color(0xFF171B21),
               ),
             ),
           ],
@@ -243,7 +287,11 @@ class _OnboardingImageCard extends StatelessWidget {
 }
 
 class _Badge extends StatelessWidget {
-  const _Badge({required this.icon, required this.text, required this.foregroundColor});
+  const _Badge({
+    required this.icon,
+    required this.text,
+    required this.foregroundColor,
+  });
 
   final IconData icon;
   final String text;
@@ -255,20 +303,26 @@ class _Badge extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.10), blurRadius: 16, offset: const Offset(0, 8))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: foregroundColor, size: 16),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Text(
               text,
               style: context.textTheme.titleMedium?.copyWith(
                 color: foregroundColor,
-                fontSize: 11,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.8,
               ),
@@ -297,7 +351,7 @@ class _PageIndicator extends StatelessWidget {
           curve: Curves.easeOutCubic,
           width: active ? 34 : 10,
           height: 10,
-          margin: const EdgeInsets.symmetric(horizontal: 5),
+          margin: EdgeInsets.symmetric(horizontal: 5.w),
           decoration: BoxDecoration(
             color: active ? context.colors.primary : const Color(0xFFC4CDDA),
             borderRadius: BorderRadius.circular(999),

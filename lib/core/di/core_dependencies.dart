@@ -3,10 +3,14 @@ import 'package:get_it/get_it.dart';
 import '../../features/auth/di/auth_dependencies.dart';
 import '../../features/common/dependencies/common_dependencies.dart';
 import '../../features/splash/di/splash_dependencies.dart';
+import '../messaging/firebase_messaging_service.dart';
 import '../network/network_di.dart';
 import 'storage_dependencies.dart';
 
 Future<void> initCoreDependencies(GetIt sl) async {
+  sl.registerLazySingleton<FirebaseMessagingService>(
+    () => FirebaseMessagingService.instance,
+  );
   await initStorageDependencies(sl);
   await initNetworkDependencies(sl);
 

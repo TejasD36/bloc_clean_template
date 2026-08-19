@@ -82,8 +82,15 @@ class _OtpScreenState extends State<OtpScreen> {
       return;
     }
 
+    final firebaseToken = await sl<FirebaseMessagingService>().getToken();
+    if (!mounted) return;
+
     context.read<AuthBloc>().add(
-      AuthEvent.verifyOtp(phoneNumber: widget.args.mobileNumber, otp: otp),
+      AuthEvent.verifyOtp(
+        phoneNumber: widget.args.mobileNumber,
+        otp: otp,
+        firebaseToken: firebaseToken,
+      ),
     );
   }
 
@@ -127,7 +134,7 @@ class _OtpScreenState extends State<OtpScreen> {
       listener: _handleAuthState,
       child: AppScaffold(
         loading: _verifying,
-        padding: const EdgeInsets.symmetric(horizontal: 28),
+        padding: EdgeInsets.symmetric(horizontal: 28.w),
         appBar: AppBar(),
         backgroundColor: const Color(0xFFF4FAFF),
         body: Center(
@@ -135,9 +142,9 @@ class _OtpScreenState extends State<OtpScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
                 const AppLogoMark(),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   "We've sent a 6-digit verification\ncode to",
                   textAlign: TextAlign.center,
@@ -146,7 +153,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -156,7 +163,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         textAlign: TextAlign.center,
                         style: context.textTheme.displayLarge?.copyWith(
                           color: const Color(0xFF171B21),
-                          fontSize: 24,
+                          fontSize: 24.sp,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -171,7 +178,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
                 AppOtpField(
                   controller: _otpController,
                   focusNode: _otpFocusNode,
@@ -186,7 +193,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     _verifyOtp();
                   },
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
                 TextButton(
                   onPressed: _secondsRemaining == 0 ? _resendOtp : null,
                   child: Text(
@@ -203,20 +210,20 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 188),
+                SizedBox(height: 188.h),
                 ElevatedButton(
                   onPressed: _verifyOtp,
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Verify & Continue'),
-                      SizedBox(width: 12),
-                      Icon(Icons.arrow_forward, size: 32),
+                      const Text('Verify & Continue'),
+                      SizedBox(width: 12.w),
+                      const Icon(Icons.arrow_forward, size: 32),
                     ],
                   ),
                 ),
-                const SizedBox(height: 28),
+                SizedBox(height: 28.h),
               ],
             ),
           ),
