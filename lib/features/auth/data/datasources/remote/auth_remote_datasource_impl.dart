@@ -26,6 +26,16 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   });
 
   @override
+  Future<Either<AppException, ResultMessage>> logout() {
+    return apiService
+        .postApi<ResultMessage>(
+          AuthEndpoints.logout,
+          const ObjectMapper(ResultMessage.fromJson),
+        )
+        .mapMessage();
+  }
+
+  @override
   Future<Either<AppException, SendOtpResponseDto>> sendOtp(
     SendOtpRequestDto request,
   ) {

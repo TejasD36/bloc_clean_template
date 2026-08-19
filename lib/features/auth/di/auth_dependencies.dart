@@ -30,6 +30,7 @@ Future<void> initAuthDependencies(GetIt sl) async {
   sl.registerLazySingleton(() => ResendOtpUseCase(sl()));
   sl.registerLazySingleton(() => CheckAuthenticationUseCase(sl()));
   sl.registerLazySingleton(() => VerifyOtpUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(sl()));
 
   // Blocs
   sl.registerFactory(

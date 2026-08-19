@@ -14,6 +14,7 @@ export 'domain/entities/auth_credentials.dart';
 export 'domain/entities/session_entity.dart';
 export 'domain/entities/user_entity.dart';
 export 'domain/repositories/auth_repository.dart';
+export 'domain/usecases/logout_usecase.dart';
 export 'presentation/bloc/auth_bloc.dart';
 export 'presentation/bloc/auth_event.dart';
 export 'presentation/bloc/auth_state.dart';

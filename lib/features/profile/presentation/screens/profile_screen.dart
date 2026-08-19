@@ -1,7 +1,15 @@
 import '../../../../core.dart';
+import '../../../auth/xcore.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isLoggingOut = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +35,16 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'Manage your account and preferences',
-              style: context.textTheme.labelLarge?.copyWith(color: context.appColors.textMuted, fontSize: 20, fontWeight: FontWeight.w400),
+              style: context.textTheme.labelLarge?.copyWith(
+                color: context.appColors.textMuted,
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+              ),
             ),
             const SizedBox(height: 28),
-            _SupportBanner(onTap: () => _showMessage(context, 'Support contact coming soon')),
+            _SupportBanner(
+              onTap: () => _showMessage(context, 'Support contact coming soon'),
+            ),
             const SizedBox(height: 34),
             const _SectionTitle(title: 'My Information'),
             const SizedBox(height: 14),
@@ -40,7 +54,8 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.location_on_outlined,
                   title: 'Address',
                   subtitle: 'Baner, Pune - 411045, Maharashtra',
-                  onTap: () => _showMessage(context, 'Address editing coming soon'),
+                  onTap: () =>
+                      _showMessage(context, 'Address editing coming soon'),
                 ),
               ],
             ),
@@ -52,16 +67,22 @@ class ProfileScreen extends StatelessWidget {
                 _ProfileRow(
                   icon: Icons.shield_outlined,
                   title: 'Privacy Policy',
-                  onTap: () => _showMessage(context, 'Privacy Policy coming soon'),
+                  onTap: () =>
+                      _showMessage(context, 'Privacy Policy coming soon'),
                 ),
                 const _ProfileDivider(),
                 _ProfileRow(
                   icon: Icons.description_outlined,
                   title: 'Terms & Conditions',
-                  onTap: () => _showMessage(context, 'Terms & Conditions coming soon'),
+                  onTap: () =>
+                      _showMessage(context, 'Terms & Conditions coming soon'),
                 ),
                 const _ProfileDivider(),
-                _ProfileRow(icon: Icons.info_outline, title: 'About Us', onTap: () => _showMessage(context, 'About Us coming soon')),
+                _ProfileRow(
+                  icon: Icons.info_outline,
+                  title: 'About Us',
+                  onTap: () => _showMessage(context, 'About Us coming soon'),
+                ),
               ],
             ),
             const SizedBox(height: 32),
@@ -71,8 +92,10 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.logout,
                   title: 'Log Out',
                   foregroundColor: context.appColors.error,
-                  iconBackgroundColor: context.appColors.error.withValues(alpha: 0.08),
-                  onTap: () => _confirmLogout(context),
+                  iconBackgroundColor: context.appColors.error.withValues(
+                    alpha: 0.08,
+                  ),
+                  onTap: _confirmLogout,
                 ),
               ],
             ),
@@ -88,20 +111,44 @@ class ProfileScreen extends StatelessWidget {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  static Future<void> _confirmLogout(BuildContext context) async {
+  Future<void> _confirmLogout() async {
+    if (_isLoggingOut) return;
+
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Log out?'),
-        content: const Text('Are you sure you want to log out of your account?'),
+        content: const Text(
+          'Are you sure you want to log out of your account?',
+        ),
         actions: [
-          TextButton(onPressed: () => dialogContext.pop(false), child: const Text('Cancel')),
-          FilledButton(onPressed: () => dialogContext.pop(true), child: const Text('Log Out')),
+          TextButton(
+            onPressed: () => dialogContext.pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => dialogContext.pop(true),
+            child: const Text('Log Out'),
+          ),
         ],
       ),
     );
-    if (shouldLogout == true && context.mounted) {
-      _showMessage(context, 'You have been logged out');
+    if (shouldLogout != true || !mounted) return;
+
+    setState(() => _isLoggingOut = true);
+    await sl<LogoutUseCase>()().when(
+      onFailure: (failure) {
+        if (!mounted) return;
+        setState(() => _isLoggingOut = false);
+        _showMessage(context, failure.message);
+      },
+      onSuccess: (_) {
+        if (!mounted) return;
+        context.go(AppRoute.login.path);
+      },
+    );
+    if (mounted && _isLoggingOut) {
+      setState(() => _isLoggingOut = false);
     }
   }
 }
@@ -115,7 +162,11 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: context.textTheme.titleMedium?.copyWith(color: context.appColors.textStrong, fontSize: 20, fontWeight: FontWeight.w800),
+      style: context.textTheme.titleMedium?.copyWith(
+        color: context.appColors.textStrong,
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+      ),
     );
   }
 }
@@ -143,8 +194,15 @@ class _SupportBanner extends StatelessWidget {
               Container(
                 width: 50,
                 height: 50,
-                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), shape: BoxShape.circle),
-                child: const Icon(Icons.headset_mic_outlined, color: Colors.white, size: 25),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.18),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.headset_mic_outlined,
+                  color: Colors.white,
+                  size: 25,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -153,10 +211,20 @@ class _SupportBanner extends StatelessWidget {
                   children: [
                     const Text(
                       'Need Help?',
-                      style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const SizedBox(height: 2),
-                    Text("We're here to help you", style: TextStyle(color: Colors.white.withValues(alpha: 0.90), fontSize: 12)),
+                    Text(
+                      "We're here to help you",
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.90),
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -169,12 +237,20 @@ class _SupportBanner extends StatelessWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: primary,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Contact Support', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                      Text(
+                        'Contact Support',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       SizedBox(width: 2),
                       Icon(Icons.chevron_right, size: 20),
                     ],
@@ -239,7 +315,10 @@ class _ProfileRow extends StatelessWidget {
               Container(
                 width: 40,
                 height: 40,
-                decoration: BoxDecoration(color: iconBackgroundColor ?? context.appColors.primarySoft, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: iconBackgroundColor ?? context.appColors.primarySoft,
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(icon, color: primary, size: 20),
               ),
               const SizedBox(width: 16),
@@ -262,14 +341,21 @@ class _ProfileRow extends StatelessWidget {
                         subtitle!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: context.textTheme.bodyLarge?.copyWith(color: context.appColors.textMuted, fontSize: 14),
+                        style: context.textTheme.bodyLarge?.copyWith(
+                          color: context.appColors.textMuted,
+                          fontSize: 14,
+                        ),
                       ),
                     ],
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(Icons.chevron_right, color: context.appColors.textDisabled, size: 28),
+              Icon(
+                Icons.chevron_right,
+                color: context.appColors.textDisabled,
+                size: 28,
+              ),
             ],
           ),
         ),
@@ -282,5 +368,9 @@ class _ProfileDivider extends StatelessWidget {
   const _ProfileDivider();
 
   @override
-  Widget build(BuildContext context) => Divider(height: 1, thickness: 1, color: context.appColors.divider.withValues(alpha: 0.55));
+  Widget build(BuildContext context) => Divider(
+    height: 1,
+    thickness: 1,
+    color: context.appColors.divider.withValues(alpha: 0.55),
+  );
 }

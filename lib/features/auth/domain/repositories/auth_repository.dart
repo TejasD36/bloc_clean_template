@@ -5,6 +5,8 @@ import '../entities/send_otp_entity.dart';
 import '../entities/session_entity.dart';
 
 abstract interface class AuthRepository {
+  Future<Either<AppException, ResultMessage>> logout();
+
   Future<Either<AppException, SendOtpEntity>> sendOtp({
     required String phoneNumber,
     String? name,

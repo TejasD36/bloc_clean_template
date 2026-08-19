@@ -3,7 +3,10 @@ import '../constants/header_key.dart';
 class ApiConfig {
   const ApiConfig._();
 
-  static const String baseUrl = String.fromEnvironment('baseUrl', defaultValue: 'https://api.example.com/');
+  static const String baseUrl = String.fromEnvironment(
+    'baseUrl',
+    defaultValue: 'https://slategray-donkey-607049.hostingersite.com/',
+  );
 
   static const Duration connectTimeout = Duration(seconds: 30);
 

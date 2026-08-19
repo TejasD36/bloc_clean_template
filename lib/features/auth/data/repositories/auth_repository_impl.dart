@@ -19,6 +19,16 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDatasource _authLocalDatasource;
 
   @override
+  Future<Either<AppException, ResultMessage>> logout() async {
+    final result = await _authRemoteDatasource.logout();
+
+    return result.fold(Left.new, (message) async {
+      await _authLocalDatasource.clearAuthData();
+      return Right<AppException, ResultMessage>(message);
+    });
+  }
+
+  @override
   Future<Either<AppException, SendOtpEntity>> sendOtp({
     required String phoneNumber,
     String? name,

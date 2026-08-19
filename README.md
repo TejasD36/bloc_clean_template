@@ -1,19 +1,77 @@
-# Bloc Clean Template
+# Pune Water Helpline
 
-A Flutter BLoC clean architecture starter template with email auth, routing,
-dependency injection, theme setup, networking, and local storage.
+Flutter customer application for booking, tracking, and managing water
+delivery services in Pune.
 
-## Getting Started
+## Requirements
 
-This project is a starting point for Flutter applications that use BLoC and a
-clean feature structure.
+- Flutter SDK compatible with the Dart SDK constraint in `pubspec.yaml`
+- Android Studio or Xcode for platform builds
+- Google Maps API keys configured for Android and iOS
 
-A few resources to get you started if this is your first Flutter project:
+## Run
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```bash
+flutter pub get
+flutter run
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference. 
+The API base URL defaults to:
+
+```text
+https://slategray-donkey-607049.hostingersite.com/
+```
+
+Override it for another environment with:
+
+```bash
+flutter run --dart-define=baseUrl=https://example.com/
+```
+
+## Authentication
+
+Authentication uses OTP verification. After a successful verification:
+
+- The JWT is stored in secure storage.
+- The authenticated user is stored locally in Hive.
+- Authenticated requests receive the bearer token through the network interceptor.
+
+### Logout
+
+Logout is handled from the Profile screen using:
+
+```text
+POST /api/v1/customer/auth/logout
+```
+
+After a successful logout response, the JWT and locally stored user data are
+cleared before navigating to the login screen.
+
+### Expired Sessions
+
+Any authenticated API response with HTTP `401` is treated as an expired or
+invalid session. The global session handler clears the JWT and user data, then
+navigates the user to the login screen. This also handles a failed logout
+request caused by an invalid token.
+
+## Project Structure
+
+Feature modules are organized using clean architecture:
+
+```text
+lib/features/<feature>/
+  data/          Remote/local data sources, DTOs, mappers, repositories
+  domain/        Entities, repository contracts, use cases
+  presentation/ Screens, widgets, and BLoCs
+```
+
+Shared networking, dependency injection, theme, and storage code lives under
+`lib/core/`.
+
+## Validation
+
+Run static analysis with:
+
+```bash
+flutter analyze
+```

@@ -8,6 +8,8 @@ import '../../models/dtos/send_otp_response_dto.dart';
 import '../../models/dtos/verify_otp_request_dto.dart';
 
 abstract interface class AuthRemoteDatasource {
+  Future<Either<AppException, ResultMessage>> logout();
+
   Future<Either<AppException, SendOtpResponseDto>> sendOtp(
     SendOtpRequestDto request,
   );
