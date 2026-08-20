@@ -13,5 +13,6 @@ class HiveInitializer {
     Hive.registerAdapters();
 
     await Hive.openBox<UserDto>(HiveBoxes.user);
+    await Hive.openBox(HiveBoxes.notificationRateLimits);
   }
 }

@@ -2,4 +2,5 @@ class HiveBoxes {
   const HiveBoxes._();
 
   static const user = 'user';
+  static const notificationRateLimits = 'notificationRateLimits';
 }

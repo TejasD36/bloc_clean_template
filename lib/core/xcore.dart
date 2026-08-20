@@ -8,6 +8,7 @@ export 'extensions/either_extensions.dart';
 export 'extensions/future_either_extensions.dart';
 export 'logger/logger_service.dart';
 export 'messaging/firebase_messaging_service.dart';
+export 'messaging/notification/xcore.dart';
 export 'network/base_api_service.dart';
 export 'network/config/api_config.dart';
 export 'network/config/dio_factory.dart';

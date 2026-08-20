@@ -35,7 +35,7 @@ dependencies:
   geolocator: ^14.0.3
   flutter_screenutil: ^5.9.3
   firebase_messaging: ^16.5.0
-
+  awesome_notifications: ^0.12.1
 dev_dependencies:
   bloc_concurrency: ^0.3.0
   build_runner: ^2.15.0
