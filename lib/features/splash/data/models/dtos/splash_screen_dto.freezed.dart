@@ -323,7 +323,7 @@ $BusinessSettingsDtoCopyWith<$Res> get businessSettings {
 /// @nodoc
 mixin _$AppVersionDto {
 
- String get platform; String get currentVersion; String get latestVersion; bool get isUpdateAvailable; bool get isForceUpdate;
+ String get platform; String get currentVersion; String get latestVersion; bool get isUpdateAvailable; bool get isForceUpdate; String? get whatsNewMessage; String? get storeUrl;
 /// Create a copy of AppVersionDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -336,16 +336,16 @@ $AppVersionDtoCopyWith<AppVersionDto> get copyWith => _$AppVersionDtoCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppVersionDto&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.currentVersion, currentVersion) || other.currentVersion == currentVersion)&&(identical(other.latestVersion, latestVersion) || other.latestVersion == latestVersion)&&(identical(other.isUpdateAvailable, isUpdateAvailable) || other.isUpdateAvailable == isUpdateAvailable)&&(identical(other.isForceUpdate, isForceUpdate) || other.isForceUpdate == isForceUpdate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppVersionDto&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.currentVersion, currentVersion) || other.currentVersion == currentVersion)&&(identical(other.latestVersion, latestVersion) || other.latestVersion == latestVersion)&&(identical(other.isUpdateAvailable, isUpdateAvailable) || other.isUpdateAvailable == isUpdateAvailable)&&(identical(other.isForceUpdate, isForceUpdate) || other.isForceUpdate == isForceUpdate)&&(identical(other.whatsNewMessage, whatsNewMessage) || other.whatsNewMessage == whatsNewMessage)&&(identical(other.storeUrl, storeUrl) || other.storeUrl == storeUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,platform,currentVersion,latestVersion,isUpdateAvailable,isForceUpdate);
+int get hashCode => Object.hash(runtimeType,platform,currentVersion,latestVersion,isUpdateAvailable,isForceUpdate,whatsNewMessage,storeUrl);
 
 @override
 String toString() {
-  return 'AppVersionDto(platform: $platform, currentVersion: $currentVersion, latestVersion: $latestVersion, isUpdateAvailable: $isUpdateAvailable, isForceUpdate: $isForceUpdate)';
+  return 'AppVersionDto(platform: $platform, currentVersion: $currentVersion, latestVersion: $latestVersion, isUpdateAvailable: $isUpdateAvailable, isForceUpdate: $isForceUpdate, whatsNewMessage: $whatsNewMessage, storeUrl: $storeUrl)';
 }
 
 
@@ -356,7 +356,7 @@ abstract mixin class $AppVersionDtoCopyWith<$Res>  {
   factory $AppVersionDtoCopyWith(AppVersionDto value, $Res Function(AppVersionDto) _then) = _$AppVersionDtoCopyWithImpl;
 @useResult
 $Res call({
- String platform, String currentVersion, String latestVersion, bool isUpdateAvailable, bool isForceUpdate
+ String platform, String currentVersion, String latestVersion, bool isUpdateAvailable, bool isForceUpdate, String? whatsNewMessage, String? storeUrl
 });
 
 
@@ -373,14 +373,16 @@ class _$AppVersionDtoCopyWithImpl<$Res>
 
 /// Create a copy of AppVersionDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? platform = null,Object? currentVersion = null,Object? latestVersion = null,Object? isUpdateAvailable = null,Object? isForceUpdate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? platform = null,Object? currentVersion = null,Object? latestVersion = null,Object? isUpdateAvailable = null,Object? isForceUpdate = null,Object? whatsNewMessage = freezed,Object? storeUrl = freezed,}) {
   return _then(_self.copyWith(
 platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
 as String,currentVersion: null == currentVersion ? _self.currentVersion : currentVersion // ignore: cast_nullable_to_non_nullable
 as String,latestVersion: null == latestVersion ? _self.latestVersion : latestVersion // ignore: cast_nullable_to_non_nullable
 as String,isUpdateAvailable: null == isUpdateAvailable ? _self.isUpdateAvailable : isUpdateAvailable // ignore: cast_nullable_to_non_nullable
 as bool,isForceUpdate: null == isForceUpdate ? _self.isForceUpdate : isForceUpdate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,whatsNewMessage: freezed == whatsNewMessage ? _self.whatsNewMessage : whatsNewMessage // ignore: cast_nullable_to_non_nullable
+as String?,storeUrl: freezed == storeUrl ? _self.storeUrl : storeUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -465,10 +467,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String platform,  String currentVersion,  String latestVersion,  bool isUpdateAvailable,  bool isForceUpdate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String platform,  String currentVersion,  String latestVersion,  bool isUpdateAvailable,  bool isForceUpdate,  String? whatsNewMessage,  String? storeUrl)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppVersionDto() when $default != null:
-return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.isUpdateAvailable,_that.isForceUpdate);case _:
+return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.isUpdateAvailable,_that.isForceUpdate,_that.whatsNewMessage,_that.storeUrl);case _:
   return orElse();
 
 }
@@ -486,10 +488,10 @@ return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String platform,  String currentVersion,  String latestVersion,  bool isUpdateAvailable,  bool isForceUpdate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String platform,  String currentVersion,  String latestVersion,  bool isUpdateAvailable,  bool isForceUpdate,  String? whatsNewMessage,  String? storeUrl)  $default,) {final _that = this;
 switch (_that) {
 case _AppVersionDto():
-return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.isUpdateAvailable,_that.isForceUpdate);case _:
+return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.isUpdateAvailable,_that.isForceUpdate,_that.whatsNewMessage,_that.storeUrl);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -506,10 +508,10 @@ return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.is
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String platform,  String currentVersion,  String latestVersion,  bool isUpdateAvailable,  bool isForceUpdate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String platform,  String currentVersion,  String latestVersion,  bool isUpdateAvailable,  bool isForceUpdate,  String? whatsNewMessage,  String? storeUrl)?  $default,) {final _that = this;
 switch (_that) {
 case _AppVersionDto() when $default != null:
-return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.isUpdateAvailable,_that.isForceUpdate);case _:
+return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.isUpdateAvailable,_that.isForceUpdate,_that.whatsNewMessage,_that.storeUrl);case _:
   return null;
 
 }
@@ -521,7 +523,7 @@ return $default(_that.platform,_that.currentVersion,_that.latestVersion,_that.is
 @JsonSerializable()
 
 class _AppVersionDto implements AppVersionDto {
-  const _AppVersionDto({this.platform = '', this.currentVersion = '', this.latestVersion = '', this.isUpdateAvailable = false, this.isForceUpdate = false});
+  const _AppVersionDto({this.platform = '', this.currentVersion = '', this.latestVersion = '', this.isUpdateAvailable = false, this.isForceUpdate = false, this.whatsNewMessage, this.storeUrl});
   factory _AppVersionDto.fromJson(Map<String, dynamic> json) => _$AppVersionDtoFromJson(json);
 
 @override@JsonKey() final  String platform;
@@ -529,6 +531,8 @@ class _AppVersionDto implements AppVersionDto {
 @override@JsonKey() final  String latestVersion;
 @override@JsonKey() final  bool isUpdateAvailable;
 @override@JsonKey() final  bool isForceUpdate;
+@override final  String? whatsNewMessage;
+@override final  String? storeUrl;
 
 /// Create a copy of AppVersionDto
 /// with the given fields replaced by the non-null parameter values.
@@ -543,16 +547,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppVersionDto&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.currentVersion, currentVersion) || other.currentVersion == currentVersion)&&(identical(other.latestVersion, latestVersion) || other.latestVersion == latestVersion)&&(identical(other.isUpdateAvailable, isUpdateAvailable) || other.isUpdateAvailable == isUpdateAvailable)&&(identical(other.isForceUpdate, isForceUpdate) || other.isForceUpdate == isForceUpdate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppVersionDto&&(identical(other.platform, platform) || other.platform == platform)&&(identical(other.currentVersion, currentVersion) || other.currentVersion == currentVersion)&&(identical(other.latestVersion, latestVersion) || other.latestVersion == latestVersion)&&(identical(other.isUpdateAvailable, isUpdateAvailable) || other.isUpdateAvailable == isUpdateAvailable)&&(identical(other.isForceUpdate, isForceUpdate) || other.isForceUpdate == isForceUpdate)&&(identical(other.whatsNewMessage, whatsNewMessage) || other.whatsNewMessage == whatsNewMessage)&&(identical(other.storeUrl, storeUrl) || other.storeUrl == storeUrl));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,platform,currentVersion,latestVersion,isUpdateAvailable,isForceUpdate);
+int get hashCode => Object.hash(runtimeType,platform,currentVersion,latestVersion,isUpdateAvailable,isForceUpdate,whatsNewMessage,storeUrl);
 
 @override
 String toString() {
-  return 'AppVersionDto(platform: $platform, currentVersion: $currentVersion, latestVersion: $latestVersion, isUpdateAvailable: $isUpdateAvailable, isForceUpdate: $isForceUpdate)';
+  return 'AppVersionDto(platform: $platform, currentVersion: $currentVersion, latestVersion: $latestVersion, isUpdateAvailable: $isUpdateAvailable, isForceUpdate: $isForceUpdate, whatsNewMessage: $whatsNewMessage, storeUrl: $storeUrl)';
 }
 
 
@@ -563,7 +567,7 @@ abstract mixin class _$AppVersionDtoCopyWith<$Res> implements $AppVersionDtoCopy
   factory _$AppVersionDtoCopyWith(_AppVersionDto value, $Res Function(_AppVersionDto) _then) = __$AppVersionDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String platform, String currentVersion, String latestVersion, bool isUpdateAvailable, bool isForceUpdate
+ String platform, String currentVersion, String latestVersion, bool isUpdateAvailable, bool isForceUpdate, String? whatsNewMessage, String? storeUrl
 });
 
 
@@ -580,14 +584,16 @@ class __$AppVersionDtoCopyWithImpl<$Res>
 
 /// Create a copy of AppVersionDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? platform = null,Object? currentVersion = null,Object? latestVersion = null,Object? isUpdateAvailable = null,Object? isForceUpdate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? platform = null,Object? currentVersion = null,Object? latestVersion = null,Object? isUpdateAvailable = null,Object? isForceUpdate = null,Object? whatsNewMessage = freezed,Object? storeUrl = freezed,}) {
   return _then(_AppVersionDto(
 platform: null == platform ? _self.platform : platform // ignore: cast_nullable_to_non_nullable
 as String,currentVersion: null == currentVersion ? _self.currentVersion : currentVersion // ignore: cast_nullable_to_non_nullable
 as String,latestVersion: null == latestVersion ? _self.latestVersion : latestVersion // ignore: cast_nullable_to_non_nullable
 as String,isUpdateAvailable: null == isUpdateAvailable ? _self.isUpdateAvailable : isUpdateAvailable // ignore: cast_nullable_to_non_nullable
 as bool,isForceUpdate: null == isForceUpdate ? _self.isForceUpdate : isForceUpdate // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,whatsNewMessage: freezed == whatsNewMessage ? _self.whatsNewMessage : whatsNewMessage // ignore: cast_nullable_to_non_nullable
+as String?,storeUrl: freezed == storeUrl ? _self.storeUrl : storeUrl // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

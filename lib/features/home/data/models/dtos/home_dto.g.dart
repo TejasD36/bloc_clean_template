@@ -6,6 +6,6 @@ part of 'home_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_HomeDto _$HomeDtoFromJson(Map<String, dynamic> json) => const _HomeDto();
+_HomeDto _$HomeDtoFromJson(Map<String, dynamic> json) => _HomeDto();
 
 Map<String, dynamic> _$HomeDtoToJson(_HomeDto instance) => <String, dynamic>{};

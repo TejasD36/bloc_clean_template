@@ -16,9 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _placesService = GooglePlacesService();
 
   final ValueNotifier _userName = ValueNotifier<String>('there');
-  final ValueNotifier _location = ValueNotifier<String>(
-    'Finding your current location...',
-  );
+  final ValueNotifier _location = ValueNotifier<String>('Finding your current location...');
   final TextEditingController searchController = TextEditingController();
 
   @override
@@ -53,20 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
         _setLocation('Select a location to continue');
         return;
       }
 
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ),
-      );
-      final place = await _placesService.reverseGeocode(
-        LatLng(position.latitude, position.longitude),
-      );
+      final position = await Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+      final place = await _placesService.reverseGeocode(LatLng(position.latitude, position.longitude));
       final address = place?.formattedAddress.trim();
       final fallbackAddress = place?.street.trim() ?? place?.name.trim();
       _setLocation(
@@ -108,11 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: const _HomeAppBar(),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 28.h),
+        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 112.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 12.h),
             ValueListenableBuilder(
               valueListenable: _userName,
               builder: (context, value, child) {
@@ -120,14 +110,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Good Morning, $value',
                   style: context.textTheme.displayLarge?.copyWith(
                     color: const Color(0xFF171B21),
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w800,
-                    height: 1.15,
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w700,
+                    height: 36 / 28,
                   ),
                 );
               },
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 16.h),
             ValueListenableBuilder(
               valueListenable: _location,
               builder: (context, value, child) {
@@ -135,20 +125,23 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             SizedBox(height: 24.h),
-            AppSearchBar(
-              controller: searchController,
-              hintText: 'What service are you looking for?',
+            AppSearchBar(controller: searchController, hintText: 'What service are you looking for?'),
+            SizedBox(height: 24.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Our Services',
+                  style: context.textTheme.displayMedium?.copyWith(
+                    color: const Color(0xFF191C1E),
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    height: 28 / 22,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 28.h),
-            Text(
-              'Our Services',
-              style: context.textTheme.displayMedium?.copyWith(
-                color: const Color(0xFF171B21),
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            SizedBox(height: 18.h),
+            SizedBox(height: 16.h),
             const _ServiceGrid(services: _services),
           ],
         ),
@@ -161,39 +154,41 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const _HomeAppBar();
 
   @override
-  Size get preferredSize => Size.fromHeight(75.h);
+  Size get preferredSize => Size.fromHeight(80.h);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xCCF7F9FC),
       surfaceTintColor: Colors.transparent,
       elevation: 1,
-      shadowColor: Colors.black.withValues(alpha: 0.08),
+      shadowColor: Colors.black.withValues(alpha: 0.05),
       toolbarHeight: preferredSize.height,
-      titleSpacing: 24.w,
+      titleSpacing: 20.w,
       title: Row(
         children: [
           Container(
-            width: 42.w,
-            height: 42.h,
+            width: 40.w,
+            height: 40.h,
             decoration: BoxDecoration(
+              color: const Color(0xFFE3EEFA),
               shape: BoxShape.circle,
-              border: Border.all(width: 3, color: context.colors.primary),
+              border: Border.all(width: 2, color: const Color(0xFF0073E0)),
             ),
-            child: Icon(Icons.person, color: context.colors.primary, size: 25),
+            child: Icon(Icons.person, color: context.colors.primary, size: 28.w),
           ),
-          SizedBox(width: 16.w),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(
               'Pune Water Helpline',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.displaySmall?.copyWith(
-                color: context.colors.primary,
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w800,
+                color: const Color(0xFF005AB3),
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                height: 22 / 20,
               ),
             ),
           ),
@@ -212,37 +207,29 @@ class _LocationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(14),
-      elevation: 10,
-      shadowColor: Colors.black.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(12.r),
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12.r),
         onTap: () => context.push(AppRoute.address.path),
         child: Container(
-          constraints: const BoxConstraints(minHeight: 40),
+          height: 80.h,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12.r),
             border: Border(
-              left: BorderSide(color: context.colors.primary, width: 6),
+              left: BorderSide(color: const Color(0xFF005AB3), width: 4.w),
             ),
+            boxShadow: const [BoxShadow(color: Color(0x0D000000), blurRadius: 12, offset: Offset(0, 4))],
           ),
-          padding: EdgeInsets.all(14.w),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             children: [
               Container(
-                width: 35,
-                height: 35,
-                decoration: BoxDecoration(
-                  color: context.colors.primary.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.location_on_outlined,
-                  color: context.colors.primary,
-                  size: 20,
-                ),
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(color: context.colors.primary.withValues(alpha: 0.10), borderRadius: BorderRadius.circular(8.r)),
+                child: Icon(Icons.location_on_outlined, color: context.colors.primary, size: 20.w),
               ),
-              SizedBox(width: 16.w),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,30 +241,27 @@ class _LocationCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: context.textTheme.titleMedium?.copyWith(
                         color: const Color(0xFF7A8291),
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400,
+                        height: 24 / 16,
                       ),
                     ),
-                    SizedBox(height: 4.h),
                     Text(
                       location,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: context.textTheme.titleLarge?.copyWith(
                         color: const Color(0xFF171B21),
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        height: 24 / 16,
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(width: 12.w),
-              const Icon(
-                Icons.chevron_right,
-                color: Color(0xFF7A8291),
-                size: 25,
-              ),
+              SizedBox(width: 8.w),
+              const Icon(Icons.chevron_right, color: Color(0xFF7A8291), size: 20),
             ],
           ),
         ),
@@ -295,13 +279,13 @@ class _ServiceGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final spacing = constraints.maxWidth < 360 ? 14.0 : 18.0;
+        final spacing = 20.w;
         final itemWidth = (constraints.maxWidth - spacing * 2) / 3;
-        final imageSize = itemWidth.clamp(82.0, 98.0);
+        final imageSize = itemWidth;
 
         return Wrap(
           spacing: spacing,
-          runSpacing: 28,
+          runSpacing: 16.h,
           children: services
               .map(
                 (service) => SizedBox(
@@ -338,19 +322,9 @@ class _ServiceTile extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFFE2E5EA),
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 5))],
               ),
-              child: Icon(
-                service.icon,
-                color: context.colors.primary,
-                size: imageSize * 0.38,
-              ),
+              child: Icon(service.icon, color: context.colors.primary, size: imageSize * 0.38),
             ),
             SizedBox(height: 8.h),
             Text(
@@ -360,9 +334,9 @@ class _ServiceTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.titleLarge?.copyWith(
                 color: const Color(0xFF171B21),
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w500,
-                height: 1.15,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
+                height: 20 / 16,
               ),
             ),
           ],
@@ -393,11 +367,7 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _ShellPlaceholderScreen extends StatelessWidget {
-  const _ShellPlaceholderScreen({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
+  const _ShellPlaceholderScreen({required this.icon, required this.title, required this.subtitle});
 
   final IconData icon;
   final String title;
@@ -414,11 +384,7 @@ class _ShellPlaceholderScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(title, style: context.textTheme.headlineSmall),
             const SizedBox(height: 8),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: context.textTheme.bodyMedium,
-            ),
+            Text(subtitle, textAlign: TextAlign.center, style: context.textTheme.bodyMedium),
           ],
         ),
       ),

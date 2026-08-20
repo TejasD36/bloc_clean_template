@@ -23,6 +23,8 @@ abstract class AppVersionDto with _$AppVersionDto {
     @Default('') String latestVersion,
     @Default(false) bool isUpdateAvailable,
     @Default(false) bool isForceUpdate,
+    String? whatsNewMessage,
+    String? storeUrl,
   }) = _AppVersionDto;
 
   factory AppVersionDto.fromJson(Map<String, dynamic> json) => _$AppVersionDtoFromJson(json);

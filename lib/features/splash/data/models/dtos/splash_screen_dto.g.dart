@@ -31,6 +31,8 @@ _AppVersionDto _$AppVersionDtoFromJson(Map<String, dynamic> json) =>
       latestVersion: json['latestVersion'] as String? ?? '',
       isUpdateAvailable: json['isUpdateAvailable'] as bool? ?? false,
       isForceUpdate: json['isForceUpdate'] as bool? ?? false,
+      whatsNewMessage: json['whatsNewMessage'] as String?,
+      storeUrl: json['storeUrl'] as String?,
     );
 
 Map<String, dynamic> _$AppVersionDtoToJson(_AppVersionDto instance) =>
@@ -40,6 +42,8 @@ Map<String, dynamic> _$AppVersionDtoToJson(_AppVersionDto instance) =>
       'latestVersion': instance.latestVersion,
       'isUpdateAvailable': instance.isUpdateAvailable,
       'isForceUpdate': instance.isForceUpdate,
+      'whatsNewMessage': instance.whatsNewMessage,
+      'storeUrl': instance.storeUrl,
     };
 
 _BusinessSettingsDto _$BusinessSettingsDtoFromJson(Map<String, dynamic> json) =>

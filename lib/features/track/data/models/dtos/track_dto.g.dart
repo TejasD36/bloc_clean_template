@@ -6,6 +6,7 @@ part of 'track_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_TrackDto _$TrackDtoFromJson(Map<String, dynamic> json) => const _TrackDto();
+_TrackDto _$TrackDtoFromJson(Map<String, dynamic> json) => _TrackDto();
 
-Map<String, dynamic> _$TrackDtoToJson(_TrackDto instance) => <String, dynamic>{};
+Map<String, dynamic> _$TrackDtoToJson(_TrackDto instance) =>
+    <String, dynamic>{};

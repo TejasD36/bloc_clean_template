@@ -6,5 +6,7 @@ class Assets {
   static const String imagesOnboardingImage1 = 'assets/images/onboarding_image_1.png';
   static const String imagesOnboardingImage2 = 'assets/images/onboarding_image_2.png';
   static const String imagesOnboardingImage3 = 'assets/images/onboarding_image_3.png';
+  static const String imagesForceUpdateCloud = 'assets/images/force_update_cloud.webp';
   static const String logoAppIcon = 'assets/logo/app_icon.png';
+  static const String lottieForceUpdateRocketLaunch = 'assets/lottie/force_update_rocket_launch.json';
 }

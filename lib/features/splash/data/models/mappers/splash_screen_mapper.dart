@@ -17,6 +17,8 @@ extension AppVersionDtoMapper on AppVersionDto {
       latestVersion: latestVersion,
       isUpdateAvailable: isUpdateAvailable,
       isForceUpdate: isForceUpdate,
+      whatsNewMessage: whatsNewMessage,
+      storeUrl: storeUrl,
     );
   }
 }

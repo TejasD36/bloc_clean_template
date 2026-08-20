@@ -3,8 +3,7 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
-
-import 'features/auth/data/models/dtos/user_dto.dart';
+import 'package:pwh_customer/features/auth/data/models/dtos/user_dto.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {

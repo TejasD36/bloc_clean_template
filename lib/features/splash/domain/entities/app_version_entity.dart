@@ -5,6 +5,8 @@ class AppVersionEntity {
     required this.latestVersion,
     required this.isUpdateAvailable,
     required this.isForceUpdate,
+    this.whatsNewMessage,
+    this.storeUrl,
   });
 
   final String platform;
@@ -12,4 +14,6 @@ class AppVersionEntity {
   final String latestVersion;
   final bool isUpdateAvailable;
   final bool isForceUpdate;
+  final String? whatsNewMessage;
+  final String? storeUrl;
 }

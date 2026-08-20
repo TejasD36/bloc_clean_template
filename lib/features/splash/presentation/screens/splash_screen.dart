@@ -2,9 +2,11 @@ import '../../../../../core.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../domain/entities/app_version_entity.dart';
 import '../bloc/splash_bloc.dart';
 import '../bloc/splash_event.dart';
 import '../bloc/splash_state.dart';
+import '../widgets/app_update_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -32,9 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!mounted) return;
 
-    final onboardingSeen = await sl<SecureStorageService>().read(
-      StorageKeys.onboardingSeen,
-    );
+    final onboardingSeen = await sl<SecureStorageService>().read(StorageKeys.onboardingSeen);
 
     if (!mounted) return;
 
@@ -54,20 +54,17 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future<void>.delayed(_minimumSplashDuration - elapsed);
   }
 
-  Future<void> _handleSplashState(
-    BuildContext context,
-    SplashState state,
-  ) async {
+  Future<void> _handleSplashState(BuildContext context, SplashState state) async {
     switch (state) {
       case SplashLoaded(:final data):
+        await _waitForMinimumSplashDuration();
+
+        if (!mounted) return;
+
         final version = data.version;
 
-        if (version.isUpdateAvailable && version.isForceUpdate) {
-          await _waitForMinimumSplashDuration();
-
-          if (!mounted) return;
-
-          await _showForceUpdateDialog(latestVersion: version.latestVersion);
+        if (version.isUpdateAvailable) {
+          await _showUpdateBottomSheet(version);
 
           return;
         }
@@ -99,25 +96,21 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  Future<void> _showForceUpdateDialog({required String latestVersion}) {
-    return showDialog<void>(
+  Future<void> _showUpdateBottomSheet(AppVersionEntity version) {
+    return showModalBottomSheet<void>(
       context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) {
-        return PopScope(
-          canPop: false,
-          child: AlertDialog(
-            title: const Text('Update Required'),
-            content: Text(
-              'A new version ($latestVersion) is available. '
-              'Please update the app to continue.',
-            ),
-            actions: [
-              FilledButton(
-                onPressed: _openStore,
-                child: const Text('Update Now'),
-              ),
-            ],
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (sheetContext) {
+        return SizedBox(
+          height: MediaQuery.sizeOf(context).height,
+          child: AppUpdateWidget(
+            version: version,
+            onPressedSkip: () {
+              Navigator.of(sheetContext).pop();
+              _continueStartup();
+            },
           ),
         );
       },
@@ -147,10 +140,6 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  Future<void> _openStore() async {
-    // We'll add Play Store / App Store URL handling here.
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -158,12 +147,7 @@ class _SplashScreenState extends State<SplashScreen> {
         BlocListener<SplashBloc, SplashState>(listener: _handleSplashState),
         BlocListener<AuthBloc, AuthState>(listener: _handleAuthState),
       ],
-      child: const AppScaffold(
-        padding: EdgeInsets.zero,
-        safeArea: false,
-        backgroundColor: Color(0xFF40A8EF),
-        body: _SplashContent(),
-      ),
+      child: const AppScaffold(padding: EdgeInsets.zero, safeArea: false, backgroundColor: Color(0xFF40A8EF), body: _SplashContent()),
     );
   }
 }
@@ -194,11 +178,7 @@ class _SplashContent extends StatelessWidget {
                 Text(
                   'Pune Water Helpline',
                   textAlign: TextAlign.center,
-                  style: context.textTheme.displaySmall?.copyWith(
-                    color: Colors.white,
-                    fontSize: titleSize,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: context.textTheme.displaySmall?.copyWith(color: Colors.white, fontSize: titleSize, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(height: 22.h),
                 Padding(
@@ -223,11 +203,7 @@ class _SplashContent extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 72.w),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(999),
-                    child: const LinearProgressIndicator(
-                      minHeight: 6,
-                      color: Color(0xFF75F8E2),
-                      backgroundColor: Colors.transparent,
-                    ),
+                    child: const LinearProgressIndicator(minHeight: 6, color: Color(0xFF75F8E2), backgroundColor: Colors.transparent),
                   ),
                 ),
                 SizedBox(height: 42.h),
@@ -268,23 +244,13 @@ class _LogoMark extends StatelessWidget {
         color: Colors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(tileSize * 0.3),
         border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 32,
-            offset: const Offset(0, 22),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 32, offset: const Offset(0, 22))],
       ),
       child: SizedBox(
         width: tileSize,
         height: tileSize,
         child: Center(
-          child: Image.asset(
-            Assets.logoAppIcon,
-            width: imageSize,
-            height: imageSize,
-          ),
+          child: Image.asset(Assets.logoAppIcon, width: imageSize, height: imageSize),
         ),
       ),
     );
@@ -306,35 +272,16 @@ class _SplashWavePainter extends CustomPainter {
     final waveTop = size.height * 0.62;
     final shadowPath = Path()
       ..moveTo(0, waveTop + 42)
-      ..cubicTo(
-        size.width * 0.25,
-        waveTop - 8,
-        size.width * 0.44,
-        waveTop - 86,
-        size.width,
-        waveTop - 42,
-      )
+      ..cubicTo(size.width * 0.25, waveTop - 8, size.width * 0.44, waveTop - 86, size.width, waveTop - 42)
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawShadow(
-      shadowPath,
-      const Color(0xFF117FD8).withValues(alpha: 0.7),
-      18,
-      false,
-    );
+    canvas.drawShadow(shadowPath, const Color(0xFF117FD8).withValues(alpha: 0.7), 18, false);
 
     final wavePath = Path()
       ..moveTo(0, waveTop + 54)
-      ..cubicTo(
-        size.width * 0.28,
-        waveTop + 10,
-        size.width * 0.48,
-        waveTop - 78,
-        size.width,
-        waveTop - 28,
-      )
+      ..cubicTo(size.width * 0.28, waveTop + 10, size.width * 0.48, waveTop - 78, size.width, waveTop - 28)
       ..lineTo(size.width, size.height)
       ..lineTo(0, size.height)
       ..close();
