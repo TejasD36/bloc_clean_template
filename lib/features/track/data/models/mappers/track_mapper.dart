@@ -1,5 +1,5 @@
-import '../dtos/track_dto.dart';
 import '../../../domain/entities/track_entity.dart';
+import '../dtos/track_dto.dart';
 
 extension TrackMapper on TrackDto {
   TrackEntity toEntity() {

@@ -10,42 +10,17 @@ import '../data/repositories/booking_repository_impl.dart';
 import '../domain/repositories/booking_repository.dart';
 import '../domain/usecases/booking_usecase.dart';
 import '../presentation/bloc/booking_bloc.dart';
-import '../presentation/bloc/booking_event.dart';
-import '../presentation/bloc/booking_state.dart';
 
 final GetIt sl = GetIt.instance;
 
 Future<void> initBookingDependencies() async {
-                        sl.registerLazySingleton<BookingRemoteDatasource>(
-                          () => BookingRemoteDatasourceImpl(),
-                        );
-                      
-                      
-                        sl.registerLazySingleton<BookingLocalDatasource>(
-                          () => BookingLocalDatasourceImpl(),
-                        );
-                      
-                      
-                        sl.registerLazySingleton<BookingRepository>(
-                          () => BookingRepositoryImpl(
-  bookingRemoteDatasource: sl(),
-  bookingLocalDatasource: sl(),
-),
-                        );
-                      
-                      
-                        sl.registerFactory(
-                          () => BookingUsecase(
-  repository: sl(),
-),
-                        );
-                      
-                      
-                        sl.registerFactory(
-                          () => BookingBloc(
-  bookingUsecase: sl(),
-),
-                        );
-                      
-                      
+  sl.registerLazySingleton<BookingRemoteDatasource>(BookingRemoteDatasourceImpl.new);
+
+  sl.registerLazySingleton<BookingLocalDatasource>(BookingLocalDatasourceImpl.new);
+
+  sl.registerLazySingleton<BookingRepository>(() => BookingRepositoryImpl(bookingRemoteDatasource: sl(), bookingLocalDatasource: sl()));
+
+  sl.registerFactory(() => BookingUsecase(repository: sl()));
+
+  sl.registerFactory(() => BookingBloc(bookingUsecase: sl()));
 }

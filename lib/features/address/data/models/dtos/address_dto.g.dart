@@ -6,7 +6,6 @@ part of 'address_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_AddressDto _$AddressDtoFromJson(Map<String, dynamic> json) => _AddressDto();
+_AddressDto _$AddressDtoFromJson(Map<String, dynamic> json) => const _AddressDto();
 
-Map<String, dynamic> _$AddressDtoToJson(_AddressDto instance) =>
-    <String, dynamic>{};
+Map<String, dynamic> _$AddressDtoToJson(_AddressDto instance) => <String, dynamic>{};

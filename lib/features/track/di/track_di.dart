@@ -14,36 +14,13 @@ import '../presentation/bloc/track_bloc.dart';
 final GetIt sl = GetIt.instance;
 
 Future<void> initTrackDependencies() async {
-                        sl.registerLazySingleton<TrackRemoteDatasource>(
-                          () => TrackRemoteDatasourceImpl(),
-                        );
-                      
-                      
-                        sl.registerLazySingleton<TrackLocalDatasource>(
-                          () => TrackLocalDatasourceImpl(),
-                        );
-                      
-                      
-                        sl.registerLazySingleton<TrackRepository>(
-                          () => TrackRepositoryImpl(
-  trackRemoteDatasource: sl(),
-  trackLocalDatasource: sl(),
-),
-                        );
-                      
-                      
-                        sl.registerFactory(
-                          () => TrackUsecase(
-  repository: sl(),
-),
-                        );
-                      
-                      
-                        sl.registerFactory(
-                          () => TrackBloc(
-  trackUsecase: sl(),
-),
-                        );
-                      
-                      
+  sl.registerLazySingleton<TrackRemoteDatasource>(TrackRemoteDatasourceImpl.new);
+
+  sl.registerLazySingleton<TrackLocalDatasource>(TrackLocalDatasourceImpl.new);
+
+  sl.registerLazySingleton<TrackRepository>(() => TrackRepositoryImpl(trackRemoteDatasource: sl(), trackLocalDatasource: sl()));
+
+  sl.registerFactory(() => TrackUsecase(repository: sl()));
+
+  sl.registerFactory(() => TrackBloc(trackUsecase: sl()));
 }

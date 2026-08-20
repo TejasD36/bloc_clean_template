@@ -5,19 +5,13 @@ import 'profile_event.dart';
 import 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  ProfileBloc({
-    required ProfileUsecase profileUsecase,
-  })  : _profileUsecase = profileUsecase,
-        super(const ProfileState.initial()) {
+  ProfileBloc({required this._profileUsecase}) : super(const ProfileState.initial()) {
     on<ProfileStarted>(_onStarted);
   }
 
-   final ProfileUsecase _profileUsecase;
+  final ProfileUsecase _profileUsecase;
 
-  Future<void> _onStarted(
-    ProfileStarted event,
-    Emitter<ProfileState> emit,
-  ) async {
+  Future<void> _onStarted(ProfileStarted event, Emitter<ProfileState> emit) async {
     emit(const ProfileState.loading());
 
     try {
@@ -26,11 +20,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       emit(const ProfileState.success());
     } catch (e) {
-      emit(
-        ProfileState.failure(
-          message: e.toString(),
-        ),
-      );
+      emit(ProfileState.failure(message: e.toString()));
     }
   }
 }

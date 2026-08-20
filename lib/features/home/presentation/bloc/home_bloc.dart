@@ -5,19 +5,13 @@ import 'home_event.dart';
 import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc({
-    required HomeUsecase homeUsecase,
-  })  : _homeUsecase = homeUsecase,
-        super(const HomeState.initial()) {
+  HomeBloc({required this._homeUsecase}) : super(const HomeState.initial()) {
     on<HomeStarted>(_onStarted);
   }
 
-   final HomeUsecase _homeUsecase;
+  final HomeUsecase _homeUsecase;
 
-  Future<void> _onStarted(
-    HomeStarted event,
-    Emitter<HomeState> emit,
-  ) async {
+  Future<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) async {
     emit(const HomeState.loading());
 
     try {
@@ -26,11 +20,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       emit(const HomeState.success());
     } catch (e) {
-      emit(
-        HomeState.failure(
-          message: e.toString(),
-        ),
-      );
+      emit(HomeState.failure(message: e.toString()));
     }
   }
 }

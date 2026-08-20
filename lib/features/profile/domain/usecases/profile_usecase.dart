@@ -2,9 +2,7 @@ import '../repositories/profile_repository.dart';
 
 /// Use case for Profile.
 class ProfileUsecase {
-  const ProfileUsecase({
-    required ProfileRepository repository,
-  }) : _repository = repository;
+  const ProfileUsecase({required this._repository});
 
   final ProfileRepository _repository;
 

@@ -10,42 +10,17 @@ import '../data/repositories/profile_repository_impl.dart';
 import '../domain/repositories/profile_repository.dart';
 import '../domain/usecases/profile_usecase.dart';
 import '../presentation/bloc/profile_bloc.dart';
-import '../presentation/bloc/profile_event.dart';
-import '../presentation/bloc/profile_state.dart';
 
 final GetIt sl = GetIt.instance;
 
 Future<void> initProfileDependencies() async {
-                        sl.registerLazySingleton<ProfileRemoteDatasource>(
-                          () => ProfileRemoteDatasourceImpl(),
-                        );
-                      
-                      
-                        sl.registerLazySingleton<ProfileLocalDatasource>(
-                          () => ProfileLocalDatasourceImpl(),
-                        );
-                      
-                      
-                        sl.registerLazySingleton<ProfileRepository>(
-                          () => ProfileRepositoryImpl(
-  profileRemoteDatasource: sl(),
-  profileLocalDatasource: sl(),
-),
-                        );
-                      
-                      
-                        sl.registerFactory(
-                          () => ProfileUsecase(
-  repository: sl(),
-),
-                        );
-                      
-                      
-                        sl.registerFactory(
-                          () => ProfileBloc(
-  profileUsecase: sl(),
-),
-                        );
-                      
-                      
+  sl.registerLazySingleton<ProfileRemoteDatasource>(ProfileRemoteDatasourceImpl.new);
+
+  sl.registerLazySingleton<ProfileLocalDatasource>(ProfileLocalDatasourceImpl.new);
+
+  sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(profileRemoteDatasource: sl(), profileLocalDatasource: sl()));
+
+  sl.registerFactory(() => ProfileUsecase(repository: sl()));
+
+  sl.registerFactory(() => ProfileBloc(profileUsecase: sl()));
 }

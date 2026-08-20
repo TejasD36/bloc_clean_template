@@ -1,5 +1,5 @@
-import '../dtos/address_dto.dart';
 import '../../../domain/entities/address_entity.dart';
+import '../dtos/address_dto.dart';
 
 extension AddressMapper on AddressDto {
   AddressEntity toEntity() {

@@ -5,19 +5,13 @@ import 'track_event.dart';
 import 'track_state.dart';
 
 class TrackBloc extends Bloc<TrackEvent, TrackState> {
-  TrackBloc({
-    required TrackUsecase trackUsecase,
-  })  : _trackUsecase = trackUsecase,
-        super(const TrackState.initial()) {
+  TrackBloc({required this._trackUsecase}) : super(const TrackState.initial()) {
     on<TrackStarted>(_onStarted);
   }
 
-   final TrackUsecase _trackUsecase;
+  final TrackUsecase _trackUsecase;
 
-  Future<void> _onStarted(
-    TrackStarted event,
-    Emitter<TrackState> emit,
-  ) async {
+  Future<void> _onStarted(TrackStarted event, Emitter<TrackState> emit) async {
     emit(const TrackState.loading());
 
     try {
@@ -26,11 +20,7 @@ class TrackBloc extends Bloc<TrackEvent, TrackState> {
 
       emit(const TrackState.success());
     } catch (e) {
-      emit(
-        TrackState.failure(
-          message: e.toString(),
-        ),
-      );
+      emit(TrackState.failure(message: e.toString()));
     }
   }
 }

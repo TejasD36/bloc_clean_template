@@ -5,19 +5,13 @@ import 'booking_event.dart';
 import 'booking_state.dart';
 
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
-  BookingBloc({
-    required BookingUsecase bookingUsecase,
-  })  : _bookingUsecase = bookingUsecase,
-        super(const BookingState.initial()) {
+  BookingBloc({required this._bookingUsecase}) : super(const BookingState.initial()) {
     on<BookingStarted>(_onStarted);
   }
 
-   final BookingUsecase _bookingUsecase;
+  final BookingUsecase _bookingUsecase;
 
-  Future<void> _onStarted(
-    BookingStarted event,
-    Emitter<BookingState> emit,
-  ) async {
+  Future<void> _onStarted(BookingStarted event, Emitter<BookingState> emit) async {
     emit(const BookingState.loading());
 
     try {
@@ -26,11 +20,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
       emit(const BookingState.success());
     } catch (e) {
-      emit(
-        BookingState.failure(
-          message: e.toString(),
-        ),
-      );
+      emit(BookingState.failure(message: e.toString()));
     }
   }
 }
