@@ -1,11 +1,21 @@
 import '../../../core.dart';
 
 class AppSearchBar extends StatefulWidget {
-  const AppSearchBar({super.key, this.controller, this.hintText, this.onChanged, this.onTap});
+  const AppSearchBar({
+    super.key,
+    this.controller,
+    this.hintText,
+    required this.onChanged,
+    this.onSubmitted,
+    this.onTap,
+    this.isLoading = false,
+  });
 
   final TextEditingController? controller;
   final String? hintText;
-  final void Function(String)? onChanged;
+  final bool isLoading;
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onSubmitted;
   final VoidCallback? onTap;
 
   @override
@@ -18,6 +28,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
     final appColors = context.appColors;
     final field = TextField(
       controller: widget.controller,
+      textInputAction: TextInputAction.search,
+      onSubmitted: widget.onSubmitted,
       readOnly: widget.onTap != null,
       onChanged: widget.onChanged,
       decoration: InputDecoration(
@@ -25,6 +37,12 @@ class _AppSearchBarState extends State<AppSearchBar> {
         hintText: widget.hintText,
         hintStyle: context.textTheme.titleLarge?.copyWith(color: const Color(0xFF7A8291), fontSize: 16, fontWeight: FontWeight.w400),
         hintMaxLines: 2,
+        suffixIcon: widget.isLoading
+            ? const Padding(
+                padding: EdgeInsets.all(14),
+                child: SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
+              )
+            : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: appColors.border),
@@ -73,7 +91,7 @@ class AppSearchBarDelegate extends SliverPersistentHeaderDelegate {
       elevation: overlapsContent ? 2 : 0,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        child: AppSearchBar(controller: controller, hintText: hintText, onTap: onTap),
+        child: AppSearchBar(controller: controller, hintText: hintText, onTap: onTap, onChanged: (value) {}),
       ),
     );
   }

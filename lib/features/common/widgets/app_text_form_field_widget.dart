@@ -45,7 +45,11 @@ class AppTextFormFieldWidget extends StatelessWidget {
       mainAxisSize: .min,
       spacing: 8,
       children: [
-        if (label.isNotNullOrEmpty) Text(label!, style: context.textTheme.bodyLarge?.copyWith(color: context.appColors.textMuted)),
+        if (label.isNotNullOrEmpty)
+          Text(
+            label!,
+            style: context.textTheme.bodyLarge?.copyWith(color: context.appColors.text, fontWeight: FontWeight.w800),
+          ),
         TextFormField(
           controller: controller,
           style: context.textTheme.bodyLarge?.copyWith(height: 1),

@@ -16,7 +16,11 @@ class GooglePlacesService {
 
     final response = await _dio.get<Map<String, dynamic>>(
       'https://maps.googleapis.com/maps/api/place/autocomplete/json',
-      queryParameters: {'input': query, 'key': googleMapsApiKey, 'components': 'country:in'},
+      queryParameters: {
+        'input': query,
+        'key': googleMapsApiKey,
+        'components': 'country:in',
+      },
     );
 
     final predictions = response.data?['predictions'];
@@ -30,10 +34,13 @@ class GooglePlacesService {
           (item) => PlaceSuggestion(
             placeId: item['place_id'] as String? ?? '',
             title: item['structured_formatting'] is Map<String, dynamic>
-                ? (item['structured_formatting']['main_text'] as String? ?? item['description'] as String? ?? '')
+                ? (item['structured_formatting']['main_text'] as String? ??
+                      item['description'] as String? ??
+                      '')
                 : item['description'] as String? ?? '',
             subtitle: item['structured_formatting'] is Map<String, dynamic>
-                ? (item['structured_formatting']['secondary_text'] as String? ?? '')
+                ? (item['structured_formatting']['secondary_text'] as String? ??
+                      '')
                 : '',
             description: item['description'] as String? ?? '',
           ),
@@ -49,7 +56,11 @@ class GooglePlacesService {
 
     final response = await _dio.get<Map<String, dynamic>>(
       'https://maps.googleapis.com/maps/api/place/details/json',
-      queryParameters: {'place_id': placeId, 'key': googleMapsApiKey, 'fields': 'name,formatted_address,geometry,address_components'},
+      queryParameters: {
+        'place_id': placeId,
+        'key': googleMapsApiKey,
+        'fields': 'name,formatted_address,geometry,address_components',
+      },
     );
 
     final result = response.data?['result'];
@@ -63,21 +74,36 @@ class GooglePlacesService {
   Future<ResolvedPlace?> reverseGeocode(LatLng position) async {
     final response = await _dio.get<Map<String, dynamic>>(
       'https://maps.googleapis.com/maps/api/geocode/json',
-      queryParameters: {'latlng': '${position.latitude},${position.longitude}', 'key': googleMapsApiKey},
+      queryParameters: {
+        'latlng': '${position.latitude},${position.longitude}',
+        'key': googleMapsApiKey,
+      },
     );
 
     final results = response.data?['results'];
-    if (results is! List || results.isEmpty || results.first is! Map<String, dynamic>) {
+    if (results is! List ||
+        results.isEmpty ||
+        results.first is! Map<String, dynamic>) {
       return null;
     }
 
-    return _resolvedPlaceFromGoogleResult(results.first as Map<String, dynamic>, fallbackPosition: position);
+    return _resolvedPlaceFromGoogleResult(
+      results.first as Map<String, dynamic>,
+      fallbackPosition: position,
+    );
   }
 
-  ResolvedPlace? _resolvedPlaceFromGoogleResult(Map<String, dynamic> result, {LatLng? fallbackPosition}) {
-    final location = result['geometry'] is Map<String, dynamic> ? (result['geometry']['location'] as Map<String, dynamic>?) : null;
-    final lat = (location?['lat'] as num?)?.toDouble() ?? fallbackPosition?.latitude;
-    final lng = (location?['lng'] as num?)?.toDouble() ?? fallbackPosition?.longitude;
+  ResolvedPlace? _resolvedPlaceFromGoogleResult(
+    Map<String, dynamic> result, {
+    LatLng? fallbackPosition,
+  }) {
+    final location = result['geometry'] is Map<String, dynamic>
+        ? (result['geometry']['location'] as Map<String, dynamic>?)
+        : null;
+    final lat =
+        (location?['lat'] as num?)?.toDouble() ?? fallbackPosition?.latitude;
+    final lng =
+        (location?['lng'] as num?)?.toDouble() ?? fallbackPosition?.longitude;
     if (lat == null || lng == null) {
       return null;
     }
@@ -97,8 +123,15 @@ class GooglePlacesService {
       }
     }
 
-    final route = components['route'] ?? components['sublocality'] ?? components['locality'] ?? '';
-    final area = [components['sublocality_level_1'], components['locality']].where((part) => part != null && part.isNotEmpty).join(', ');
+    final route =
+        components['route'] ??
+        components['sublocality'] ??
+        components['locality'] ??
+        '';
+    final area = [
+      components['sublocality_level_1'],
+      components['locality'],
+    ].where((part) => part != null && part.isNotEmpty).join(', ');
 
     return ResolvedPlace(
       name: result['name'] as String? ?? route,
@@ -111,7 +144,12 @@ class GooglePlacesService {
 }
 
 class PlaceSuggestion {
-  const PlaceSuggestion({required this.placeId, required this.title, required this.subtitle, required this.description});
+  const PlaceSuggestion({
+    required this.placeId,
+    required this.title,
+    required this.subtitle,
+    required this.description,
+  });
 
   final String placeId;
   final String title;

@@ -55,11 +55,12 @@ extension AddressEventPatterns on AddressEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AddressStarted value)?  started,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AddressStarted value)?  started,TResult Function( AddressSaveRequested value)?  save,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AddressStarted() when started != null:
-return started(_that);case _:
+return started(_that);case AddressSaveRequested() when save != null:
+return save(_that);case _:
   return orElse();
 
 }
@@ -77,11 +78,12 @@ return started(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AddressStarted value)  started,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AddressStarted value)  started,required TResult Function( AddressSaveRequested value)  save,}){
 final _that = this;
 switch (_that) {
 case AddressStarted():
-return started(_that);}
+return started(_that);case AddressSaveRequested():
+return save(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -95,11 +97,12 @@ return started(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AddressStarted value)?  started,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AddressStarted value)?  started,TResult? Function( AddressSaveRequested value)?  save,}){
 final _that = this;
 switch (_that) {
 case AddressStarted() when started != null:
-return started(_that);case _:
+return started(_that);case AddressSaveRequested() when save != null:
+return save(_that);case _:
   return null;
 
 }
@@ -116,10 +119,11 @@ return started(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  started,TResult Function( int? id,  AddressInput input)?  save,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AddressStarted() when started != null:
-return started();case _:
+return started();case AddressSaveRequested() when save != null:
+return save(_that.id,_that.input);case _:
   return orElse();
 
 }
@@ -137,10 +141,11 @@ return started();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  started,required TResult Function( int? id,  AddressInput input)  save,}) {final _that = this;
 switch (_that) {
 case AddressStarted():
-return started();}
+return started();case AddressSaveRequested():
+return save(_that.id,_that.input);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -154,10 +159,11 @@ return started();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  started,TResult? Function( int? id,  AddressInput input)?  save,}) {final _that = this;
 switch (_that) {
 case AddressStarted() when started != null:
-return started();case _:
+return started();case AddressSaveRequested() when save != null:
+return save(_that.id,_that.input);case _:
   return null;
 
 }
@@ -196,5 +202,73 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class AddressSaveRequested implements AddressEvent {
+  const AddressSaveRequested({this.id, required this.input});
+  
+
+ final  int? id;
+ final  AddressInput input;
+
+/// Create a copy of AddressEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AddressSaveRequestedCopyWith<AddressSaveRequested> get copyWith => _$AddressSaveRequestedCopyWithImpl<AddressSaveRequested>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddressSaveRequested&&(identical(other.id, id) || other.id == id)&&(identical(other.input, input) || other.input == input));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,input);
+
+@override
+String toString() {
+  return 'AddressEvent.save(id: $id, input: $input)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AddressSaveRequestedCopyWith<$Res> implements $AddressEventCopyWith<$Res> {
+  factory $AddressSaveRequestedCopyWith(AddressSaveRequested value, $Res Function(AddressSaveRequested) _then) = _$AddressSaveRequestedCopyWithImpl;
+@useResult
+$Res call({
+ int? id, AddressInput input
+});
+
+
+
+
+}
+/// @nodoc
+class _$AddressSaveRequestedCopyWithImpl<$Res>
+    implements $AddressSaveRequestedCopyWith<$Res> {
+  _$AddressSaveRequestedCopyWithImpl(this._self, this._then);
+
+  final AddressSaveRequested _self;
+  final $Res Function(AddressSaveRequested) _then;
+
+/// Create a copy of AddressEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? input = null,}) {
+  return _then(AddressSaveRequested(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,input: null == input ? _self.input : input // ignore: cast_nullable_to_non_nullable
+as AddressInput,
+  ));
+}
+
+
+}
 
 // dart format on

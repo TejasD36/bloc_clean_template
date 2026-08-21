@@ -14,30 +14,71 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AddressEntity {
 
-
+ int get id; int get userId; String get type; String get flatNumberOrBuildingName; String get areaStreetName; String get landmark; String get pincode; String get state; String get city; double get latitude; double get longitude;
+/// Create a copy of AddressEntity
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AddressEntityCopyWith<AddressEntity> get copyWith => _$AddressEntityCopyWithImpl<AddressEntity>(this as AddressEntity, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddressEntity);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddressEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.type, type) || other.type == type)&&(identical(other.flatNumberOrBuildingName, flatNumberOrBuildingName) || other.flatNumberOrBuildingName == flatNumberOrBuildingName)&&(identical(other.areaStreetName, areaStreetName) || other.areaStreetName == areaStreetName)&&(identical(other.landmark, landmark) || other.landmark == landmark)&&(identical(other.pincode, pincode) || other.pincode == pincode)&&(identical(other.state, state) || other.state == state)&&(identical(other.city, city) || other.city == city)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,id,userId,type,flatNumberOrBuildingName,areaStreetName,landmark,pincode,state,city,latitude,longitude);
 
 @override
 String toString() {
-  return 'AddressEntity()';
+  return 'AddressEntity(id: $id, userId: $userId, type: $type, flatNumberOrBuildingName: $flatNumberOrBuildingName, areaStreetName: $areaStreetName, landmark: $landmark, pincode: $pincode, state: $state, city: $city, latitude: $latitude, longitude: $longitude)';
 }
 
 
 }
 
 /// @nodoc
-class $AddressEntityCopyWith<$Res>  {
-$AddressEntityCopyWith(AddressEntity _, $Res Function(AddressEntity) __);
+abstract mixin class $AddressEntityCopyWith<$Res>  {
+  factory $AddressEntityCopyWith(AddressEntity value, $Res Function(AddressEntity) _then) = _$AddressEntityCopyWithImpl;
+@useResult
+$Res call({
+ int id, int userId, String type, String flatNumberOrBuildingName, String areaStreetName, String landmark, String pincode, String state, String city, double latitude, double longitude
+});
+
+
+
+
+}
+/// @nodoc
+class _$AddressEntityCopyWithImpl<$Res>
+    implements $AddressEntityCopyWith<$Res> {
+  _$AddressEntityCopyWithImpl(this._self, this._then);
+
+  final AddressEntity _self;
+  final $Res Function(AddressEntity) _then;
+
+/// Create a copy of AddressEntity
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? type = null,Object? flatNumberOrBuildingName = null,Object? areaStreetName = null,Object? landmark = null,Object? pincode = null,Object? state = null,Object? city = null,Object? latitude = null,Object? longitude = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,flatNumberOrBuildingName: null == flatNumberOrBuildingName ? _self.flatNumberOrBuildingName : flatNumberOrBuildingName // ignore: cast_nullable_to_non_nullable
+as String,areaStreetName: null == areaStreetName ? _self.areaStreetName : areaStreetName // ignore: cast_nullable_to_non_nullable
+as String,landmark: null == landmark ? _self.landmark : landmark // ignore: cast_nullable_to_non_nullable
+as String,pincode: null == pincode ? _self.pincode : pincode // ignore: cast_nullable_to_non_nullable
+as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
+as String,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
 }
 
 
@@ -119,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function()?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int userId,  String type,  String flatNumberOrBuildingName,  String areaStreetName,  String landmark,  String pincode,  String state,  String city,  double latitude,  double longitude)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AddressEntity() when $default != null:
-return $default();case _:
+return $default(_that.id,_that.userId,_that.type,_that.flatNumberOrBuildingName,_that.areaStreetName,_that.landmark,_that.pincode,_that.state,_that.city,_that.latitude,_that.longitude);case _:
   return orElse();
 
 }
@@ -140,10 +181,10 @@ return $default();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function()  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int userId,  String type,  String flatNumberOrBuildingName,  String areaStreetName,  String landmark,  String pincode,  String state,  String city,  double latitude,  double longitude)  $default,) {final _that = this;
 switch (_that) {
 case _AddressEntity():
-return $default();case _:
+return $default(_that.id,_that.userId,_that.type,_that.flatNumberOrBuildingName,_that.areaStreetName,_that.landmark,_that.pincode,_that.state,_that.city,_that.latitude,_that.longitude);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -160,10 +201,10 @@ return $default();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function()?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int userId,  String type,  String flatNumberOrBuildingName,  String areaStreetName,  String landmark,  String pincode,  String state,  String city,  double latitude,  double longitude)?  $default,) {final _that = this;
 switch (_that) {
 case _AddressEntity() when $default != null:
-return $default();case _:
+return $default(_that.id,_that.userId,_that.type,_that.flatNumberOrBuildingName,_that.areaStreetName,_that.landmark,_that.pincode,_that.state,_that.city,_that.latitude,_that.longitude);case _:
   return null;
 
 }
@@ -175,32 +216,86 @@ return $default();case _:
 
 
 class _AddressEntity implements AddressEntity {
-  const _AddressEntity();
+  const _AddressEntity({this.id = 0, this.userId = 0, this.type = 'home', this.flatNumberOrBuildingName = '', this.areaStreetName = '', this.landmark = '', this.pincode = '', this.state = '', this.city = '', this.latitude = 0, this.longitude = 0});
   
 
+@override@JsonKey() final  int id;
+@override@JsonKey() final  int userId;
+@override@JsonKey() final  String type;
+@override@JsonKey() final  String flatNumberOrBuildingName;
+@override@JsonKey() final  String areaStreetName;
+@override@JsonKey() final  String landmark;
+@override@JsonKey() final  String pincode;
+@override@JsonKey() final  String state;
+@override@JsonKey() final  String city;
+@override@JsonKey() final  double latitude;
+@override@JsonKey() final  double longitude;
 
-
+/// Create a copy of AddressEntity
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AddressEntityCopyWith<_AddressEntity> get copyWith => __$AddressEntityCopyWithImpl<_AddressEntity>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddressEntity);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddressEntity&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.type, type) || other.type == type)&&(identical(other.flatNumberOrBuildingName, flatNumberOrBuildingName) || other.flatNumberOrBuildingName == flatNumberOrBuildingName)&&(identical(other.areaStreetName, areaStreetName) || other.areaStreetName == areaStreetName)&&(identical(other.landmark, landmark) || other.landmark == landmark)&&(identical(other.pincode, pincode) || other.pincode == pincode)&&(identical(other.state, state) || other.state == state)&&(identical(other.city, city) || other.city == city)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,id,userId,type,flatNumberOrBuildingName,areaStreetName,landmark,pincode,state,city,latitude,longitude);
 
 @override
 String toString() {
-  return 'AddressEntity()';
+  return 'AddressEntity(id: $id, userId: $userId, type: $type, flatNumberOrBuildingName: $flatNumberOrBuildingName, areaStreetName: $areaStreetName, landmark: $landmark, pincode: $pincode, state: $state, city: $city, latitude: $latitude, longitude: $longitude)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$AddressEntityCopyWith<$Res> implements $AddressEntityCopyWith<$Res> {
+  factory _$AddressEntityCopyWith(_AddressEntity value, $Res Function(_AddressEntity) _then) = __$AddressEntityCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, int userId, String type, String flatNumberOrBuildingName, String areaStreetName, String landmark, String pincode, String state, String city, double latitude, double longitude
+});
 
 
+
+
+}
+/// @nodoc
+class __$AddressEntityCopyWithImpl<$Res>
+    implements _$AddressEntityCopyWith<$Res> {
+  __$AddressEntityCopyWithImpl(this._self, this._then);
+
+  final _AddressEntity _self;
+  final $Res Function(_AddressEntity) _then;
+
+/// Create a copy of AddressEntity
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? type = null,Object? flatNumberOrBuildingName = null,Object? areaStreetName = null,Object? landmark = null,Object? pincode = null,Object? state = null,Object? city = null,Object? latitude = null,Object? longitude = null,}) {
+  return _then(_AddressEntity(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,flatNumberOrBuildingName: null == flatNumberOrBuildingName ? _self.flatNumberOrBuildingName : flatNumberOrBuildingName // ignore: cast_nullable_to_non_nullable
+as String,areaStreetName: null == areaStreetName ? _self.areaStreetName : areaStreetName // ignore: cast_nullable_to_non_nullable
+as String,landmark: null == landmark ? _self.landmark : landmark // ignore: cast_nullable_to_non_nullable
+as String,pincode: null == pincode ? _self.pincode : pincode // ignore: cast_nullable_to_non_nullable
+as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
+as String,latitude: null == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double,longitude: null == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+
+}
 
 // dart format on

@@ -11,10 +11,8 @@ import '../domain/repositories/home_repository.dart';
 import '../domain/usecases/home_usecase.dart';
 import '../presentation/bloc/home_bloc.dart';
 
-final GetIt sl = GetIt.instance;
-
-Future<void> initHomeDependencies() async {
-  sl.registerLazySingleton<HomeRemoteDatasource>(HomeRemoteDatasourceImpl.new);
+Future<void> initHomeDependencies(GetIt sl) async {
+  sl.registerLazySingleton<HomeRemoteDatasource>(() => HomeRemoteDatasourceImpl(apiService: sl()));
   sl.registerLazySingleton<HomeLocalDatasource>(HomeLocalDatasourceImpl.new);
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(homeRemoteDatasource: sl(), homeLocalDatasource: sl()));
   sl.registerFactory(() => HomeUsecase(repository: sl()));

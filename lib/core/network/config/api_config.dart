@@ -8,6 +8,12 @@ class ApiConfig {
     defaultValue: 'https://slategray-donkey-607049.hostingersite.com/',
   );
 
+  static const String storageUrl = String.fromEnvironment(
+    'storageUrl',
+    defaultValue:
+        'https://slategray-donkey-607049.hostingersite.com/storage/app/public/',
+  );
+
   static const Duration connectTimeout = Duration(seconds: 30);
 
   static const Duration receiveTimeout = Duration(seconds: 30);

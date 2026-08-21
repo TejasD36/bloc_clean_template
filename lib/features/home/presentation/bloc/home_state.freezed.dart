@@ -125,12 +125,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function()?  success,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( HomeEntity home)?  success,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HomeInitial() when initial != null:
 return initial();case HomeLoading() when loading != null:
 return loading();case HomeSuccess() when success != null:
-return success();case HomeFailure() when failure != null:
+return success(_that.home);case HomeFailure() when failure != null:
 return failure(_that.message);case _:
   return orElse();
 
@@ -149,12 +149,12 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function()  success,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( HomeEntity home)  success,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case HomeInitial():
 return initial();case HomeLoading():
 return loading();case HomeSuccess():
-return success();case HomeFailure():
+return success(_that.home);case HomeFailure():
 return failure(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +169,12 @@ return failure(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function()?  success,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( HomeEntity home)?  success,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case HomeInitial() when initial != null:
 return initial();case HomeLoading() when loading != null:
 return loading();case HomeSuccess() when success != null:
-return success();case HomeFailure() when failure != null:
+return success(_that.home);case HomeFailure() when failure != null:
 return failure(_that.message);case _:
   return null;
 
@@ -251,33 +251,76 @@ String toString() {
 
 
 class HomeSuccess implements HomeState {
-  const HomeSuccess();
+  const HomeSuccess({required this.home});
   
 
+ final  HomeEntity home;
 
-
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HomeSuccessCopyWith<HomeSuccess> get copyWith => _$HomeSuccessCopyWithImpl<HomeSuccess>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeSuccess);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeSuccess&&(identical(other.home, home) || other.home == home));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,home);
 
 @override
 String toString() {
-  return 'HomeState.success()';
+  return 'HomeState.success(home: $home)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $HomeSuccessCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
+  factory $HomeSuccessCopyWith(HomeSuccess value, $Res Function(HomeSuccess) _then) = _$HomeSuccessCopyWithImpl;
+@useResult
+$Res call({
+ HomeEntity home
+});
 
 
+$HomeEntityCopyWith<$Res> get home;
+
+}
+/// @nodoc
+class _$HomeSuccessCopyWithImpl<$Res>
+    implements $HomeSuccessCopyWith<$Res> {
+  _$HomeSuccessCopyWithImpl(this._self, this._then);
+
+  final HomeSuccess _self;
+  final $Res Function(HomeSuccess) _then;
+
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? home = null,}) {
+  return _then(HomeSuccess(
+home: null == home ? _self.home : home // ignore: cast_nullable_to_non_nullable
+as HomeEntity,
+  ));
+}
+
+/// Create a copy of HomeState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$HomeEntityCopyWith<$Res> get home {
+  
+  return $HomeEntityCopyWith<$Res>(_self.home, (value) {
+    return _then(_self.copyWith(home: value));
+  });
+}
+}
 
 /// @nodoc
 

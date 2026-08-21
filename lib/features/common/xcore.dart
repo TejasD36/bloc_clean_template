@@ -1,3 +1,4 @@
+export 'domain/enums/customer_service_slug.dart';
 export 'extensions/string_extensions.dart';
 export 'form/input_formatters.dart';
 export 'form/input_validators.dart';

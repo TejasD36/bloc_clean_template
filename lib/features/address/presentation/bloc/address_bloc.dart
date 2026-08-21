@@ -5,22 +5,39 @@ import 'address_event.dart';
 import 'address_state.dart';
 
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
-  AddressBloc({required this._addressUsecase}) : super(const AddressState.initial()) {
+  AddressBloc({required this._addressUsecase})
+    : super(const AddressState.initial()) {
     on<AddressStarted>(_onStarted);
+    on<AddressSaveRequested>(_onSaveRequested);
   }
 
   final AddressUsecase _addressUsecase;
 
-  Future<void> _onStarted(AddressStarted event, Emitter<AddressState> emit) async {
+  Future<void> _onStarted(
+    AddressStarted event,
+    Emitter<AddressState> emit,
+  ) async {
     emit(const AddressState.loading());
 
-    try {
-      // TODO: Call use case.
-      // await _addressUsecase();
+    final result = await _addressUsecase.getAddresses();
+    result.fold(
+      (failure) => emit(AddressState.failure(message: failure.message)),
+      (addresses) => emit(AddressState.success(addresses: addresses)),
+    );
+  }
 
-      emit(const AddressState.success());
-    } catch (e) {
-      emit(AddressState.failure(message: e.toString()));
-    }
+  Future<void> _onSaveRequested(
+    AddressSaveRequested event,
+    Emitter<AddressState> emit,
+  ) async {
+    emit(const AddressState.loading());
+    final result = await _addressUsecase.saveAddress(
+      id: event.id,
+      input: event.input,
+    );
+    result.fold(
+      (failure) => emit(AddressState.failure(message: failure.message)),
+      (address) => emit(AddressState.success(savedAddress: address)),
+    );
   }
 }

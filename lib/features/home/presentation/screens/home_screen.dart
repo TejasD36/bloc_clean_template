@@ -4,6 +4,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core.dart';
 import '../../../address/presentation/services/google_places_service.dart';
 import '../../../auth/xcore.dart';
+import '../../domain/entities/home_entity.dart';
+import '../bloc/home_bloc.dart';
+import '../bloc/home_event.dart';
+import '../bloc/home_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,14 +19,27 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _placesService = GooglePlacesService();
 
-  final ValueNotifier _userName = ValueNotifier<String>('there');
-  final ValueNotifier _location = ValueNotifier<String>('Finding your current location...');
+  late final HomeBloc _homeBloc;
+  final ValueNotifier<String> _userName = ValueNotifier<String>('there');
+  final ValueNotifier<String> _location = ValueNotifier<String>('Finding your current location...');
+  final ValueNotifier<String> _searchQuery = ValueNotifier<String>('');
   final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _homeBloc = sl<HomeBloc>()..add(const HomeEvent.started());
     _loadHomeDetails();
+  }
+
+  @override
+  void dispose() {
+    _homeBloc.close();
+    _userName.dispose();
+    _location.dispose();
+    _searchQuery.dispose();
+    searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadHomeDetails() async {
@@ -76,74 +93,76 @@ class _HomeScreenState extends State<HomeScreen> {
     _location.value = location;
   }
 
-  static const List<_ServiceItem> _services = [
-    _ServiceItem('Water Tanker', Icons.local_shipping),
-    _ServiceItem('Water Bottle\nJar Delivery', Icons.water_drop),
-    _ServiceItem('Water Tank\nCleaning', Icons.cleaning_services),
-    _ServiceItem('Plumbing\nService', Icons.plumbing),
-    _ServiceItem('Water\nTesting', Icons.science),
-    _ServiceItem('RO Water\nPurifier', Icons.opacity),
-    _ServiceItem('Water\nSoftener', Icons.invert_colors),
-    _ServiceItem('Water Cooler\n& Purifier', Icons.ac_unit),
-    _ServiceItem('Rainwater\nHarvesting', Icons.grass),
-    _ServiceItem('STP', Icons.factory),
-    _ServiceItem('Borewell', Icons.construction),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      padding: EdgeInsets.zero,
-      safeArea: false,
-      backgroundColor: const Color(0xFFF5F8FC),
-      appBar: const _HomeAppBar(),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 112.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ValueListenableBuilder(
-              valueListenable: _userName,
-              builder: (context, value, child) {
-                return Text(
-                  'Good Morning, $value',
-                  style: context.textTheme.displayLarge?.copyWith(
-                    color: const Color(0xFF171B21),
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w700,
-                    height: 36 / 28,
+    return BlocProvider.value(
+      value: _homeBloc,
+      child: BlocListener<HomeBloc, HomeState>(
+        listener: (context, state) {
+          if (state case HomeSuccess(:final home)) {
+            final name = home.userName.trim();
+            if (name.isNotEmpty) {
+              _userName.value = name;
+            }
+          }
+        },
+        child: AppScaffold(
+          padding: EdgeInsets.zero,
+          safeArea: false,
+          backgroundColor: const Color(0xFFF5F8FC),
+          appBar: const _HomeAppBar(),
+          body: RefreshIndicator(
+            onRefresh: () async => _homeBloc.add(const HomeEvent.started()),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 112.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ValueListenableBuilder<String>(
+                    valueListenable: _userName,
+                    builder: (context, value, child) {
+                      return Text(
+                        'Good Morning, $value',
+                        style: context.textTheme.displayLarge?.copyWith(
+                          color: const Color(0xFF171B21),
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.w700,
+                          height: 36 / 28,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            SizedBox(height: 16.h),
-            ValueListenableBuilder(
-              valueListenable: _location,
-              builder: (context, value, child) {
-                return _LocationCard(location: value);
-              },
-            ),
-            SizedBox(height: 24.h),
-            AppSearchBar(controller: searchController, hintText: 'What service are you looking for?'),
-            SizedBox(height: 24.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Our Services',
-                  style: context.textTheme.displayMedium?.copyWith(
-                    color: const Color(0xFF191C1E),
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                    height: 28 / 22,
+                  SizedBox(height: 16.h),
+                  ValueListenableBuilder<String>(
+                    valueListenable: _location,
+                    builder: (context, value, child) {
+                      return _LocationCard(location: value);
+                    },
                   ),
-                ),
-              ],
+                  SizedBox(height: 24.h),
+                  AppSearchBar(
+                    controller: searchController,
+                    hintText: 'What service are you looking for?',
+                    onChanged: (value) => _searchQuery.value = value.trim(),
+                  ),
+                  SizedBox(height: 24.h),
+                  BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      return switch (state) {
+                        HomeInitial() || HomeLoading() => const _HomeLoadingView(),
+                        HomeFailure(:final message) => _HomeFailureView(
+                          message: message,
+                          onRetry: () => context.read<HomeBloc>().add(const HomeEvent.started()),
+                        ),
+                        HomeSuccess(:final home) => _HomeContent(home: home, searchQuery: _searchQuery),
+                      };
+                    },
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 16.h),
-            const _ServiceGrid(services: _services),
-          ],
+          ),
         ),
       ),
     );
@@ -212,7 +231,7 @@ class _LocationCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         onTap: () => context.push(AppRoute.address.path),
         child: Container(
-          height: 80.h,
+          height: 70.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.r),
             border: Border(
@@ -241,9 +260,9 @@ class _LocationCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: context.textTheme.titleMedium?.copyWith(
                         color: const Color(0xFF7A8291),
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
-                        height: 24 / 16,
+                        height: 24 / 18,
                       ),
                     ),
                     Text(
@@ -252,9 +271,9 @@ class _LocationCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: context.textTheme.titleLarge?.copyWith(
                         color: const Color(0xFF171B21),
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        height: 24 / 16,
+                        height: 24 / 18,
                       ),
                     ),
                   ],
@@ -270,16 +289,113 @@ class _LocationCard extends StatelessWidget {
   }
 }
 
-class _ServiceGrid extends StatelessWidget {
-  const _ServiceGrid({required this.services});
+class _HomeContent extends StatelessWidget {
+  const _HomeContent({required this.home, required this.searchQuery});
 
-  final List<_ServiceItem> services;
+  final HomeEntity home;
+  final ValueNotifier<String> searchQuery;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ///Keep it commented for now no need to implement it currently
+        /*if (home.banners.isNotEmpty) ...[
+          _BannerStrip(banners: home.banners),
+          SizedBox(height: 24.h),
+        ],*/
+        Text(
+          'Our Services',
+          style: context.textTheme.displayMedium?.copyWith(
+            color: const Color(0xFF191C1E),
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            height: 28 / 22,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        ValueListenableBuilder<String>(
+          valueListenable: searchQuery,
+          builder: (context, query, child) {
+            final services = _filterServices(home.services, query);
+
+            if (services.isEmpty) {
+              return const _EmptyServicesView();
+            }
+
+            return _ServiceGrid(
+              services: services,
+              onServiceTap: (service) => context.push(AppRoute.serviceDetails.path.replaceFirst(':slug', service.slug), extra: service),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  List<HomeServiceEntity> _filterServices(List<HomeServiceEntity> services, String query) {
+    if (query.isEmpty) return services;
+
+    final normalizedQuery = query.toLowerCase();
+
+    return services.where((service) {
+      return service.name.toLowerCase().contains(normalizedQuery) ||
+          service.description.toLowerCase().contains(normalizedQuery) ||
+          service.slug.toLowerCase().contains(normalizedQuery);
+    }).toList();
+  }
+}
+
+/*class _BannerStrip extends StatelessWidget {
+  const _BannerStrip({required this.banners});
+
+  final List<HomeBannerEntity> banners;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 148.h,
+      child: PageView.builder(
+        controller: PageController(
+          viewportFraction: banners.length > 1 ? 0.92 : 1,
+        ),
+        itemCount: banners.length,
+        itemBuilder: (context, index) {
+          final banner = banners[index];
+
+          return Padding(
+            padding: EdgeInsets.only(
+              right: index == banners.length - 1 ? 0 : 12.w,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.r),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE2E8F0),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: _NetworkImage(url: banner.imageUrl, fit: BoxFit.cover),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}*/
+
+class _ServiceGrid extends StatelessWidget {
+  const _ServiceGrid({required this.services, required this.onServiceTap});
+
+  final List<HomeServiceEntity> services;
+  final ValueChanged<HomeServiceEntity> onServiceTap;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final spacing = 20.w;
+        final spacing = 24.w;
         final itemWidth = (constraints.maxWidth - spacing * 2) / 3;
         final imageSize = itemWidth;
 
@@ -290,7 +406,7 @@ class _ServiceGrid extends StatelessWidget {
               .map(
                 (service) => SizedBox(
                   width: itemWidth,
-                  child: _ServiceTile(service: service, imageSize: imageSize),
+                  child: _ServiceTile(service: service, imageSize: imageSize, onTap: () => onServiceTap(service)),
                 ),
               )
               .toList(),
@@ -301,19 +417,20 @@ class _ServiceGrid extends StatelessWidget {
 }
 
 class _ServiceTile extends StatelessWidget {
-  const _ServiceTile({required this.service, required this.imageSize});
+  const _ServiceTile({required this.service, required this.imageSize, required this.onTap});
 
-  final _ServiceItem service;
+  final HomeServiceEntity service;
   final double imageSize;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: service.label.replaceAll('\n', ' '),
+      label: service.name,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {},
+        onTap: onTap,
         child: Column(
           children: [
             Container(
@@ -324,17 +441,25 @@ class _ServiceTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 5))],
               ),
-              child: Icon(service.icon, color: context.colors.primary, size: imageSize * 0.38),
+              clipBehavior: Clip.antiAlias,
+              child: Padding(
+                padding: EdgeInsets.all(18.w),
+                child: _NetworkImage(
+                  url: service.iconUrl,
+                  fit: BoxFit.contain,
+                  fallback: Icon(_fallbackServiceIcon(service), color: context.colors.primary, size: imageSize * 0.38),
+                ),
+              ),
             ),
             SizedBox(height: 8.h),
             Text(
-              service.label,
+              service.name,
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.titleLarge?.copyWith(
                 color: const Color(0xFF171B21),
-                fontSize: 16.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
                 height: 20 / 16,
               ),
@@ -346,11 +471,185 @@ class _ServiceTile extends StatelessWidget {
   }
 }
 
-class _ServiceItem {
-  const _ServiceItem(this.label, this.icon);
+class _HomeLoadingView extends StatelessWidget {
+  const _HomeLoadingView();
 
-  final String label;
-  final IconData icon;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 148.h,
+          decoration: BoxDecoration(color: const Color(0xFFE2E8F0), borderRadius: BorderRadius.circular(12.r)),
+          alignment: Alignment.center,
+          child: SizedBox(width: 24.w, height: 24.w, child: const CircularProgressIndicator(strokeWidth: 2.4)),
+        ),
+        SizedBox(height: 24.h),
+        Text(
+          'Our Services',
+          style: context.textTheme.displayMedium?.copyWith(
+            color: const Color(0xFF191C1E),
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            height: 28 / 22,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        const _ServiceSkeletonGrid(),
+      ],
+    );
+  }
+}
+
+class _HomeFailureView extends StatelessWidget {
+  const _HomeFailureView({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.cloud_off_outlined, color: context.colors.primary, size: 36.w),
+          SizedBox(height: 12.h),
+          Text(
+            message.isEmpty ? 'Unable to load home data.' : message,
+            textAlign: TextAlign.center,
+            style: context.textTheme.titleMedium?.copyWith(color: const Color(0xFF171B21), fontSize: 16.sp, height: 22 / 16),
+          ),
+          SizedBox(height: 16.h),
+          FilledButton.icon(onPressed: onRetry, icon: const Icon(Icons.refresh), label: const Text('Retry')),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyServicesView extends StatelessWidget {
+  const _EmptyServicesView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 28.h, horizontal: 16.w),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12.r)),
+      child: Text(
+        'No services found.',
+        textAlign: TextAlign.center,
+        style: context.textTheme.titleMedium?.copyWith(color: const Color(0xFF7A8291), fontSize: 16.sp),
+      ),
+    );
+  }
+}
+
+class _ServiceSkeletonGrid extends StatelessWidget {
+  const _ServiceSkeletonGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final spacing = 20.w;
+        final itemWidth = (constraints.maxWidth - spacing * 2) / 3;
+
+        return Wrap(
+          spacing: spacing,
+          runSpacing: 16.h,
+          children: List.generate(
+            6,
+            (_) => SizedBox(
+              width: itemWidth,
+              child: Column(
+                children: [
+                  Container(
+                    width: itemWidth,
+                    height: itemWidth,
+                    decoration: BoxDecoration(color: const Color(0xFFE2E8F0), borderRadius: BorderRadius.circular(16.r)),
+                  ),
+                  SizedBox(height: 8.h),
+                  Container(
+                    width: itemWidth * 0.72,
+                    height: 12.h,
+                    decoration: BoxDecoration(color: const Color(0xFFE2E8F0), borderRadius: BorderRadius.circular(8.r)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _NetworkImage extends StatelessWidget {
+  const _NetworkImage({required this.url, required this.fit, this.fallback});
+
+  final String url;
+  final BoxFit fit;
+  final Widget? fallback;
+
+  @override
+  Widget build(BuildContext context) {
+    if (url.isEmpty) {
+      return fallback ?? const Icon(Icons.image_not_supported_outlined, color: Color(0xFF7A8291));
+    }
+
+    return Image.network(
+      url,
+      fit: fit,
+      width: double.infinity,
+      height: double.infinity,
+      errorBuilder: (_, _, _) => fallback ?? const Icon(Icons.image_not_supported_outlined, color: Color(0xFF7A8291)),
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+
+        return Center(
+          child: SizedBox(width: 22.w, height: 22.w, child: const CircularProgressIndicator(strokeWidth: 2)),
+        );
+      },
+    );
+  }
+}
+
+IconData _fallbackServiceIcon(HomeServiceEntity service) {
+  switch (CustomerServiceSlug.fromValue(service.slug)) {
+    case CustomerServiceSlug.waterTanker:
+      return Icons.local_shipping;
+    case CustomerServiceSlug.waterBottleJarDelivery:
+      return Icons.water_drop;
+    case CustomerServiceSlug.waterTankCleaning:
+      return Icons.cleaning_services;
+    case CustomerServiceSlug.plumbingService:
+      return Icons.plumbing;
+    case CustomerServiceSlug.waterTestingLaboratory:
+      return Icons.science;
+    case CustomerServiceSlug.roService:
+      return Icons.opacity;
+    case CustomerServiceSlug.waterSoftener:
+      return Icons.invert_colors;
+    case CustomerServiceSlug.waterCoolerAndPurifier:
+      return Icons.ac_unit;
+    case CustomerServiceSlug.rainWaterHarvesting:
+      return Icons.grass;
+    case CustomerServiceSlug.stp:
+      return Icons.factory;
+    case CustomerServiceSlug.borewell:
+      return Icons.construction;
+    case CustomerServiceSlug.unknown:
+      return Icons.water;
+  }
 }
 
 class SettingsScreen extends StatelessWidget {

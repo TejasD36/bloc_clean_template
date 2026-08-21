@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../domain/entities/address_entity.dart';
+
 part 'address_state.freezed.dart';
 
 @freezed
@@ -8,9 +10,11 @@ sealed class AddressState with _$AddressState {
 
   const factory AddressState.loading() = AddressLoading;
 
-  const factory AddressState.success() = AddressSuccess;
+  const factory AddressState.success({
+    @Default(<AddressEntity>[]) List<AddressEntity> addresses,
+    AddressEntity? savedAddress,
+  }) = AddressSuccess;
 
-  const factory AddressState.failure({
-    required String message,
-  }) = AddressFailure;
+  const factory AddressState.failure({required String message}) =
+      AddressFailure;
 }

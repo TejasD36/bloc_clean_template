@@ -14,13 +14,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) async {
     emit(const HomeState.loading());
 
-    try {
-      // TODO: Call use case.
-      // await _homeUsecase();
+    final result = await _homeUsecase();
 
-      emit(const HomeState.success());
-    } catch (e) {
-      emit(HomeState.failure(message: e.toString()));
-    }
+    result.fold(
+      (failure) => emit(HomeState.failure(message: failure.message)),
+      (home) => emit(HomeState.success(home: home)),
+    );
   }
 }

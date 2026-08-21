@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/address/presentation/screens/add_address_screen.dart';
@@ -6,8 +7,12 @@ import '../../features/address/presentation/screens/address_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_screen.dart';
 import '../../features/booking/presentation/screens/booking_screen.dart';
+import '../../features/home/domain/entities/home_entity.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/services/presentation/screens/booking_summary_screen.dart';
+import '../../features/services/presentation/screens/bottle_booking_summary_screen.dart';
+import '../../features/services/presentation/screens/service_details_screen.dart';
 import '../../features/shell/presentation/screens/shell_screen.dart';
 import '../../features/splash/presentation/screens/onboarding_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
@@ -111,7 +116,11 @@ class AppRouter {
       GoRoute(
         path: AppRoute.address.path,
         name: AppRoute.address.routeName,
-        builder: (_, _) => const AddressScreen(),
+        builder: (_, state) => AddressScreen(
+          selectionArgs: state.extra is AddressSelectionArgs
+              ? state.extra as AddressSelectionArgs
+              : null,
+        ),
       ),
       GoRoute(
         path: AppRoute.addAddress.path,
@@ -121,6 +130,51 @@ class AppRouter {
               ? state.extra as AddAddressArgs
               : null,
         ),
+      ),
+      GoRoute(
+        path: AppRoute.serviceDetails.path,
+        name: AppRoute.serviceDetails.routeName,
+        builder: (_, state) => ServiceDetailsScreen(
+          slug: state.pathParameters['slug'] ?? '',
+          service: state.extra is HomeServiceEntity
+              ? state.extra as HomeServiceEntity
+              : null,
+        ),
+      ),
+      GoRoute(
+        path: AppRoute.bookingSummary.path,
+        name: AppRoute.bookingSummary.routeName,
+        builder: (_, state) {
+          final args = state.extra;
+          if (args is BookingSummaryArgs) {
+            return BookingSummaryScreen(
+              service: args.service,
+              capacity: args.capacity,
+              waterType: args.waterType,
+              address: args.address,
+            );
+          }
+          return const Scaffold(
+            body: Center(child: Text('Booking details unavailable')),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.bottleBookingSummary.path,
+        name: AppRoute.bottleBookingSummary.routeName,
+        builder: (_, state) {
+          final args = state.extra;
+          if (args is BottleBookingSummaryArgs) {
+            return BottleBookingSummaryScreen(
+              service: args.service,
+              items: args.items,
+              address: args.address,
+            );
+          }
+          return const Scaffold(
+            body: Center(child: Text('Booking details unavailable')),
+          );
+        },
       ),
     ],
   );

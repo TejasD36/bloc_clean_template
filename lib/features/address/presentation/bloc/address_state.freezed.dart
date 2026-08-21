@@ -125,12 +125,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function()?  success,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<AddressEntity> addresses,  AddressEntity? savedAddress)?  success,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AddressInitial() when initial != null:
 return initial();case AddressLoading() when loading != null:
 return loading();case AddressSuccess() when success != null:
-return success();case AddressFailure() when failure != null:
+return success(_that.addresses,_that.savedAddress);case AddressFailure() when failure != null:
 return failure(_that.message);case _:
   return orElse();
 
@@ -149,12 +149,12 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function()  success,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<AddressEntity> addresses,  AddressEntity? savedAddress)  success,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case AddressInitial():
 return initial();case AddressLoading():
 return loading();case AddressSuccess():
-return success();case AddressFailure():
+return success(_that.addresses,_that.savedAddress);case AddressFailure():
 return failure(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +169,12 @@ return failure(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function()?  success,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<AddressEntity> addresses,  AddressEntity? savedAddress)?  success,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case AddressInitial() when initial != null:
 return initial();case AddressLoading() when loading != null:
 return loading();case AddressSuccess() when success != null:
-return success();case AddressFailure() when failure != null:
+return success(_that.addresses,_that.savedAddress);case AddressFailure() when failure != null:
 return failure(_that.message);case _:
   return null;
 
@@ -251,33 +251,87 @@ String toString() {
 
 
 class AddressSuccess implements AddressState {
-  const AddressSuccess();
+  const AddressSuccess({final  List<AddressEntity> addresses = const <AddressEntity>[], this.savedAddress}): _addresses = addresses;
   
 
+ final  List<AddressEntity> _addresses;
+@JsonKey() List<AddressEntity> get addresses {
+  if (_addresses is EqualUnmodifiableListView) return _addresses;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_addresses);
+}
 
+ final  AddressEntity? savedAddress;
 
+/// Create a copy of AddressState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AddressSuccessCopyWith<AddressSuccess> get copyWith => _$AddressSuccessCopyWithImpl<AddressSuccess>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddressSuccess);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddressSuccess&&const DeepCollectionEquality().equals(other._addresses, _addresses)&&(identical(other.savedAddress, savedAddress) || other.savedAddress == savedAddress));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_addresses),savedAddress);
 
 @override
 String toString() {
-  return 'AddressState.success()';
+  return 'AddressState.success(addresses: $addresses, savedAddress: $savedAddress)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $AddressSuccessCopyWith<$Res> implements $AddressStateCopyWith<$Res> {
+  factory $AddressSuccessCopyWith(AddressSuccess value, $Res Function(AddressSuccess) _then) = _$AddressSuccessCopyWithImpl;
+@useResult
+$Res call({
+ List<AddressEntity> addresses, AddressEntity? savedAddress
+});
 
 
+$AddressEntityCopyWith<$Res>? get savedAddress;
+
+}
+/// @nodoc
+class _$AddressSuccessCopyWithImpl<$Res>
+    implements $AddressSuccessCopyWith<$Res> {
+  _$AddressSuccessCopyWithImpl(this._self, this._then);
+
+  final AddressSuccess _self;
+  final $Res Function(AddressSuccess) _then;
+
+/// Create a copy of AddressState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? addresses = null,Object? savedAddress = freezed,}) {
+  return _then(AddressSuccess(
+addresses: null == addresses ? _self._addresses : addresses // ignore: cast_nullable_to_non_nullable
+as List<AddressEntity>,savedAddress: freezed == savedAddress ? _self.savedAddress : savedAddress // ignore: cast_nullable_to_non_nullable
+as AddressEntity?,
+  ));
+}
+
+/// Create a copy of AddressState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AddressEntityCopyWith<$Res>? get savedAddress {
+    if (_self.savedAddress == null) {
+    return null;
+  }
+
+  return $AddressEntityCopyWith<$Res>(_self.savedAddress!, (value) {
+    return _then(_self.copyWith(savedAddress: value));
+  });
+}
+}
 
 /// @nodoc
 

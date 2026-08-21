@@ -1,4 +1,9 @@
+import 'package:dartz/dartz.dart';
+
+import '../../../../../core.dart';
+import '../entities/home_entity.dart';
+
 /// Contract for Home operations.
 abstract interface class HomeRepository {
-  // TODO: Define repository methods.
+  Future<Either<AppException, HomeEntity>> getHomeScreen();
 }

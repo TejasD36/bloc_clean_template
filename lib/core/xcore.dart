@@ -31,6 +31,7 @@ export 'network/response/result.dart';
 export 'network/response/result_message.dart';
 export 'network/services/network_monitor_service.dart';
 export 'network/xcore.dart';
+export 'payment/razorpay_service.dart';
 export 'storage/constants/hive_boxes.dart';
 export 'storage/constants/hive_type_ids.dart';
 export 'storage/constants/storage_keys.dart';
