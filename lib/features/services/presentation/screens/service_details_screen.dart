@@ -1,8 +1,11 @@
 import '../../../../core.dart';
 import '../../../home/domain/entities/home_entity.dart';
 import '../../domain/models/service_flow.dart';
-import 'water_bottle_jar_delivery_screen.dart';
-import 'water_tanker_flow_screen.dart';
+import 'water_bottle_jar_delivery/water_bottle_jar_delivery_screen.dart';
+import 'water_tank_cleaning/water_tank_cleaning_screen.dart';
+import 'water_tanker/water_tanker_flow_screen.dart';
+import 'plumbing_service_screen.dart';
+import 'water_testing/water_testing_screen.dart';
 
 class ServiceDetailsScreen extends StatelessWidget {
   const ServiceDetailsScreen({super.key, required this.slug, this.service});
@@ -22,11 +25,13 @@ class ServiceDetailsScreen extends StatelessWidget {
       ServiceFlowType.waterBottleJarDelivery => WaterBottleJarDeliveryScreen(
         service: resolvedService,
       ),
-      ServiceFlowType.waterTankCleaning => _WaterTankCleaningScreen(
+      ServiceFlowType.waterTankCleaning => WaterTankCleaningScreen(
         service: resolvedService,
       ),
-      ServiceFlowType.plumbing => _PlumbingScreen(service: resolvedService),
-      ServiceFlowType.waterTesting => _WaterTestingScreen(
+      ServiceFlowType.plumbing => PlumbingServiceScreen(
+        service: resolvedService,
+      ),
+      ServiceFlowType.waterTesting => WaterTestingScreen(
         service: resolvedService,
       ),
       ServiceFlowType.roService => _RoServiceScreen(service: resolvedService),
@@ -76,18 +81,6 @@ class ServiceDetailsScreen extends StatelessWidget {
       CustomerServiceSlug.unknown => 'Service',
     };
   }
-}
-
-class _WaterTankCleaningScreen extends _ServicePlaceholderScreen {
-  const _WaterTankCleaningScreen({required super.service});
-}
-
-class _PlumbingScreen extends _ServicePlaceholderScreen {
-  const _PlumbingScreen({required super.service});
-}
-
-class _WaterTestingScreen extends _ServicePlaceholderScreen {
-  const _WaterTestingScreen({required super.service});
 }
 
 class _RoServiceScreen extends _ServicePlaceholderScreen {

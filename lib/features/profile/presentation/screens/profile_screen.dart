@@ -1,5 +1,6 @@
 import '../../../../core.dart';
 import '../../../auth/xcore.dart';
+import '../../../common/services/business_settings_store.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -42,9 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             SizedBox(height: 28.h),
-            _SupportBanner(
-              onTap: () => _showMessage(context, 'Support contact coming soon'),
-            ),
+            _SupportBanner(onTap: () => Utils.showMessage(context, 'Support contact coming soon')),
             SizedBox(height: 34.h),
             const _SectionTitle(title: 'My Information'),
             SizedBox(height: 14.h),
@@ -54,8 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.location_on_outlined,
                   title: 'Address',
                   subtitle: 'Baner, Pune - 411045, Maharashtra',
-                  onTap: () =>
-                      _showMessage(context, 'Address editing coming soon'),
+                  onTap: () => Utils.showMessage(context, 'Address editing coming soon'),
                 ),
               ],
             ),
@@ -67,21 +65,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _ProfileRow(
                   icon: Icons.shield_outlined,
                   title: 'Privacy Policy',
-                  onTap: () =>
-                      _showMessage(context, 'Privacy Policy coming soon'),
+                  onTap: () => _openLegalPage(context, title: 'Privacy Policy', url: sl<BusinessSettingsStore>().settings?.privacyPolicy),
                 ),
                 const _ProfileDivider(),
                 _ProfileRow(
                   icon: Icons.description_outlined,
                   title: 'Terms & Conditions',
                   onTap: () =>
-                      _showMessage(context, 'Terms & Conditions coming soon'),
+                      _openLegalPage(context, title: 'Terms & Conditions', url: sl<BusinessSettingsStore>().settings?.termsAndConditions),
                 ),
                 const _ProfileDivider(),
                 _ProfileRow(
                   icon: Icons.info_outline,
                   title: 'About Us',
-                  onTap: () => _showMessage(context, 'About Us coming soon'),
+                  onTap: () => _openLegalPage(context, title: 'About Us', url: sl<BusinessSettingsStore>().settings?.aboutUs),
                 ),
               ],
             ),
@@ -92,9 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.logout,
                   title: 'Log Out',
                   foregroundColor: context.appColors.error,
-                  iconBackgroundColor: context.appColors.error.withValues(
-                    alpha: 0.08,
-                  ),
+                  iconBackgroundColor: context.appColors.error.withValues(alpha: 0.08),
                   onTap: _confirmLogout,
                 ),
               ],
@@ -105,10 +100,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  static void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+  void _openLegalPage(BuildContext context, {required String title, required String? url}) {
+    final value = url?.trim() ?? '';
+    final uri = Uri.tryParse(value);
+    if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
+      Utils.showMessage(context, '$title is not available.');
+      return;
+    }
+    context.push(
+      AppRoute.webView.path,
+      extra: AppWebViewArgs(title: title, url: value),
+    );
   }
 
   Future<void> _confirmLogout() async {
@@ -118,18 +120,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Log out?'),
-        content: const Text(
-          'Are you sure you want to log out of your account?',
-        ),
+        content: const Text('Are you sure you want to log out of your account?'),
         actions: [
-          TextButton(
-            onPressed: () => dialogContext.pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => dialogContext.pop(true),
-            child: const Text('Log Out'),
-          ),
+          TextButton(onPressed: () => dialogContext.pop(false), child: const Text('Cancel')),
+          FilledButton(onPressed: () => dialogContext.pop(true), child: const Text('Log Out')),
         ],
       ),
     );
@@ -140,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       onFailure: (failure) {
         if (!mounted) return;
         setState(() => _isLoggingOut = false);
-        _showMessage(context, failure.message);
+        Utils.showMessage(context, failure.message);
       },
       onSuccess: (_) {
         if (!mounted) return;
@@ -162,11 +156,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: context.textTheme.titleMedium?.copyWith(
-        color: context.appColors.textStrong,
-        fontSize: 20,
-        fontWeight: FontWeight.w800,
-      ),
+      style: context.textTheme.titleMedium?.copyWith(color: context.appColors.textStrong, fontSize: 20, fontWeight: FontWeight.w800),
     );
   }
 }
@@ -194,15 +184,8 @@ class _SupportBanner extends StatelessWidget {
               Container(
                 width: 50,
                 height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.18),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.headset_mic_outlined,
-                  color: Colors.white,
-                  size: 25,
-                ),
+                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.18), shape: BoxShape.circle),
+                child: const Icon(Icons.headset_mic_outlined, color: Colors.white, size: 25),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -211,20 +194,10 @@ class _SupportBanner extends StatelessWidget {
                   children: [
                     const Text(
                       'Need Help?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      "We're here to help you",
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.90),
-                        fontSize: 12,
-                      ),
-                    ),
+                    Text("We're here to help you", style: TextStyle(color: Colors.white.withValues(alpha: 0.90), fontSize: 12)),
                   ],
                 ),
               ),
@@ -237,20 +210,12 @@ class _SupportBanner extends StatelessWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: primary,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        'Contact Support',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                      Text('Contact Support', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
                       SizedBox(width: 2),
                       Icon(Icons.chevron_right, size: 20),
                     ],
@@ -315,10 +280,7 @@ class _ProfileRow extends StatelessWidget {
               Container(
                 width: 40,
                 height: 40,
-                decoration: BoxDecoration(
-                  color: iconBackgroundColor ?? context.appColors.primarySoft,
-                  shape: BoxShape.circle,
-                ),
+                decoration: BoxDecoration(color: iconBackgroundColor ?? context.appColors.primarySoft, shape: BoxShape.circle),
                 child: Icon(icon, color: primary, size: 20),
               ),
               const SizedBox(width: 16),
@@ -341,21 +303,14 @@ class _ProfileRow extends StatelessWidget {
                         subtitle!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: context.textTheme.bodyLarge?.copyWith(
-                          color: context.appColors.textMuted,
-                          fontSize: 14,
-                        ),
+                        style: context.textTheme.bodyLarge?.copyWith(color: context.appColors.textMuted, fontSize: 14),
                       ),
                     ],
                   ],
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(
-                Icons.chevron_right,
-                color: context.appColors.textDisabled,
-                size: 28,
-              ),
+              Icon(Icons.chevron_right, color: context.appColors.textDisabled, size: 28),
             ],
           ),
         ),
@@ -368,9 +323,5 @@ class _ProfileDivider extends StatelessWidget {
   const _ProfileDivider();
 
   @override
-  Widget build(BuildContext context) => Divider(
-    height: 1,
-    thickness: 1,
-    color: context.appColors.divider.withValues(alpha: 0.55),
-  );
+  Widget build(BuildContext context) => Divider(height: 1, thickness: 1, color: context.appColors.divider.withValues(alpha: 0.55));
 }

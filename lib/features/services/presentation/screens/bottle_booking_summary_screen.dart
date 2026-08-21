@@ -3,19 +3,11 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../../../../core.dart';
 import '../../../address/domain/entities/address_entity.dart';
 import '../../../home/domain/entities/home_entity.dart';
-import 'water_bottle_jar_delivery_screen.dart';
-
-class BottleBookingSummaryArgs {
-  const BottleBookingSummaryArgs({
-    required this.service,
-    required this.items,
-    required this.address,
-  });
-
-  final HomeServiceEntity service;
-  final List<WaterProductCartItem> items;
-  final AddressEntity address;
-}
+import '../models/booking_success_args.dart';
+import '../models/water_product_cart_item.dart';
+import '../widgets/payment_summary.dart';
+import 'water_bottle_jar_delivery/address_card.dart';
+import 'water_bottle_jar_delivery/product_card.dart';
 
 class BottleBookingSummaryScreen extends StatefulWidget {
   const BottleBookingSummaryScreen({
@@ -56,17 +48,17 @@ class _BottleBookingSummaryScreenState
           onPressed: context.pop,
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text('My Cart'),
+        title: const Text('Booking Summary'),
       ),
       backgroundColor: context.appColors.surfaceSoft,
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(24, 12, 24, 16),
         child: Row(
           children: [
-            Expanded(child: _Total(total: total)),
+            Expanded(child: PaymentSummary(total: total)),
             const SizedBox(width: 16),
             Expanded(
-              child: FilledButton.icon(
+              child: ElevatedButton.icon(
                 onPressed: _items.isEmpty ? null : () => _pay(context),
                 icon: const Icon(Icons.arrow_forward),
                 label: Text(
@@ -82,19 +74,19 @@ class _BottleBookingSummaryScreenState
       body: _items.isEmpty
           ? const Center(child: Text('Your cart is empty'))
           : ListView(
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+              padding: EdgeInsets.only(top: 16.h),
               children: [
-                Text('My Cart', style: context.textTheme.headlineSmall),
-                const SizedBox(height: 16),
                 for (final item in _items) ...[
-                  _CartItem(
-                    item: item,
+                  ProductCard(
+                    product: item.product,
                     onChanged: (quantity) => _update(item, quantity),
+                    quantity: item.quantity,
+                    canDelete: true,
                   ),
                   const SizedBox(height: 12),
                 ],
                 const SizedBox(height: 8),
-                _AddressCard(address: widget.address),
+                AddressCard(address: widget.address),
               ],
             ),
     );
@@ -134,7 +126,16 @@ class _BottleBookingSummaryScreenState
     razorpay = sl<RazorpayService>(
       param1: (PaymentSuccessResponse response) {
         razorpay.dispose();
-        _message(context, 'Payment received. Verification is pending.');
+        context.pushReplacement(
+          AppRoute.bookingSuccess.path,
+          extra: BookingSuccessArgs(
+            service: widget.service,
+            serviceType: _items.map((item) => item.product.title).join(', '),
+            address: widget.address,
+            amount: amount,
+            currency: _items.first.product.currency,
+          ),
+        );
       },
       param2: (PaymentFailureResponse response) {
         razorpay.dispose();
@@ -153,145 +154,4 @@ class _BottleBookingSummaryScreenState
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(content: Text(message)));
-}
-
-class _CartItem extends StatelessWidget {
-  const _CartItem({required this.item, required this.onChanged});
-  final WaterProductCartItem item;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) => Card(
-    margin: EdgeInsets.zero,
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          _ProductImage(url: item.product.imageUrl),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.product.title,
-                        style: context.textTheme.titleMedium,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => onChanged(0),
-                      icon: const Icon(Icons.delete_outline),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${item.product.currency}${item.product.price.toStringAsFixed(2)}',
-                      style: TextStyle(color: context.colors.primary),
-                    ),
-                    _SummaryStepper(
-                      quantity: item.quantity,
-                      onChanged: onChanged,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-class _SummaryStepper extends StatelessWidget {
-  const _SummaryStepper({required this.quantity, required this.onChanged});
-  final int quantity;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      IconButton(
-        onPressed: () => onChanged(quantity - 1),
-        icon: const Icon(Icons.remove_circle_outline),
-      ),
-      Text('$quantity'),
-      IconButton(
-        onPressed: () => onChanged(quantity + 1),
-        icon: const Icon(Icons.add_circle),
-      ),
-    ],
-  );
-}
-
-class _Total extends StatelessWidget {
-  const _Total({required this.total});
-  final double total;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      const Text(
-        'TOTAL AMOUNT',
-        style: TextStyle(fontSize: 12, letterSpacing: .6),
-      ),
-      Text(
-        '₹${total.toStringAsFixed(2)}',
-        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-      ),
-    ],
-  );
-}
-
-class _AddressCard extends StatelessWidget {
-  const _AddressCard({required this.address});
-  final AddressEntity address;
-
-  @override
-  Widget build(BuildContext context) => Card(
-    child: ListTile(
-      leading: const Icon(Icons.location_on_outlined),
-      title: const Text('Delivery Address'),
-      subtitle: Text(
-        [
-          address.flatNumberOrBuildingName,
-          address.areaStreetName,
-          address.city,
-          address.pincode,
-        ].where((value) => value.isNotEmpty).join(', '),
-      ),
-    ),
-  );
-}
-
-class _ProductImage extends StatelessWidget {
-  const _ProductImage({required this.url});
-  final String url;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    width: 80,
-    height: 80,
-    decoration: BoxDecoration(
-      color: const Color(0xFFECEEF0),
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: url.isEmpty
-        ? const Icon(
-            Icons.water_drop_outlined,
-            color: Color(0xFF0058BE),
-            size: 32,
-          )
-        : Image.network(url, fit: BoxFit.cover),
-  );
 }

@@ -43,9 +43,9 @@ Notes:
 | --- | --- | ---: | --- |
 | `water-tanker` | Water Tanker | Yes | Implemented through address selection and tanker summary; checkout payload pending |
 | `water-bottle-jar-delivery` | Water Bottle & Jar Delivery | Yes | Product selection and cart summary implemented; checkout payload pending |
-| `water-tank-cleaning` | Water Tank Cleaning | Yes | Not implemented |
+| `water-tank-cleaning` | Water Tank Cleaning | Yes | Detail API, tank options, address, and summary implemented; checkout payload pending |
 | `plumbing-service` | Plumbing Service | No | Not implemented |
-| `water-testing-laboratory` | Water Testing | Conditional | Not implemented; home sample is paid, self sample is unpaid |
+| `water-testing-laboratory` | Water Testing | Conditional | Implemented; home sample package is paid, self sample is unpaid |
 | `ro-service` | RO Water Purifier | Conditional | Not implemented; new RO and AMC are paid, repair is unpaid |
 | `water-softner` | Water Softener | No | Not implemented |
 | `water-cooler-and-purifier` | Water Cooler & Purifier | No | Not implemented |
@@ -141,7 +141,6 @@ Unpaid self sample:
 ```json
 {
   "offering_id": "<water-testing-service-id>",
-  "user_address_id": "<address-id>",
   "total_price": 0,
   "booking_data": {
     "sample_type": "self_sample"
@@ -270,6 +269,26 @@ Paid AMC:
   }
 }
 ```
+
+### Plumbing Service
+
+Plumbing is an unpaid flow. The UI allows selecting one or more service
+options, then selecting an address before submitting through the common
+checkout endpoint:
+
+```json
+{
+  "offering_id": "<plumbing-service-id>",
+  "user_address_id": "<address-id>",
+  "total_price": 0,
+  "booking_data": {
+    "service_option": "leakage,tap_repair"
+  }
+}
+```
+
+The plumbing options are loaded from
+`/api/v1/customer/plumbing-service/service-options`.
 
 ## Payment Integration Notes
 

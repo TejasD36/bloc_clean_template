@@ -10,9 +10,19 @@ import '../../features/booking/presentation/screens/booking_screen.dart';
 import '../../features/home/domain/entities/home_entity.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/common/widgets/app_web_view_screen.dart';
+import '../../features/services/presentation/models/bottle_booking_summary_args.dart';
 import '../../features/services/presentation/screens/booking_summary_screen.dart';
 import '../../features/services/presentation/screens/bottle_booking_summary_screen.dart';
+import '../../features/services/presentation/screens/booking_success_screen.dart';
+import '../../features/services/presentation/models/booking_success_args.dart';
+import '../../features/services/presentation/models/plumbing_booking_args.dart';
+import '../../features/services/presentation/screens/water_tank_cleaning/water_tank_cleaning_options_screen.dart';
 import '../../features/services/presentation/screens/service_details_screen.dart';
+import '../../features/services/presentation/models/water_tank_cleaning_booking_args.dart';
+import '../../features/services/presentation/models/water_testing_booking_args.dart';
+import '../../features/services/presentation/models/water_testing_packages_args.dart';
+import '../../features/services/presentation/screens/water_testing/water_testing_packages_screen.dart';
 import '../../features/shell/presentation/screens/shell_screen.dart';
 import '../../features/splash/presentation/screens/onboarding_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
@@ -132,6 +142,17 @@ class AppRouter {
         ),
       ),
       GoRoute(
+        path: AppRoute.webView.path,
+        name: AppRoute.webView.routeName,
+        builder: (_, state) {
+          final args = state.extra;
+          if (args is AppWebViewArgs) {
+            return AppWebViewScreen(title: args.title, url: args.url);
+          }
+          return const Scaffold(body: Center(child: Text('Page unavailable')));
+        },
+      ),
+      GoRoute(
         path: AppRoute.serviceDetails.path,
         name: AppRoute.serviceDetails.routeName,
         builder: (_, state) => ServiceDetailsScreen(
@@ -154,6 +175,27 @@ class AppRouter {
               address: args.address,
             );
           }
+          if (args is PlumbingBookingArgs) {
+            return BookingSummaryScreen(
+              service: args.service,
+              address: args.address,
+              plumbingBooking: args,
+            );
+          }
+          if (args is WaterTankCleaningSummaryArgs) {
+            return BookingSummaryScreen(
+              service: args.service,
+              address: args.address,
+              cleaningBooking: args,
+            );
+          }
+          if (args is WaterTestingBookingArgs) {
+            return BookingSummaryScreen(
+              service: args.service,
+              address: args.address,
+              testingBooking: args,
+            );
+          }
           return const Scaffold(
             body: Center(child: Text('Booking details unavailable')),
           );
@@ -173,6 +215,48 @@ class AppRouter {
           }
           return const Scaffold(
             body: Center(child: Text('Booking details unavailable')),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.bookingSuccess.path,
+        name: AppRoute.bookingSuccess.routeName,
+        builder: (_, state) {
+          final args = state.extra;
+          if (args is BookingSuccessArgs) {
+            return BookingSuccessScreen(args: args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('Booking details unavailable')),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.waterTankCleaningOptions.path,
+        name: AppRoute.waterTankCleaningOptions.routeName,
+        builder: (_, state) {
+          final args = state.extra;
+          if (args is WaterTankCleaningOptionsArgs) {
+            return WaterTankCleaningOptionsScreen(
+              service: args.service,
+              detail: args.detail,
+            );
+          }
+          return const Scaffold(
+            body: Center(child: Text('Service details unavailable')),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.waterTestingPackages.path,
+        name: AppRoute.waterTestingPackages.routeName,
+        builder: (_, state) {
+          final args = state.extra;
+          if (args is WaterTestingPackagesArgs) {
+            return WaterTestingPackagesScreen(args: args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('Test packages unavailable')),
           );
         },
       ),

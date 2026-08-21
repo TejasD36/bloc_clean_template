@@ -220,7 +220,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         return;
       }
       setState(() => _isSearching = false);
-      _showMessage('Could not search locations. Check the Maps API key setup.');
+      Utils.showMessage(context, 'Could not search locations. Check the Maps API key setup.');
     }
   }
 
@@ -237,7 +237,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     try {
       if (!await Geolocator.isLocationServiceEnabled()) {
         if (mounted) {
-          _showMessage('Turn on location services to continue');
+          Utils.showMessage(context, 'Turn on location services to continue');
         }
         return;
       }
@@ -248,7 +248,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       }
       if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
         if (mounted) {
-          _showMessage(
+          Utils.showMessage(
+            context,
             permission == LocationPermission.deniedForever
                 ? 'Location permission is blocked in Settings'
                 : 'Location permission is required',
@@ -263,19 +264,19 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       }
       await _moveMarker(LatLng(position.latitude, position.longitude), resolveAddress: true);
       if (mounted) {
-        _showMessage('Map centered on your current location');
+        Utils.showMessage(context, 'Map centered on your current location');
       }
     } on LocationServiceDisabledException {
       if (mounted) {
-        _showMessage('Turn on location services to continue');
+        Utils.showMessage(context, 'Turn on location services to continue');
       }
     } on PermissionDeniedException {
       if (mounted) {
-        _showMessage('Location permission is required');
+        Utils.showMessage(context, 'Location permission is required');
       }
     } catch (_) {
       if (mounted) {
-        _showMessage('Could not get your current location');
+        Utils.showMessage(context, 'Could not get your current location');
       }
     } finally {
       if (mounted) {
@@ -298,7 +299,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         return;
       }
       setState(() => _isSearching = false);
-      _showMessage('Could not load this location');
+      Utils.showMessage(context, 'Could not load this location');
     }
   }
 
@@ -333,7 +334,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         return;
       }
       setState(() => _isResolvingMarker = false);
-      _showMessage('Could not update address from marker');
+      Utils.showMessage(context, 'Could not update address from marker');
     }
   }
 
@@ -358,7 +359,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   void _saveAddress() {
     FocusManager.instance.primaryFocus?.unfocus();
     if (_flatController.text.trim().isEmpty || _streetController.text.trim().isEmpty || _pinController.text.trim().length != 6) {
-      _showMessage('Please complete the required address fields');
+      Utils.showMessage(context, 'Please complete the required address fields');
       return;
     }
     _addressBloc.add(
@@ -386,7 +387,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         setState(() => _isSaving = true);
       case AddressFailure(:final message):
         setState(() => _isSaving = false);
-        _showMessage(message);
+        Utils.showMessage(context, message);
       case AddressSuccess(:final savedAddress):
         if (savedAddress == null) return;
         setState(() => _isSaving = false);
@@ -394,12 +395,6 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       case AddressInitial():
         break;
     }
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
   }
 }
 

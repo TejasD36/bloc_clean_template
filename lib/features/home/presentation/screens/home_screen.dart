@@ -444,7 +444,7 @@ class _ServiceTile extends StatelessWidget {
               clipBehavior: Clip.antiAlias,
               child: Padding(
                 padding: EdgeInsets.all(18.w),
-                child: _NetworkImage(
+                child: AppNetworkImageWidget(
                   url: service.iconUrl,
                   fit: BoxFit.contain,
                   fallback: Icon(_fallbackServiceIcon(service), color: context.colors.primary, size: imageSize * 0.38),
@@ -587,36 +587,6 @@ class _ServiceSkeletonGrid extends StatelessWidget {
               ),
             ),
           ),
-        );
-      },
-    );
-  }
-}
-
-class _NetworkImage extends StatelessWidget {
-  const _NetworkImage({required this.url, required this.fit, this.fallback});
-
-  final String url;
-  final BoxFit fit;
-  final Widget? fallback;
-
-  @override
-  Widget build(BuildContext context) {
-    if (url.isEmpty) {
-      return fallback ?? const Icon(Icons.image_not_supported_outlined, color: Color(0xFF7A8291));
-    }
-
-    return Image.network(
-      url,
-      fit: fit,
-      width: double.infinity,
-      height: double.infinity,
-      errorBuilder: (_, _, _) => fallback ?? const Icon(Icons.image_not_supported_outlined, color: Color(0xFF7A8291)),
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-
-        return Center(
-          child: SizedBox(width: 22.w, height: 22.w, child: const CircularProgressIndicator(strokeWidth: 2)),
         );
       },
     );

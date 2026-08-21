@@ -131,7 +131,7 @@ class _AddressScreenState extends State<AddressScreen> {
     final address = _selectedAddress;
     if (address == null) return;
     if (widget.selectionArgs == null) {
-      _showMessage('Location confirmed for ${_toLocation(address).title}');
+      Utils.showMessage(context, 'Location confirmed for ${_toLocation(address).title}');
       return;
     }
     context.pop(
@@ -142,15 +142,6 @@ class _AddressScreenState extends State<AddressScreen> {
         flowSlug: widget.selectionArgs!.flowSlug,
       ),
     );
-  }
-
-  void _showMessage(String message) {
-    if (!mounted) {
-      return;
-    }
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _editLocation(SavedMapLocation location) {

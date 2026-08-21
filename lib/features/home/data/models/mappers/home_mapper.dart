@@ -1,4 +1,5 @@
-import '../../../../../core/network/config/api_config.dart';
+import 'package:pwh_customer/core.dart';
+
 import '../../../domain/entities/home_entity.dart';
 import '../dtos/home_dto.dart';
 
@@ -14,11 +15,7 @@ extension HomeMapper on HomeDto {
 
 extension HomeBannerMapper on HomeBannerDto {
   HomeBannerEntity toEntity() {
-    return HomeBannerEntity(
-      id: id,
-      imageUrl: _buildStorageUrl(image),
-      linkUrl: linkUrl,
-    );
+    return HomeBannerEntity(id: id, imageUrl: image.buildStorageUrl, linkUrl: linkUrl);
   }
 }
 
@@ -29,21 +26,8 @@ extension HomeServiceMapper on HomeServiceDto {
       name: name,
       slug: slug,
       description: description,
-      iconUrl: _buildStorageUrl(icon),
+      iconUrl: icon.buildStorageUrl,
       isPaymentRequired: isPaymentRequired,
     );
   }
-}
-
-String _buildStorageUrl(String path) {
-  final value = path.trim();
-  if (value.isEmpty) return '';
-  if (value.startsWith('http://') || value.startsWith('https://')) return value;
-
-  final base = ApiConfig.storageUrl.endsWith('/')
-      ? ApiConfig.storageUrl
-      : '${ApiConfig.storageUrl}/';
-  final normalizedPath = value.startsWith('/') ? value.substring(1) : value;
-
-  return '$base$normalizedPath';
 }

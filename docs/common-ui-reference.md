@@ -38,9 +38,14 @@ Use as the default screen scaffold. It provides:
 - standard `Scaffold` slots: app bar, drawers, bottom navigation, bottom
   sheet, FAB, persistent footer, and body resize behavior
 
-Important: set `padding: EdgeInsets.zero` when a screen owns its own edge
-padding. Set `safeArea: false` only when the screen deliberately handles
-system insets itself.
+`AppScaffold` owns the body's default horizontal padding and safe-area
+handling. Body scrollables should normally specify only vertical padding, for
+example `EdgeInsets.only(top: 16, bottom: 24)`, and should not add another
+horizontal `EdgeInsets` or nested `SafeArea`. Set `padding: EdgeInsets.zero`
+only when a screen intentionally needs edge-to-edge content. Set
+`safeArea: false` only when the screen deliberately handles system insets
+itself. A bottom navigation/footer widget may still use `SafeArea`, because
+`AppScaffold` applies its safe area to the body, not to scaffold slots.
 
 ### `AppTextFormFieldWidget`
 
@@ -232,6 +237,27 @@ The configured scale is:
 6. Add a new common widget only when it is used by more than one feature or
    clearly represents an application-wide interaction.
 7. Update this document whenever a shared widget, token, or convention changes.
+
+### `ServiceHelpCard`
+
+Path: `lib/features/services/widgets/service_help_card.dart`
+
+Use for the recurring service support/help panel. It provides configurable
+title, description, button label, and callback. Its inline outlined button has
+an explicit finite size because the global outlined-button theme uses an
+infinite-width default intended for full-width form actions.
+
+The card tap and call button open the business phone number from
+`BusinessSettingsStore` when no callback is supplied.
+
+### `AppWebViewScreen`
+
+Path: `lib/features/common/widgets/app_web_view_screen.dart`
+
+Use for configured in-app pages such as privacy policy, terms and conditions,
+and about-us content. Pass an `AppWebViewArgs` object through the
+`AppRoute.webView` route. Invalid or unavailable URLs show an in-app fallback
+message instead of attempting navigation.
 
 ## Known Follow-ups
 

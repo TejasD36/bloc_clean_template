@@ -1,4 +1,4 @@
-import '../../../../common/domain/entities/business_settings_entity.dart';
+import '../../../../common/data/models/mappers/business_settings_mapper.dart';
 import '../../../domain/entities/app_version_entity.dart';
 import '../../../domain/entities/splash_screen_entity.dart';
 import '../dtos/splash_screen_dto.dart';
@@ -19,19 +19,6 @@ extension AppVersionDtoMapper on AppVersionDto {
       isForceUpdate: isForceUpdate,
       whatsNewMessage: whatsNewMessage,
       storeUrl: storeUrl,
-    );
-  }
-}
-
-extension BusinessSettingsDtoMapper on BusinessSettingsDto {
-  BusinessSettingsEntity toEntity() {
-    return BusinessSettingsEntity(
-      appEmail: appEmail,
-      appPhone: appPhone,
-      currencySymbol: currencySymbol,
-      privacyPolicy: privacyPolicy,
-      termsAndConditions: termsAndConditions,
-      aboutUs: aboutUs,
     );
   }
 }

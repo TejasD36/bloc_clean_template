@@ -1,22 +1,20 @@
+import '../../../core/network/config/api_config.dart';
+
 extension StringExtensions on String? {
   bool get isNotNullOrEmpty => this != null && this!.isNotEmpty;
 
-  /// Converts English digits (0-9) to Marathi digits (०-९).
-  ///
-  /// Example:
-  /// '+91 9876543210'.toMarathiDigits
-  /// => '+९१ ९८७६५४३२१०'
-  String get toMarathiDigits {
+  ///Build Storage URL
+  String get buildStorageUrl {
     if (this == null || this!.isEmpty) {
       return '';
     }
 
-    const englishDigits = '0123456789';
-    const marathiDigits = '०१२३४५६७८९';
+    final value = this!.trim();
+    if (value.startsWith('http://') || value.startsWith('https://')) return value;
 
-    return this!.split('').map((char) {
-      final index = englishDigits.indexOf(char);
-      return index == -1 ? char : marathiDigits[index];
-    }).join();
+    final base = ApiConfig.storageUrl.endsWith('/') ? ApiConfig.storageUrl : '${ApiConfig.storageUrl}/';
+    final normalizedPath = value.startsWith('/') ? value.substring(1) : value;
+
+    return '$base$normalizedPath';
   }
 }
